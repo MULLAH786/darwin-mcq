@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Darwin Academy - Portal</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg: #0f172a; /* High Quality Dark Theme */
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --gray: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            padding: 25px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+
+        h2, h3 {
+            margin-bottom: 15px;
+            color: #38bdf8;
+            text-align: center;
+        }
+
+        p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            color: white;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover { background: var(--primary-dark); }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-secondary { background: #475569; }
+        .btn-secondary:hover { background: #334155; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #15803d; }
+        .btn-warning { background: var(--warning); }
+        .btn-warning:hover { background: #b45309; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .option-btn:hover { background: #475569; }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            width: 100%;
+        }
+        .back-link:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 1. HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+        <div id="home-logo-container" style="text-align: center; margin-bottom: 10px;"></div>
+        <h2 id="home-academy-name">Darwin Academy</h2>
+        <p>Live Firebase Cloud Portal</p>
+        
+        <div class="form-group" style="margin-top: 20px;">
+            <button onclick="showScreen('screen-free-mcq')" class="btn-success">📚 Free MCQ Practice</button>
+            <button onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-top: 10px;">🏆 Free MCQ Leaderboard & Certificates</button>
+            <button onclick="showScreen('screen-special-leaderboard')" style="background: #7c3aed; margin-top: 10px;">🌟 Special Exam Leaderboard & Certificates</button>
+            <button onclick="showScreen('screen-student-resources')" style="background: #0284c7; margin-top: 10px;">📖 E-Books & Videos Hub</button>
+            <button onclick="showScreen('screen-special-exam-login')" style="background: #475569; margin-top: 10px;">⭐ Special Exam & Short Q/A (Paid/Topper)</button>
+            <button onclick="showScreen('screen-admin-login')" style="background: #0f172a; border: 1px solid #334155; margin-top: 15px;">🔐 Admin Login</button>
+            <button onclick="showScreen('screen-teacher-login')" class="btn-secondary" style="margin-top: 10px;">👨‍🏫 Teacher Login</button>
+        </div>
+    </div>
+
+    <!-- 2. FREE MCQ LEADERBOARD SCREEN -->
+    <div id="screen-free-leaderboard" class="screen">
+        <h2>🏆 Free MCQ Leaderboard</h2>
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <p style="font-size: 12px; color: #fbbf24; margin: 0;">Monthly <strong>Top 10</strong> get Digital Certificates! 1st Topper gets Special Exam Free.</p>
+        </div>
+        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+            <button onclick="switchFreeLeaderboardTab('daily')" id="tab-free-daily" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--primary);">Daily Top</button>
+            <button onclick="switchFreeLeaderboardTab('weekly')" id="tab-free-weekly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Weekly Top 5</button>
+            <button onclick="switchFreeLeaderboardTab('monthly')" id="tab-free-monthly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Monthly Top 10</button>
+        </div>
+        <div id="free-leaderboard-content" style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
+    </div>
+
+    <!-- 3. SPECIAL EXAM LEADERBOARD SCREEN -->
+    <div id="screen-special-leaderboard" class="screen">
+        <h2>🌟 Special Exam Leaderboard</h2>
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <p style="font-size: 12px; color: #c4b5fd; margin: 0;">Monthly <strong>Top 10</strong> get Certificates! 1st & 2nd Toppers get Fee Free.</p>
+        </div>
+        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+            <button onclick="switchSpecialLeaderboardTab('daily')" id="tab-special-daily" style="padding: 6px; font-size: 12px; margin-top: 0; background: #7c3aed;">Daily Top</button>
+            <button onclick="switchSpecialLeaderboardTab('weekly')" id="tab-special-weekly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Weekly Top 5</button>
+            <button onclick="switchSpecialLeaderboardTab('monthly')" id="tab-special-monthly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Monthly Top 10</button>
+        </div>
+        <div id="special-leaderboard-content" style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
+    </div>
+
+    <!-- 4. CERTIFICATE VIEWER SCREEN -->
+    <div id="screen-certificate" class="screen">
+        <h2>📜 Certificate of Achievement</h2>
+        <div id="certificate-box" style="background: #fffbeb; color: #1e293b; border: 4px double #d97706; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
+            <h3 id="cert-academy-title" style="color: #b45309; font-size: 16px; margin-bottom: 5px;">DARWIN ACADEMY</h3>
+            <p style="font-size: 11px; color: #78350f; margin-bottom: 15px;">Kamalabari, Barpeta, Assam</p>
+            <p style="font-size: 12px; margin-bottom: 5px; color: #1e293b;">This is proudly presented to</p>
+            <h2 id="cert-student-name" style="color: #1e293b; font-size: 20px; border-bottom: 2px solid #cbd5e1; display: inline-block; padding-bottom: 2px; margin-bottom: 10px;">Student Name</h2>
+            <p style="font-size: 12px; line-height: 1.5; color: #1e293b;">For securing <strong id="cert-rank-text" style="color: var(--primary);">Rank #1</strong> in the Monthly Leaderboard with an outstanding score of <strong id="cert-score-text">50</strong> marks!</p>
+            <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; color: #64748b;">
+                <span>Date: <span id="cert-date">2026-11</span></span>
+                <span><strong>Principal / Admin</strong><br><span id="cert-academy-sig">Darwin Academy</span></span>
+            </div>
+        </div>
+        <button onclick="window.print()" class="btn-success" style="margin-bottom: 8px;">🖨️ Print / Save Certificate</button>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
+    </div>
+
+    <!-- 5. FREE MCQ TEST SCREEN -->
+    <div id="screen-free-mcq" class="screen">
+        <h2>📚 Free MCQ Practice</h2>
+        <div class="form-group"><label>Student Name</label><input type="text" id="quiz-student-name" placeholder="Enter your full name"></div>
+        <div class="form-group"><label>Mobile Number (For Reward)</label><input type="tel" id="quiz-student-mobile" placeholder="10-digit mobile"></div>
+        <div class="form-group"><label>Class</label><select id="free-class" onchange="populateStudentFreeSubjectFilter()"></select></div>
+        <div class="form-group"><label>Subject</label><select id="free-subject" onchange="populateStudentFreeChapterFilter()"></select></div>
+        <div class="form-group"><label>Chapter Filter</label><select id="free-chapter"><option value="ALL">All Chapters (Full Practice)</option></select></div>
+        <button onclick="startFreeQuiz()" class="btn-success">Start Free Quiz</button>
+        <button onclick="showScreen('screen-home')" class="btn-secondary" style="margin-top: 10px;">Back to Home</button>
+    </div>
+
+    <!-- 6. LIVE QUIZ PLAY SCREEN -->
+    <div id="screen-quiz-play" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 id="quiz-heading" style="margin: 0; font-size: 18px;">Quiz Ongoing</h2>
+            <div id="quiz-timer-box" style="background: #334155; color: #f87171; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 14px;">⏱️ <span id="timer-display">00:00</span></div>
+        </div>
+        <div id="quiz-question-box" style="background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 600;">Loading...</div>
+        <div id="quiz-options-box"></div>
+        <button id="next-quiz-btn" onclick="nextQuizQuestion()" style="display: none;" class="btn-success">Next Question</button>
+    </div>
+
+    <!-- 7. QUIZ RESULT SCREEN -->
+    <div id="screen-quiz-result" class="screen">
+        <h2>🎉 Exam Completed!</h2>
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #16a34a; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+            <h3 id="result-score-text" style="color: #4ade80; font-size: 24px; margin-bottom: 5px;">Marks: 0 / 0</h3>
+            <p id="result-percentage" style="font-size: 14px; color: var(--gray);">Percentage: 0%</p>
+        </div>
+        <button id="result-leaderboard-btn" onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-bottom: 8px;">🏆 View Leaderboard</button>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
+    </div>
+
+    <!-- 8. STUDENT RESOURCES (E-Books & Videos) -->
+    <div id="screen-student-resources" class="screen">
+        <h2>📖 E-Books & Video Hub</h2>
+        <div id="student-ebook-list" style="margin-bottom: 15px; text-align: left; font-size: 13px;"></div>
+        <div id="student-video-list" style="margin-bottom: 15px; text-align: left; font-size: 13px;"></div>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
+    </div>
+
+    <!-- 9. PAID SPECIAL EXAM & SHORT Q/A LOGIN -->
+    <div id="screen-special-exam-login" class="screen">
+        <h2>⭐ Paid Special Exam & Short Q/A</h2>
+        <p>Login for Paid Students or Toppers</p>
+        <div class="form-group"><label>Student Name</label><input type="text" id="login-student-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Mobile Number</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
+        <button onclick="verifyStudentPaidAccess()" class="btn-success">Login to Hub</button>
+        <button onclick="showScreen('screen-online-pay')" class="btn-warning" style="margin-top: 8px;"><span id="pay-btn-label">💳 Pay ₹10 Monthly Fee</span></button>
+        <button onclick="showScreen('screen-home')" class="back-link">Back to Home</button>
+    </div>
+
+    <!-- 10. PAID STUDENT HUB -->
+    <div id="screen-paid-student-hub" class="screen">
+        <h2>⭐ Paid / Topper Hub</h2>
+        <p>Exclusive access for monthly paid & topper students</p>
+        <button onclick="showScreen('screen-special-exam-setup')" class="btn-success" style="margin-bottom: 10px;">⭐ Start Monthly Special Exam</button>
+        <button onclick="showScreen('screen-student-short-qa')" class="btn-warning" style="margin-bottom: 10px;">📖 Read Chapter-wise Short Q/A</button>
+        <button onclick="showScreen('screen-home')" class="btn-secondary">Logout</button>
+    </div>
+
+    <!-- 10.1 SPECIAL EXAM CHAPTER SETUP SCREEN -->
+    <div id="screen-special-exam-setup" class="screen">
+        <h2>⭐ Special Exam Setup</h2>
+        <p>Select Chapters for your Special Exam</p>
+        <div class="form-group"><label>Class</label><select id="special-sel-class" onchange="populateSpecialExamSubjectsAndChapters()"></select></div>
+        <div class="form-group"><label>Subject</label><select id="special-sel-subject" onchange="populateSpecialExamChapterCheckboxes()"></select></div>
+        <div class="form-group">
+            <label>Select Chapters (Check multiple or ALL)</label>
+            <div id="special-chapters-checkbox-container" style="max-height: 150px; overflow-y: auto; border: 1px solid #475569; padding: 8px; border-radius: 6px; text-align: left; font-size: 13px; background: #0f172a;"></div>
+        </div>
+        <button onclick="startSpecialExamQuiz()" class="btn-success">Start Exam Now</button>
+        <button onclick="showScreen('screen-paid-student-hub')" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+    <!-- 11. STUDENT SHORT Q/A VIEWER -->
+    <div id="screen-student-short-qa" class="screen">
+        <h2>📖 Short Question Answers</h2>
+        <div class="form-group"><label>Select Chapter Filter</label><select id="student-short-chapter-select" onchange="renderStudentShortQA()"><option value="ALL">All Chapters</option></select></div>
+        <div id="student-short-qa-list" style="max-height: 250px; overflow-y: auto; text-align: left; margin-bottom: 15px; font-size: 13px;"></div>
+        <button onclick="showScreen('screen-paid-student-hub')" class="btn-secondary">Back</button>
+    </div>
+
+    <!-- 12. ONLINE PAYMENT SCREEN -->
+    <div id="screen-online-pay" class="screen">
+        <h2>💳 Monthly Payment (<span id="pay-heading-fee">₹10</span>)</h2>
+        <p>Scan QR or pay via UPI link below</p>
+        <div class="form-group"><label>Full Name</label><input type="text" id="pay-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Mobile Number</label><input type="tel" id="pay-mobile" placeholder="Mobile number"></div>
+        <div style="background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+            <p style="font-size: 13px; margin-bottom: 5px;">UPI ID: <strong id="student-view-upi">darwinacademy@upi</strong></p>
+            <div id="student-view-qr-container" style="margin: 10px 0;"></div>
+            <a id="upi-pay-link" href="upi://pay?pa=darwinacademy@upi&pn=DarwinAcademy&am=10.00&cu=INR" target="_blank" style="display: inline-block; background: #7c3aed; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; margin-top: 5px;">Pay <span id="pay-link-fee">₹10</span> Now via UPI</a>
+        </div>
+        <div class="form-group"><label>UTR / Transaction ID</label><input type="text" id="pay-tx" placeholder="12-digit UTR No"></div>
+        <button onclick="submitOnlinePaymentRequest()" class="btn-success">Submit Approval Request</button>
+        <button onclick="showScreen('screen-special-exam-login')" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+    <!-- 13. ADMIN LOGIN -->
+    <div id="screen-admin-login" class="screen">
+        <h2>Admin Login</h2>
+        <div class="form-group"><label>Admin PIN</label><input type="password" id="admin-pin-input" placeholder="Enter Admin PIN"></div>
+        <button onclick="verifyAdminPin()" style="background: #7c3aed;">Login as Admin</button>
+        <a href="#" class="back-link" onclick="showScreen('screen-home')">← Back to Home</a>
+    </div>
+
+    <!-- 14. TEACHER LOGIN -->
+    <div id="screen-teacher-login" class="screen">
+        <h2>Teacher Login</h2>
+        <div class="form-group"><label>Teacher PIN</label><input type="password" id="teacher-pin-input" placeholder="Enter your PIN"></div>
+        <button onclick="verifyTeacherPin()">Login as Teacher</button>
+        <a href="#" class="back-link" onclick="showScreen('screen-home')">← Back to Home</a>
+    </div>
+
+    <!-- 15. ADMIN DASHBOARD -->
+    <div id="screen-admin-dash" class="screen">
+        <h2>👑 Admin Control Panel</h2>
+        
+        <!-- SMS / Notification Alert Center -->
+        <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <p style="font-size: 13px; color: #f87171; margin: 0;">🔔 <strong>Notifications / Alerts:</strong> <span id="admin-alert-badge" style="background:#dc2626; color:white; padding:2px 6px; border-radius:10px; font-size:11px;">0 Alerts</span></p>
+        </div>
+
+        <!-- Add & Manage Classes & Subjects Master Setup -->
+        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #d97706; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🏫 Manage Classes & Subjects (Add/Edit/Hide)</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add New Class</label><input type="text" id="admin-new-class-input" placeholder="Class name (e.g. 9, 10, 11)"></div>
+            <button onclick="addNewClassMaster()" style="padding: 6px; font-size: 13px; background: #d97706; margin-bottom: 8px;">Add Class</button>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Select Class</label><select id="admin-target-class-select" onchange="renderAdminClassesAndSubjectsList()"></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add Subject to Selected Class</label><input type="text" id="admin-new-subject-input" placeholder="Subject name"></div>
+            <button onclick="addNewSubjectMaster()" style="padding: 6px; font-size: 13px; background: #b45309; margin-bottom: 8px;">Add Subject</button>
+            <div id="admin-classes-subjects-manage-box" style="max-height: 160px; overflow-y: auto; background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; border: 1px solid #475569;"></div>
+        </div>
+
+        <!-- Free MCQ Subject & Chapter Access Control Section -->
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">🔐 Free MCQ Subject & Chapter Control</h3>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                    <input type="checkbox" id="admin-master-unlock-free" onchange="saveFreeControlSettings()" style="width: auto;"> <strong>Unlock All Subjects & Chapters for Free Practice</strong>
+                </label>
+            </div>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Select Free Practice Subjects (Check multiple)</label>
+                <div id="admin-free-subjects-checkboxes" style="max-height: 100px; overflow-y: auto; border: 1px solid #475569; padding: 6px; border-radius: 6px; text-align: left; font-size: 12px; background: #0f172a;"></div>
+            </div>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Allow Free Practice Upto Chapters Limit</label>
+                <select id="admin-free-chapter-limit">
+                    <option value="1">First 1 Chapter Free per Subject</option>
+                    <option value="2">First 2 Chapters Free per Subject</option>
+                    <option value="3">First 3 Chapters Free per Subject</option>
+                    <option value="ALL">All Chapters Free</option>
+                </select>
+            </div>
+            <button onclick="saveFreeControlSettings()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Free Rules</button>
+        </div>
+
+        <!-- Chapter Management Section with Edit, Hide & Delete -->
+        <div style="background: rgba(162, 28, 175, 0.1); border: 1px solid #e879f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #e879f9; margin-bottom: 8px;">📚 Manage Chapters (Edit, Hide, Del)</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Class</label><select id="adm-ch-class" onchange="populateAdminSubjectDropdownForChapter()"></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Subject</label><select id="adm-ch-subject" onchange="renderAdminChapterList()"></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Chapter Name</label><input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1: Number Systems"></div>
+            <input type="hidden" id="adm-ch-edit-id" value="">
+            <button onclick="saveAdminChapter()" style="padding: 6px; font-size: 13px; background: #c026d3;">Save / Add Chapter</button>
+            <div id="admin-chapter-list" style="max-height: 160px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
+        </div>
+
+        <!-- Manage Teacher Gift Rewards with Direct Gallery Photo Upload -->
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">🎁 Manage Teacher Gift Rewards</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Gift Title (e.g. Premium Pen Set)</label><input type="text" id="admin-gift-title" placeholder="Gift name"></div>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px; color: #38bdf8;">Upload Gift Photo from Gallery (or Paste URL below)</label>
+                <input type="file" id="admin-gift-file" accept="image/*" style="font-size: 11px; padding: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Gift Photo Image URL</label><input type="text" id="admin-gift-img" placeholder="Paste image link here"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Required Points</label><input type="number" id="admin-gift-pts" placeholder="e.g. 300"></div>
+            <button onclick="addNewGiftReward()" style="padding: 6px; font-size: 13px; background: var(--success);">Add Gift to Gallery</button>
+            <div id="admin-gifts-list-box" style="max-height: 120px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
+        </div>
+
+        <!-- Teacher Directory & UPI ID Dropdown Viewer (Admin) -->
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">👨‍🏫 Teacher Directory & UPI Details</h3>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Select Teacher (Dropdown)</label>
+                <select id="admin-teacher-dropdown" onchange="displaySelectedTeacherDetails()">
+                    <option value="">-- Choose Teacher --</option>
+                </select>
+            </div>
+            <div id="admin-teacher-details-box" style="background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; display: none; border: 1px solid #c4b5fd;">
+                <p style="margin: 0; text-align: left; color: #f8fafc;"><strong>Name:</strong> <span id="adm-t-name">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: #f8fafc;"><strong>Mobile:</strong> <span id="adm-t-mobile">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: #38bdf8;"><strong>UPI ID:</strong> <span id="adm-t-upi">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: #4ade80;"><strong>Points:</strong> <span id="adm-t-pts">-</span> pts</p>
+            </div>
+        </div>
+
+        <!-- Academy Name & Logo Settings Section -->
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Academy Name & Logo Settings</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy / Institution Name</label><input type="text" id="admin-academy-name-input" value="Darwin Academy"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Logo Image URL (Optional)</label><input type="text" id="admin-academy-logo-input" placeholder="Paste logo image link here"></div>
+            <button onclick="saveAcademyBranding()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Name & Logo</button>
+            <button onclick="removeAcademyLogo()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 4px;">Remove Logo</button>
+        </div>
+
+        <!-- Special Exam Mode -->
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">📋 Special Exam Paper Mode</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Selection Strategy</label><select id="admin-special-mode-select" onchange="saveSpecialExamModeSetting()"><option value="auto">Auto Random Selection</option><option value="manual">Manual Selected Question Set</option></select></div>
+        </div>
+
+        <!-- Update Special Exam Fee -->
+        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">💳 Update Special Exam Fee</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Monthly Fee Amount (₹)</label><input type="number" id="admin-fee-input" value="10"></div>
+            <button onclick="saveSpecialExamFee()" style="padding: 6px; font-size: 13px; background: #d97706;">Save Fee Amount</button>
+        </div>
+
+        <!-- Special Exam Students Directory -->
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">⭐ Special Exam Students Directory</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Select Student</label><select id="admin-special-student-select" onchange="displaySelectedSpecialStudentDetails()"><option value="">-- Choose Student --</option></select></div>
+            <div id="admin-student-details-box" style="background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; display: none; border: 1px solid #c4b5fd;">
+                <p style="margin: 0; text-align: left; color: #f8fafc;"><strong>Name:</strong> <span id="adm-sel-name">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: #f8fafc;"><strong>Mobile:</strong> <span id="adm-sel-mobile">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: #4ade80;"><strong>Score:</strong> <span id="adm-sel-score">-</span> Marks</p>
+            </div>
+        </div>
+
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Free Test & Exam Settings</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Questions per Test</label><input type="number" id="setting-q-count" value="5"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Timer (Minutes)</label><input type="number" id="setting-timer" value="10"></div>
+            <button onclick="saveTestSettings()" style="padding: 6px; font-size: 13px; background: var(--success);">Save Settings</button>
+        </div>
+
+        <div style="background: #334155; border: 1px solid #475569; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">👨‍🏫 Add New Teacher</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher Name</label><input type="text" id="new-teacher-name" placeholder="Name"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher PIN</label><input type="password" id="new-teacher-pin" placeholder="Secret PIN"></div>
+            <button onclick="addNewTeacher()" style="padding: 6px; font-size: 13px; background: var(--success);">Register Teacher</button>
+        </div>
+
+        <!-- Manage Teachers (Block / Remove / Delete & Bonus Points) -->
+        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #f87171; margin-bottom: 8px;">⚖️ Manage Teachers (Block / Delete & Bonus)</h3>
+            <div id="admin-teacher-manage-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 8px; text-align: left; font-size: 13px;"></div>
+        </div>
+
+        <div style="background: #334155; border: 1px solid #475569; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Manage UPI ID & QR Code</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UPI ID</label><input type="text" id="admin-upi-input" value="darwinacademy@upi"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">QR Image URL</label><input type="text" id="admin-qr-input" placeholder="QR image link"></div>
+            <button onclick="saveUpiQrSettings()" style="padding: 6px; font-size: 13px; background: var(--primary);">Save / Update</button>
+            <button onclick="deleteUpiQrSettings()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 5px;">Remove QR Code</button>
+        </div>
+
+        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">📥 Monthly Exam Requests & Claims</h3>
+            <div id="pending-request-container"><p style="color: var(--gray); font-size: 12px;">No pending requests.</p></div>
+        </div>
+
+        <button onclick="showScreen('screen-admin-trash')" class="btn-danger" style="margin-bottom: 8px;">🗑️ Trash Bin</button>
+        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px;">+ Add MCQ (+10 Pts)</button>
+        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px;">+ Add Short Q/A (+15 Pts)</button>
+        <button onclick="showScreen('screen-add-ebook')" class="btn-secondary" style="margin-bottom: 8px; background: #0284c7;">+ Add E-Book</button>
+        <button onclick="showScreen('screen-add-video')" class="btn-secondary" style="margin-bottom: 8px; background: #7c3aed;">+ Add Video Class</button>
+        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px;">✏️ Edit / Delete Questions</button>
+        <a href="#" class="back-link" onclick="showScreen('screen-home')">Logout</a>
+    </div>
+
+    <!-- 16. TEACHER DASHBOARD -->
+    <div id="screen-teacher-dash" class="screen">
+        <h2>👨‍🏫 Teacher Dashboard</h2>
+        <p id="teacher-welcome-text" style="color: #38bdf8; font-weight: bold; margin-bottom: 10px;"></p>
+        
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">👤 My Profile & UPI Settings</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Full Name</label><input type="text" id="teacher-profile-name" placeholder="Your name"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Mobile Number</label><input type="tel" id="teacher-profile-mobile" placeholder="Mobile number"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UPI ID (For Rewards / Payouts)</label><input type="text" id="teacher-profile-upi" placeholder="e.g. teacher@paytm"></div>
+            <button onclick="saveTeacherProfile()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Profile & UPI</button>
+        </div>
+
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <strong>My Points: <span id="teacher-points-display" style="color: #4ade80; font-size: 18px;">120</span> pts</strong>
+        </div>
+        <button onclick="showScreen('screen-teacher-gifts')" class="btn-warning" style="margin-bottom: 12px;">🎁 View Gift Gallery & Redeem Rewards</button>
+        
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">📋 Special Exam Selection</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Selection Mode</label><select id="teacher-special-mode-select" onchange="saveSpecialExamModeSettingTeacher()"><option value="auto">Auto Random Selection</option><option value="manual">Manual Selected Question Set</option></select></div>
+        </div>
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Free Test & Exam Settings</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Questions per Test</label><input type="number" id="teacher-setting-q-count" value="5"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Timer (Minutes)</label><input type="number" id="teacher-setting-timer" value="10"></div>
+            <button onclick="saveTestSettingsTeacher()" style="padding: 6px; font-size: 13px; background: var(--success);">Save Settings</button>
+        </div>
+        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px;">+ Add MCQ Question (+10 Pts)</button>
+        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px;">+ Add Short Q/A (+15 Pts)</button>
+        <button onclick="showScreen('screen-add-ebook')" class="btn-secondary" style="margin-bottom: 8px; background: #0284c7;">+ Add E-Book</button>
+        <button onclick="showScreen('screen-add-video')" class="btn-secondary" style="margin-bottom: 8px; background: #7c3aed;">+ Add Video Class</button>
+        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px;">✏️ Edit / Delete Questions</button>
+        <a href="#" class="back-link" onclick="showScreen('screen-home')">Logout</a>
+    </div>
+
+    <!-- 16.1 TEACHER GIFT REWARDS GALLERY -->
+    <div id="screen-teacher-gifts" class="screen">
+        <h2>🎁 Teacher Gift Gallery</h2>
+        <p>Redeem your points for exciting rewards!</p>
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 8px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+            <p style="font-size: 12px; color: #fbbf24; margin: 0;">Available Points: <strong id="gift-screen-pts">0</strong> pts</p>
+        </div>
+        <div id="teacher-gift-gallery-container" style="max-height: 280px; overflow-y: auto; text-align: left; margin-bottom: 15px;"></div>
+        <button onclick="showScreen('screen-teacher-dash')" class="btn-secondary">Back to Dashboard</button>
+    </div>
+
+    <!-- 17. MANAGE QUESTIONS -->
+    <div id="screen-manage-questions" class="screen">
+        <h2>✏️ Edit & Delete Questions</h2>
+        <div id="manage-questions-list" style="max-height: 280px; overflow-y: auto; margin-bottom: 15px; text-align: left;"></div>
+        <button onclick="goBackToDashboard()" class="btn-secondary">Back</button>
+    </div>
+
+    <!-- 18. ADMIN TRASH BIN (PIN Protected) -->
+    <div id="screen-admin-trash" class="screen">
+        <h2>🗑️ Admin Trash Bin</h2>
+        <div id="trash-pin-box" class="form-group">
+            <label>Verify Admin PIN</label>
+            <input type="password" id="trash-auth-pin" placeholder="Enter PIN">
+            <button onclick="verifyTrashPin()" style="background: #7c3aed; margin-top: 8px;">Unlock Trash</button>
+        </div>
+        <div id="trash-content-box" style="display: none;">
+            <h3 style="font-size: 14px; color: var(--danger); text-align: left; margin-bottom: 6px;">Trashed Questions</h3>
+            <div id="trash-questions-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 10px; text-align: left; font-size: 12px;"></div>
+            
+            <h3 style="font-size: 14px; color: var(--warning); text-align: left; margin-bottom: 6px; margin-top: 10px;">Trashed Classes / Subjects</h3>
+            <div id="trash-classes-subjects-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
+
+            <h3 style="font-size: 14px; color: #e879f9; text-align: left; margin-bottom: 6px; margin-top: 10px;">Trashed Chapters</h3>
+            <div id="trash-chapters-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
+        </div>
+        <button onclick="showScreen('screen-admin-dash')" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+    <!-- 19. ADD E-BOOK / VIDEO / QUESTIONS -->
+    <div id="screen-add-ebook" class="screen">
+        <h2>📖 Add E-Book</h2>
+        <div class="form-group"><label>Book Title</label><input type="text" id="ebook-title" placeholder="Book title"></div>
+        <div class="form-group" style="background: #334155; padding: 10px; border-radius: 8px;">
+            <label style="color: #38bdf8;">Option 1: Upload PDF from Phone</label>
+            <input type="file" id="ebook-file-input" accept="application/pdf" style="margin-top: 5px;">
+        </div>
+        <p style="margin: 5px 0; font-size: 12px; text-align: center;">OR</p>
+        <div class="form-group"><label>Option 2: Paste PDF Link (Google Drive)</label><input type="text" id="ebook-link" placeholder="Paste PDF URL here"></div>
+        <button onclick="submitEBook()" class="btn-success">Save E-Book</button>
+        <button onclick="goBackToDashboard()" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+    <div id="screen-add-video" class="screen">
+        <h2>🎥 Add Video Class</h2>
+        <div class="form-group"><label>Video Title</label><input type="text" id="video-title" placeholder="Video title"></div>
+        <div class="form-group" style="background: #334155; padding: 10px; border-radius: 8px;">
+            <label style="color: #38bdf8;">Option 1: Upload Video from Phone (MP4)</label>
+            <input type="file" id="video-file-input" accept="video/mp4" style="margin-top: 5px;">
+        </div>
+        <p style="margin: 5px 0; font-size: 12px; text-align: center;">OR</p>
+        <div class="form-group"><label>Option 2: Paste Video Link (YouTube / Google Drive)</label><input type="text" id="video-link" placeholder="YouTube or Drive link"></div>
+        <button onclick="submitVideo()" class="btn-success">Save Video</button>
+        <button onclick="goBackToDashboard()" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+    <div id="screen-add-question" class="screen">
+        <h2 id="form-title-text">Add Question</h2>
+        <input type="hidden" id="edit-question-id" value="">
+        <div class="form-group"><label>Class</label><select id="q-class" onchange="populateQuestionSubjectDropdown()"></select></div>
+        <div class="form-group"><label>Subject</label><select id="q-subject" onchange="updateQuestionChapterDropdown()"></select></div>
+        <div class="form-group"><label>Chapter</label><select id="q-chapter"><option value="General">General / Full Book</option></select></div>
+        <div class="form-group"><label>Question Text</label><textarea id="q-text" rows="3" placeholder="Type question..."></textarea></div>
+        
+        <div id="mcq-options-container">
+            <div class="form-group"><label>Option A</label><input type="text" id="opt-a"></div>
+            <div class="form-group"><label>Option B</label><input type="text" id="opt-b"></div>
+            <div class="form-group"><label>Option C</label><input type="text" id="opt-c"></div>
+            <div class="form-group"><label>Option D</label><input type="text" id="opt-d"></div>
+            <div class="form-group"><label>Correct Answer</label><select id="correct-opt"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div>
+            <div class="form-group" style="margin-top: 10px; background: #334155; padding: 8px; border-radius: 6px; border: 1px dashed #475569;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; margin-bottom: 0;">
+                    <input type="checkbox" id="q-special-tag" style="width: auto;"> Mark for Manual Special Exam Set
+                </label>
+            </div>
+        </div>
+
+        <div id="short-answer-container" style="display: none;">
+            <div class="form-group"><label>Model Answer (For Paid Students)</label><textarea id="short-ans-text" rows="3" placeholder="Type answer..."></textarea></div>
+        </div>
+
+        <button onclick="submitQuestion()">Save Question</button>
+        <button onclick="goBackToDashboard()" class="btn-secondary" style="margin-top: 10px;">Back</button>
+    </div>
+
+</div>
+
+<script>
+    // Firebase Initialization
+    const firebaseConfig = {
+        apiKey: "AIzaSyDa2wT9DTX0qNqLUa",
+        authDomain: "darwin-academy-3ce9a.firebaseapp.com",
+        databaseURL: "https://darwin-academy-3ce9a-default-rtdb.firebaseio.com",
+        projectId: "darwin-academy-3ce9a",
+        storageBucket: "darwin-academy-3ce9a.appspot.com",
+        messagingSenderId: "1063269791552",
+        appId: "1:1063269791552:web:652"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const ADMIN_SECRET_PIN = "7325";
+
+    let currentQuestionType = 'MCQ';
+    let loggedInRole = 'TEACHER';
+    let currentTeacherIndex = 0;
+    let currentStudentName = "Student";
+    let currentStudentMobile = "9876543210";
+    
+    let specialExamFee = 10;
+    let specialExamMode = "auto";
+    
+    let classesAndSubjectsData = {
+        "9": { hidden: false, subjects: { "Math": { hidden: false }, "Science": { hidden: false }, "Social Science": { hidden: false }, "English": { hidden: false }, "Assamese": { hidden: false } } },
+        "10": { hidden: false, subjects: { "Math": { hidden: false }, "Science": { hidden: false }, "Social Science": { hidden: false }, "English": { hidden: false }, "Assamese": { hidden: false } } }
+    };
+
+    let freeControlSettings = {
+        masterUnlock: false,
+        allowedSubjects: ["Math", "Science"], 
+        chapterLimit: "1" 
+    };
+
+    let academyBranding = { name: "Darwin Academy", logoUrl: "" };
+    let testSettings = { questionCount: 5, timerMinutes: 10 };
+    
+    let timerInterval = null;
+    let timeLeftSeconds = 0;
+
+    let teachersDatabase = [{ name: "Default Teacher", pin: "1122", points: 120, mobile: "9876543210", upi: "default@upi", status: "active" }];
+    let teacherGiftRewards = [
+        { id: 1, title: "Premium Pen Set", points: 200, imgUrl: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300" },
+        { id: 2, title: "Academy Reference Book", points: 400, imgUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+        { id: 3, title: "Stylish School Bag", points: 800, imgUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300" }
+    ];
+    let approvedMobileNumbers = ["9876543210"];
+    let pendingRequests = [];
+    let paymentSettings = { upi: "darwinacademy@upi", qrUrl: "" };
+
+    let chaptersDatabase = [
+        { id: 1, class: "9", subject: "Math", name: "Chapter 1: Number Systems", hidden: false },
+        { id: 2, class: "9", subject: "Math", name: "Chapter 2: Polynomials", hidden: false },
+        { id: 3, class: "10", subject: "Science", name: "Chapter 1: Chemical Reactions", hidden: false }
+    ];
+
+    let freeLeaderboardDatabase = [];
+    let specialLeaderboardDatabase = [];
+    let questionDatabase = [];
+    let trashDatabase = [];
+    let trashClassesSubjects = [];
+    let trashChapters = [];
+    let ebookDatabase = [];
+    let videoDatabase = [];
+
+    let activeQuizQuestions = [];
+    let currentQuizIndex = 0;
+    let scoreCount = 0;
+    let isSpecialExamMode = false;
+
+    function loadDataFromFirebase() {
+        db.ref('academy').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                if(data.branding) academyBranding = data.branding;
+                if(data.fee !== undefined) specialExamFee = data.fee;
+                if(data.specialMode) specialExamMode = data.specialMode;
+                if(data.classesAndSubjectsData) classesAndSubjectsData = data.classesAndSubjectsData;
+                if(data.freeControl) freeControlSettings = data.freeControl;
+                if(data.testSettings) testSettings = data.testSettings;
+                if(data.teachers) teachersDatabase = data.teachers;
+                if(data.teacherGiftRewards) teacherGiftRewards = data.teacherGiftRewards;
+                if(data.approvedMobiles) approvedMobileNumbers = data.approvedMobiles;
+                if(data.pendingRequests) pendingRequests = data.pendingRequests;
+                if(data.payment) paymentSettings = data.payment;
+                if(data.chapters) chaptersDatabase = data.chapters;
+                if(data.freeLeaderboard) freeLeaderboardDatabase = data.freeLeaderboard;
+                if(data.specialLeaderboard) specialLeaderboardDatabase = data.specialLeaderboard;
+                if(data.questions) questionDatabase = data.questions;
+                if(data.trash) trashDatabase = data.trash;
+                if(data.trashClassesSubjects) trashClassesSubjects = data.trashClassesSubjects;
+                if(data.trashChapters) trashChapters = data.trashChapters;
+                if(data.ebooks) ebookDatabase = data.ebooks;
+                if(data.videos) videoDatabase = data.videos;
+            }
+            updateAcademyBrandingUI();
+        });
+    }
+
+    function syncToFirebase() {
+        db.ref('academy').set({
+            branding: academyBranding,
+            fee: specialExamFee,
+            specialMode: specialExamMode,
+            classesAndSubjectsData: classesAndSubjectsData,
+            freeControl: freeControlSettings,
+            testSettings: testSettings,
+            teachers: teachersDatabase,
+            teacherGiftRewards: teacherGiftRewards,
+            approvedMobiles: approvedMobileNumbers,
+            pendingRequests: pendingRequests,
+            payment: paymentSettings,
+            chapters: chaptersDatabase,
+            freeLeaderboard: freeLeaderboardDatabase,
+            specialLeaderboard: specialLeaderboardDatabase,
+            questions: questionDatabase,
+            trash: trashDatabase,
+            trashClassesSubjects: trashClassesSubjects,
+            trashChapters: trashChapters,
+            ebooks: ebookDatabase,
+            videos: videoDatabase
+        });
+    }
+
+    function updateAcademyBrandingUI() {
+        document.getElementById('home-academy-name').innerText = academyBranding.name;
+        document.getElementById('page-title').innerText = `${academyBranding.name} - Portal`;
+        document.getElementById('cert-academy-title').innerText = academyBranding.name.toUpperCase();
+        document.getElementById('cert-academy-sig').innerText = academyBranding.name;
+        const logoBox = document.getElementById('home-logo-container');
+        if(academyBranding.logoUrl) {
+            logoBox.innerHTML = `<img src="${academyBranding.logoUrl}" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">`;
+        } else {
+            logoBox.innerHTML = '';
+        }
+    }
+
+    function saveAcademyBranding() {
+        const name = document.getElementById('admin-academy-name-input').value.trim();
+        const logoUrl = document.getElementById('admin-academy-logo-input').value.trim();
+        if(!name) { alert('Academy name cannot be empty!'); return; }
+        academyBranding.name = name;
+        academyBranding.logoUrl = logoUrl;
+        syncToFirebase();
+        alert('Academy Name & Logo successfully updated and saved to Cloud!');
+    }
+
+    function removeAcademyLogo() {
+        academyBranding.logoUrl = "";
+        document.getElementById('admin-academy-logo-input').value = "";
+        syncToFirebase();
+        alert('Logo removed successfully!');
+    }
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        updateAcademyBrandingUI();
+
+        if(screenId !== 'screen-quiz-play' && timerInterval) clearInterval(timerInterval);
+
+        if(screenId === 'screen-free-leaderboard') {
+            switchFreeLeaderboardTab('daily');
+        } else if(screenId === 'screen-special-leaderboard') {
+            switchSpecialLeaderboardTab('daily');
+        } else if(screenId === 'screen-online-pay') {
+            updateStudentPaymentView();
+        } else if(screenId === 'screen-special-exam-login') {
+            document.getElementById('pay-btn-label').innerText = `💳 Pay ₹${specialExamFee} Monthly Fee`;
+        } else if(screenId === 'screen-student-resources') {
+            renderStudentResources();
+        } else if(screenId === 'screen-free-mcq') {
+            populateStudentFreeClassFilter();
+        } else if(screenId === 'screen-student-short-qa') {
+            populateStudentShortChapterFilter();
+        } else if(screenId === 'screen-special-exam-setup') {
+            populateSpecialExamSubjectsAndChapters();
+        } else if(screenId === 'screen-admin-dash') {
+            renderPendingRequests();
+            renderAdminTeacherManageList();
+            renderAdminGiftsList();
+            populateAdminTeacherDropdown();
+            populateAdminSpecialStudentsDropdown();
+            populateAdminMasterDropdowns();
+            renderAdminClassesAndSubjectsList();
+            renderAdminChapterList();
+            renderAdminFreeSubjectsCheckboxes();
+            document.getElementById('admin-alert-badge').innerText = `${pendingRequests.length} Alerts`;
+            document.getElementById('admin-fee-input').value = specialExamFee;
+            document.getElementById('admin-special-mode-select').value = specialExamMode;
+            document.getElementById('admin-master-unlock-free').checked = freeControlSettings.masterUnlock;
+            document.getElementById('admin-free-chapter-limit').value = freeControlSettings.chapterLimit;
+            document.getElementById('admin-academy-name-input').value = academyBranding.name;
+            document.getElementById('admin-academy-logo-input').value = academyBranding.logoUrl;
+            document.getElementById('setting-q-count').value = testSettings.questionCount;
+            document.getElementById('setting-timer').value = testSettings.timerMinutes;
+        } else if(screenId === 'screen-teacher-dash') {
+            let t = teachersDatabase[currentTeacherIndex];
+            document.getElementById('teacher-points-display').innerText = t.points;
+            document.getElementById('teacher-welcome-text').innerText = `Welcome, ${t.name}!`;
+            document.getElementById('teacher-profile-name').value = t.name || "";
+            document.getElementById('teacher-profile-mobile').value = t.mobile || "";
+            document.getElementById('teacher-profile-upi').value = t.upi || "";
+            document.getElementById('teacher-special-mode-select').value = specialExamMode;
+            document.getElementById('teacher-setting-q-count').value = testSettings.questionCount;
+            document.getElementById('teacher-setting-timer').value = testSettings.timerMinutes;
+        } else if(screenId === 'screen-teacher-gifts') {
+            renderTeacherGiftGallery();
+        } else if(screenId === 'screen-manage-questions') {
+            renderManageQuestionsList();
+        } else if(screenId === 'screen-admin-trash') {
+            document.getElementById('trash-pin-box').style.display = 'block';
+            document.getElementById('trash-content-box').style.display = 'none';
+            document.getElementById('trash-auth-pin').value = '';
+        }
+    }
+
+    // TEACHER PROFILE & UPI SETTINGS
+    function saveTeacherProfile() {
+        let t = teachersDatabase[currentTeacherIndex];
+        t.name = document.getElementById('teacher-profile-name').value.trim() || t.name;
+        t.mobile = document.getElementById('teacher-profile-mobile').value.trim() || "";
+        t.upi = document.getElementById('teacher-profile-upi').value.trim() || "";
+        syncToFirebase();
+        alert('Profile & UPI ID successfully updated!');
+    }
+
+    // ADMIN TEACHER DROPDOWN VIEWER
+    function populateAdminTeacherDropdown() {
+        const select = document.getElementById('admin-teacher-dropdown');
+        select.innerHTML = '<option value="">-- Choose Teacher --</option>';
+        teachersDatabase.forEach((t, idx) => {
+            let opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = `${t.name} (${t.mobile || 'No Mobile'})`;
+            select.appendChild(opt);
+        });
+        document.getElementById('admin-teacher-details-box').style.display = 'none';
+    }
+
+    function displaySelectedTeacherDetails() {
+        const select = document.getElementById('admin-teacher-dropdown');
+        const idx = select.value;
+        const detailsBox = document.getElementById('admin-teacher-details-box');
+        if(idx === "") { detailsBox.style.display = 'none'; return; }
+        let t = teachersDatabase[idx];
+        document.getElementById('adm-t-name').innerText = t.name;
+        document.getElementById('adm-t-mobile').innerText = t.mobile || 'Not Set';
+        document.getElementById('adm-t-upi').innerText = t.upi || 'Not Set';
+        document.getElementById('adm-t-pts').innerText = t.points;
+        detailsBox.style.display = 'block';
+    }
+
+    // GIFT REWARDS MANAGEMENT WITH DIRECT GALLERY UPLOAD
+    function addNewGiftReward() {
+        const title = document.getElementById('admin-gift-title').value.trim();
+        const linkImg = document.getElementById('admin-gift-img').value.trim();
+        const fileInput = document.getElementById('admin-gift-file');
+        const pts = parseInt(document.getElementById('admin-gift-pts').value);
+
+        if(!title || isNaN(pts)) { alert('Enter title and required points!'); return; }
+
+        if(fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                teacherGiftRewards.push({ id: Date.now(), title, points: pts, imgUrl: e.target.result });
+                syncToFirebase();
+                clearGiftForm();
+                renderAdminGiftsList();
+                alert('Gift uploaded and added successfully!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else if(linkImg) {
+            teacherGiftRewards.push({ id: Date.now(), title, points: pts, imgUrl: linkImg });
+            syncToFirebase();
+            clearGiftForm();
+            renderAdminGiftsList();
+            alert('Gift added successfully!');
+        } else {
+            alert('Please select an image file from gallery or paste image URL!');
+        }
+    }
+
+    function clearGiftForm() {
+        document.getElementById('admin-gift-title').value = '';
+        document.getElementById('admin-gift-img').value = '';
+        document.getElementById('admin-gift-file').value = '';
+        document.getElementById('admin-gift-pts').value = '';
+    }
+
+    function renderAdminGiftsList() {
+        const container = document.getElementById('admin-gifts-list-box');
+        container.innerHTML = teacherGiftRewards.map((g, idx) => `
+            <div style="border-bottom:1px solid #bbf7d0; padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <img src="${g.imgUrl}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
+                    <span><strong>${g.title}</strong> (${g.points} Pts)</span>
+                </div>
+                <button onclick="deleteGiftReward(${idx})" class="btn-danger" style="padding:2px 6px; font-size:10px; width:auto;">Remove</button>
+            </div>
+        `).join('') || '<p style="color:var(--gray);">No gifts added.</p>';
+    }
+
+    function deleteGiftReward(idx) {
+        if(!confirm('Remove this gift from gallery?')) return;
+        teacherGiftRewards.splice(idx, 1);
+        syncToFirebase();
+        renderAdminGiftsList();
+    }
+
+    function renderTeacherGiftGallery() {
+        const container = document.getElementById('teacher-gift-gallery-container');
+        let teacher = teachersDatabase[currentTeacherIndex];
+        const currentPts = teacher.points;
+        document.getElementById('gift-screen-pts').innerText = currentPts;
+
+        container.innerHTML = teacherGiftRewards.map(g => {
+            let canClaim = currentPts >= g.points;
+            return `
+                <div style="background:#0f172a; border:1px solid #475569; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; gap:10px; align-items:center;">
+                    <img src="${g.imgUrl}" style="width:60px; height:60px; border-radius:6px; object-fit:cover;">
+                    <div style="flex:1;">
+                        <strong style="font-size:14px; color:var(--text);">${g.title}</strong><br>
+                        <span style="font-size:12px; color:var(--warning); font-weight:bold;">Cost: ${g.points} Points</span><br>
+                        <button onclick="claimTeacherGift(${g.id})" ${canClaim ? '' : 'disabled'} class="${canClaim ? 'btn-success' : 'btn-secondary'}" style="padding:4px 10px; font-size:12px; width:auto; margin-top:4px;">${canClaim ? '🎁 Claim Gift' : '🔒 Need More Pts'}</button>
+                    </div>
+                </div>
+            `;
+        }).join('') || '<p style="color:var(--gray);">No gifts available currently.</p>';
+    }
+
+    function claimTeacherGift(giftId) {
+        let gift = teacherGiftRewards.find(g => g.id === giftId);
+        if(!gift) return;
+
+        let teacher = teachersDatabase[currentTeacherIndex];
+        if(!teacher.upi) {
+            alert('Please update your UPI ID in Profile & UPI Settings before claiming gifts!');
+            showScreen('screen-teacher-dash');
+            return;
+        }
+
+        if(teacher.points < gift.points) {
+            alert('Insufficient points!');
+            return;
+        }
+
+        if(confirm(`Claim "${gift.title}" for ${gift.points} points? This will be deducted immediately.`)) {
+            teacher.points -= gift.points;
+            pendingRequests.push({ 
+                id: Date.now(), 
+                name: `${teacher.name} (Gift Claim)`, 
+                mobile: teacher.mobile || 'No Mobile', 
+                tx: `Claimed: ${gift.title} (${gift.points} pts). UPI: ${teacher.upi}` 
+            });
+            syncToFirebase();
+            renderTeacherGiftGallery();
+            alert(`Congratulations! Gift claimed. Admin notified via SMS Alert.`);
+        }
+    }
+
+    // MASTER CLASS & SUBJECT MANAGEMENT (Add, Edit, Hide, Delete -> Trash Bin)
+    function addNewClassMaster() {
+        const clsName = document.getElementById('admin-new-class-input').value.trim();
+        if(!clsName) { alert('Enter class name!'); return; }
+        if(classesAndSubjectsData[clsName]) { alert('Class already exists!'); return; }
+        classesAndSubjectsData[clsName] = { hidden: false, subjects: { "General": { hidden: false } } };
+        syncToFirebase();
+        document.getElementById('admin-new-class-input').value = '';
+        populateAdminMasterDropdowns();
+        renderAdminClassesAndSubjectsList();
+        alert(`Class ${clsName} added successfully!`);
+    }
+
+    function addNewSubjectMaster() {
+        const cls = document.getElementById('admin-target-class-select').value;
+        const subName = document.getElementById('admin-new-subject-input').value.trim();
+        if(!cls || !subName) { alert('Select class and enter subject name!'); return; }
+        if(!classesAndSubjectsData[cls]) classesAndSubjectsData[cls] = { hidden: false, subjects: {} };
+        if(classesAndSubjectsData[cls].subjects[subName]) { alert('Subject already exists in this class!'); return; }
+        classesAndSubjectsData[cls].subjects[subName] = { hidden: false };
+        syncToFirebase();
+        document.getElementById('admin-new-subject-input').value = '';
+        populateAdminMasterDropdowns();
+        renderAdminClassesAndSubjectsList();
+        renderAdminFreeSubjectsCheckboxes();
+        alert(`Subject ${subName} added to Class ${cls}!`);
+    }
+
+    function populateAdminMasterDropdowns() {
+        const targetClsSel = document.getElementById('admin-target-class-select');
+        const admChClsSel = document.getElementById('adm-ch-class');
+        
+        let classKeys = Object.keys(classesAndSubjectsData);
+        let clsHtml = classKeys.map(c => `<option value="${c}">Class ${c}</option>`).join('');
+        
+        targetClsSel.innerHTML = clsHtml;
+        admChClsSel.innerHTML = clsHtml;
+        populateAdminSubjectDropdownForChapter();
+    }
+
+    function renderAdminClassesAndSubjectsList() {
+        const container = document.getElementById('admin-classes-subjects-manage-box');
+        const cls = document.getElementById('admin-target-class-select').value;
+        if(!cls || !classesAndSubjectsData[cls]) { container.innerHTML = '<p style="color:var(--gray);">No subjects found.</p>'; return; }
+
+        let clsHidden = classesAndSubjectsData[cls].hidden;
+        let html = `<div style="margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid #475569; display:flex; justify-content:space-between; align-items:center;">
+            <span><strong>Class ${cls}</strong> ${clsHidden ? '<span style="color:red;">[Hidden]</span>' : ''}</span>
+            <div>
+                <button onclick="editClassName('${cls}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
+                <button onclick="toggleClassHide('${cls}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--warning);">${clsHidden ? 'Unhide' : 'Hide'}</button>
+                <button onclick="trashClass('${cls}')" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto;">Del</button>
+            </div>
+        </div>`;
+
+        let subs = classesAndSubjectsData[cls].subjects;
+        Object.keys(subs).forEach(sub => {
+            let subHidden = subs[sub].hidden;
+            html += `<div style="margin-left:12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                <span>↳ ${sub} ${subHidden ? '<span style="color:red;">[Hidden]</span>' : ''}</span>
+                <div>
+                    <button onclick="editSubjectName('${cls}', '${sub}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
+                    <button onclick="toggleSubjectHide('${cls}', '${sub}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--warning);">${subHidden ? 'Unhide' : 'Hide'}</button>
+                    <button onclick="trashSubject('${cls}', '${sub}')" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto;">Del</button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function editClassName(oldCls) {
+        let newCls = prompt("Enter new Class name:", oldCls);
+        if(!newCls || newCls.trim() === "" || newCls === oldCls) return;
+        newCls = newCls.trim();
+        if(classesAndSubjectsData[newCls]) { alert('Class name already exists!'); return; }
+        classesAndSubjectsData[newCls] = classesAndSubjectsData[oldCls];
+        delete classesAndSubjectsData[oldCls];
+        syncToFirebase();
+        populateAdminMasterDropdowns();
+        renderAdminClassesAndSubjectsList();
+        alert('Class updated successfully!');
+    }
+
+    function toggleClassHide(cls) {
+        classesAndSubjectsData[cls].hidden = !classesAndSubjectsData[cls].hidden;
+        syncToFirebase();
+        renderAdminClassesAndSubjectsList();
+    }
+
+    function trashClass(cls) {
+        if(!confirm(`Move Class ${cls} to Trash Bin?`)) return;
+        trashClassesSubjects.push({ type: 'class', key: cls, data: classesAndSubjectsData[cls] });
+        delete classesAndSubjectsData[cls];
+        syncToFirebase();
+        populateAdminMasterDropdowns();
+        renderAdminClassesAndSubjectsList();
+        alert('Class moved to Trash Bin!');
+    }
+
+    function editSubjectName(cls, oldSub) {
+        let newSub = prompt(`Enter new Subject name for Class ${cls}:`, oldSub);
+        if(!newSub || newSub.trim() === "" || newSub === oldSub) return;
+        newSub = newSub.trim();
+        if(classesAndSubjectsData[cls].subjects[newSub]) { alert('Subject already exists!'); return; }
+        classesAndSubjectsData[cls].subjects[newSub] = classesAndSubjectsData[cls].subjects[oldSub];
+        delete classesAndSubjectsData[cls].subjects[oldSub];
+        syncToFirebase();
+        populateAdminSubjectDropdownForChapter();
+        renderAdminClassesAndSubjectsList();
+        alert('Subject updated successfully!');
+    }
+
+    function toggleSubjectHide(cls, sub) {
+        classesAndSubjectsData[cls].subjects[sub].hidden = !classesAndSubjectsData[cls].subjects[sub].hidden;
+        syncToFirebase();
+        renderAdminClassesAndSubjectsList();
+    }
+
+    function trashSubject(cls, sub) {
+        if(!confirm(`Move Subject ${sub} (Class ${cls}) to Trash Bin?`)) return;
+        trashClassesSubjects.push({ type: 'subject', classKey: cls, subjectKey: sub, data: classesAndSubjectsData[cls].subjects[sub] });
+        delete classesAndSubjectsData[cls].subjects[sub];
+        syncToFirebase();
+        populateAdminSubjectDropdownForChapter();
+        renderAdminClassesAndSubjectsList();
+        alert('Subject moved to Trash Bin!');
+    }
+
+    function populateAdminSubjectDropdownForChapter() {
+        const cls = document.getElementById('adm-ch-class').value;
+        const subSel = document.getElementById('adm-ch-subject');
+        if(!cls || !classesAndSubjectsData[cls]) { subSel.innerHTML = ''; return; }
+        let subs = Object.keys(classesAndSubjectsData[cls].subjects);
+        subSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+        renderAdminChapterList();
+        renderAdminClassesAndSubjectsList();
+    }
+
+    function renderAdminFreeSubjectsCheckboxes() {
+        const container = document.getElementById('admin-free-subjects-checkboxes');
+        let allUniqueSubs = [];
+        Object.values(classesAndSubjectsData).forEach(clsObj => {
+            if(!clsObj.hidden && clsObj.subjects) {
+                Object.keys(clsObj.subjects).forEach(s => {
+                    if(!clsObj.subjects[s].hidden && !allUniqueSubs.includes(s)) allUniqueSubs.push(s);
+                });
+            }
+        });
+
+        let savedAllowed = freeControlSettings.allowedSubjects || [];
+        container.innerHTML = allUniqueSubs.map(s => `
+            <label style="margin-bottom:4px; font-weight:normal; display:block;">
+                <input type="checkbox" class="free-sub-chk" value="${s}" ${savedAllowed.includes(s) ? 'checked' : ''} style="width:auto;"> ${s}
+            </label>
+        `).join('');
+    }
+
+    function saveFreeControlSettings() {
+        freeControlSettings.masterUnlock = document.getElementById('admin-master-unlock-free').checked;
+        freeControlSettings.chapterLimit = document.getElementById('admin-free-chapter-limit').value;
+        
+        let checkedSubs = [];
+        document.querySelectorAll('.free-sub-chk:checked').forEach(chk => checkedSubs.push(chk.value));
+        freeControlSettings.allowedSubjects = checkedSubs;
+
+        syncToFirebase();
+        alert('Free Subject & Chapter Access Settings saved successfully!');
+    }
+
+    // CHAPTER MANAGEMENT FUNCTIONS WITH EDIT, HIDE & DELETE
+    function saveAdminChapter() {
+        const cls = document.getElementById('adm-ch-class').value;
+        const sub = document.getElementById('adm-ch-subject').value;
+        const name = document.getElementById('adm-ch-name').value.trim();
+        const editId = document.getElementById('adm-ch-edit-id').value;
+
+        if(!name) { alert('Chapter name diok!'); return; }
+
+        if(editId) {
+            let ch = chaptersDatabase.find(c => c.id == editId);
+            if(ch) { ch.class = cls; ch.subject = sub; ch.name = name; }
+            document.getElementById('adm-ch-edit-id').value = '';
+        } else {
+            chaptersDatabase.push({ id: Date.now(), class: cls, subject: sub, name: name, hidden: false });
+        }
+
+        document.getElementById('adm-ch-name').value = '';
+        syncToFirebase();
+        renderAdminChapterList();
+        alert('Chapter successfully saved!');
+    }
+
+    function renderAdminChapterList() {
+        const container = document.getElementById('admin-chapter-list');
+        const clsFilter = document.getElementById('adm-ch-class').value;
+        const subFilter = document.getElementById('adm-ch-subject').value;
+
+        let filtered = chaptersDatabase.filter(c => c.class === clsFilter && c.subject === subFilter);
+        if(!filtered || filtered.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray);">No chapters for this subject.</p>';
+            return;
+        }
+        container.innerHTML = filtered.map(ch => `
+            <div style="background:#0f172a; border:1px solid #475569; padding:6px; border-radius:4px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                <span><strong>${ch.name}</strong> ${ch.hidden ? '<span style="color:#ef4444;">[Hidden]</span>' : ''}</span>
+                <div style="display:flex; gap:4px;">
+                    <button onclick="editAdminChapter(${ch.id})" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
+                    <button onclick="toggleChapterHide(${ch.id})" style="padding:2px 4px; font-size:10px; width:auto; background:var(--warning);">${ch.hidden ? 'Unhide' : 'Hide'}</button>
+                    <button onclick="deleteAdminChapter(${ch.id})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto;">Del</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function editAdminChapter(id) {
+        let ch = chaptersDatabase.find(c => c.id == id);
+        if(!ch) return;
+        document.getElementById('adm-ch-class').value = ch.class;
+        populateAdminSubjectDropdownForChapter();
+        document.getElementById('adm-ch-subject').value = ch.subject;
+        document.getElementById('adm-ch-name').value = ch.name;
+        document.getElementById('adm-ch-edit-id').value = ch.id;
+    }
+
+    function toggleChapterHide(id) {
+        let ch = chaptersDatabase.find(c => c.id == id);
+        if(ch) {
+            ch.hidden = !ch.hidden;
+            syncToFirebase();
+            renderAdminChapterList();
+        }
+    }
+
+    function deleteAdminChapter(id) {
+        let index = chaptersDatabase.findIndex(c => c.id == id);
+        if(index !== -1) {
+            trashChapters.push(chaptersDatabase.splice(index, 1)[0]);
+            syncToFirebase();
+            renderAdminChapterList();
+            alert('Chapter moved to Trash Bin!');
+        }
+    }
+
+    // STUDENT DYNAMIC DROPDOWNS (Excluding Hidden Classes/Subjects/Chapters)
+    function populateStudentFreeClassFilter() {
+        const clsSelect = document.getElementById('free-class');
+        let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
+        clsSelect.innerHTML = keys.map(k => `<option value="${k}">Class ${k}</option>`).join('');
+        populateStudentFreeSubjectFilter();
+    }
+
+    function populateStudentFreeSubjectFilter() {
+        const cls = document.getElementById('free-class').value;
+        const subSelect = document.getElementById('free-subject');
+        
+        if(!cls || !classesAndSubjectsData[cls]) { subSelect.innerHTML = ''; return; }
+        let subsObj = classesAndSubjectsData[cls].subjects || {};
+        let allowed = freeControlSettings.allowedSubjects || [];
+        let isMaster = freeControlSettings.masterUnlock;
+
+        let html = '';
+        Object.keys(subsObj).forEach(sub => {
+            if(!subsObj[sub].hidden) {
+                if(isMaster || allowed.includes(sub)) {
+                    html += `<option value="${sub}">${sub}</option>`;
+                }
+            }
+        });
+
+        if(!html) {
+            html = '<option value="">No Free Subjects Available</option>';
+        }
+        subSelect.innerHTML = html;
+        populateStudentFreeChapterFilter();
+    }
+
+    function populateStudentFreeChapterFilter() {
+        const cls = document.getElementById('free-class').value;
+        const sub = document.getElementById('free-subject').value;
+        const select = document.getElementById('free-chapter');
+
+        let filtered = chaptersDatabase.filter(c => c.class === cls && c.subject === sub && !c.hidden);
+        
+        if(!freeControlSettings.masterUnlock) {
+            let limit = freeControlSettings.chapterLimit;
+            if(limit !== 'ALL') {
+                let maxCount = parseInt(limit) || 1;
+                filtered = filtered.slice(0, maxCount);
+            }
+        }
+
+        let html = '<option value="ALL">All Chapters (Full Practice)</option>';
+        filtered.forEach(ch => { html += `<option value="${ch.name}">${ch.name}</option>`; });
+        select.innerHTML = html;
+    }
+
+    function populateStudentShortChapterFilter() {
+        const select = document.getElementById('student-short-chapter-select');
+        let html = '<option value="ALL">All Chapters</option>';
+        chaptersDatabase.filter(c => !c.hidden).forEach(ch => { html += `<option value="${ch.name}">${ch.name}</option>`; });
+        select.innerHTML = html;
+        renderStudentShortQA();
+    }
+
+    function populateSpecialExamSubjectsAndChapters() {
+        const cls = document.getElementById('special-sel-class').value;
+        const subSelect = document.getElementById('special-sel-subject');
+        if(!cls || !classesAndSubjectsData[cls]) { subSelect.innerHTML = ''; return; }
+        let subsObj = classesAndSubjectsData[cls].subjects || {};
+        let subs = Object.keys(subsObj).filter(s => !subsObj[s].hidden);
+        subSelect.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+        populateSpecialExamChapterCheckboxes();
+    }
+
+    function populateSpecialExamChapterCheckboxes() {
+        const cls = document.getElementById('special-sel-class').value;
+        const sub = document.getElementById('special-sel-subject').value;
+        const container = document.getElementById('special-chapters-checkbox-container');
+
+        let filtered = chaptersDatabase.filter(c => c.class === cls && c.subject === sub && !c.hidden);
+        if(filtered.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found for this class/subject.</p>';
+            return;
+        }
+
+        let html = `<label style="margin-bottom:6px;"><input type="checkbox" id="chk-all-special" onchange="toggleAllSpecialChapters(this)" checked style="width:auto;"> <strong>Select All Chapters</strong></label><hr style="margin:4px 0; border:0; border-top:1px solid #475569;">`;
+        filtered.forEach((ch) => {
+            html += `<label style="margin-bottom:4px; font-weight:normal;"><input type="checkbox" class="special-ch-chk" value="${ch.name}" checked style="width:auto;"> ${ch.name}</label>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function toggleAllSpecialChapters(master) {
+        const checkboxes = document.querySelectorAll('.special-ch-chk');
+        checkboxes.forEach(chk => chk.checked = master.checked);
+    }
+
+    // QUESTION ADD DROPDOWN SETUP
+    function populateQuestionClassDropdown() {
+        const qClsSel = document.getElementById('q-class');
+        let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
+        qClsSel.innerHTML = keys.map(k => `<option value="${k}">Class ${k}</option>`).join('');
+        populateQuestionSubjectDropdown();
+    }
+
+    function populateQuestionSubjectDropdown() {
+        const cls = document.getElementById('q-class').value;
+        const qSubSel = document.getElementById('q-subject');
+        if(!cls || !classesAndSubjectsData[cls]) { qSubSel.innerHTML = ''; return; }
+        let subsObj = classesAndSubjectsData[cls].subjects || {};
+        let subs = Object.keys(subsObj).filter(s => !subsObj[s].hidden);
+        qSubSel.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+        updateQuestionChapterDropdown();
+    }
+
+    function updateQuestionChapterDropdown() {
+        const cls = document.getElementById('q-class').value;
+        const sub = document.getElementById('q-subject').value;
+        const select = document.getElementById('q-chapter');
+        
+        let filtered = chaptersDatabase.filter(c => c.class === cls && c.subject === sub && !c.hidden);
+        let html = '<option value="General">General / Full Book</option>';
+        filtered.forEach(ch => { html += `<option value="${ch.name}">${ch.name}</option>`; });
+        select.innerHTML = html;
+    }
+
+    // ADMIN TRASH BIN (PIN Protected)
+    function verifyTrashPin() {
+        const pinVal = document.getElementById('trash-auth-pin').value;
+        if(pinVal === ADMIN_SECRET_PIN) {
+            document.getElementById('trash-pin-box').style.display = 'none';
+            document.getElementById('trash-content-box').style.display = 'block';
+            renderTrashBinsContent();
+        } else { alert('Wrong Admin PIN!'); }
+    }
+
+    function renderTrashBinsContent() {
+        const qContainer = document.getElementById('trash-questions-list');
+        qContainer.innerHTML = trashDatabase.map((item, idx) => `
+            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
+                ${item.q || item.name}<br>
+                <button onclick="adminRestoreQuestion(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
+                <button onclick="adminPermanentDeleteQuestion(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
+            </div>
+        `).join('') || '<p style="color:var(--gray);">Trash empty.</p>';
+
+        const csContainer = document.getElementById('trash-classes-subjects-list');
+        csContainer.innerHTML = trashClassesSubjects.map((item, idx) => `
+            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
+                ${item.type === 'class' ? `Class: <strong>${item.key}</strong>` : `Subject: <strong>${item.subjectKey}</strong> (Class ${item.classKey})`}<br>
+                <button onclick="adminRestoreCS(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
+                <button onclick="adminPermanentDeleteCS(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
+            </div>
+        `).join('') || '<p style="color:var(--gray);">Trash empty.</p>';
+
+        const chContainer = document.getElementById('trash-chapters-list');
+        chContainer.innerHTML = trashChapters.map((item, idx) => `
+            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
+                Chapter: <strong>${item.name}</strong> (Class ${item.class} - ${item.subject})<br>
+                <button onclick="adminRestoreChapter(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
+                <button onclick="adminPermanentDeleteChapter(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
+            </div>
+        `).join('') || '<p style="color:var(--gray);">Trash empty.</p>';
+    }
+
+    function adminRestoreQuestion(idx) {
+        questionDatabase.push(trashDatabase.splice(idx, 1)[0]);
+        syncToFirebase();
+        renderTrashBinsContent();
+    }
+
+    function adminPermanentDeleteQuestion(idx) {
+        if(!confirm('Permanently delete this item?')) return;
+        trashDatabase.splice(idx, 1);
+        syncToFirebase();
+        renderTrashBinsContent();
+    }
+
+    function adminRestoreCS(idx) {
+        let item = trashClassesSubjects.splice(idx, 1)[0];
+        if(item.type === 'class') {
+            classesAndSubjectsData[item.key] = item.data;
+        } else {
+            if(!classesAndSubjectsData[item.classKey]) classesAndSubjectsData[item.classKey] = { hidden: false, subjects: {} };
+            classesAndSubjectsData[item.classKey].subjects[item.subjectKey] = item.data;
+        }
+        syncToFirebase();
+        populateAdminMasterDropdowns();
+        renderAdminClassesAndSubjectsList();
+        renderTrashBinsContent();
+    }
+
+    function adminPermanentDeleteCS(idx) {
+        if(!confirm('Permanently delete this item?')) return;
+        trashClassesSubjects.splice(idx, 1);
+        syncToFirebase();
+        renderTrashBinsContent();
+    }
+
+    function adminRestoreChapter(idx) {
+        chaptersDatabase.push(trashChapters.splice(idx, 1)[0]);
+        syncToFirebase();
+        renderAdminChapterList();
+        renderTrashBinsContent();
+    }
+
+    function adminPermanentDeleteChapter(idx) {
+        if(!confirm('Permanently delete this chapter?')) return;
+        trashChapters.splice(idx, 1);
+        syncToFirebase();
+        renderTrashBinsContent();
+    }
+
+    // OTHER ADMIN / TEACHER SETTINGS
+    function saveSpecialExamFee() {
+        const val = parseInt(document.getElementById('admin-fee-input').value);
+        if(isNaN(val) || val < 0) { alert('Valid amount diok!'); return; }
+        specialExamFee = val;
+        syncToFirebase();
+        alert(`Special Exam fee successfully updated to ₹${specialExamFee}!`);
+    }
+
+    function saveSpecialExamModeSetting() {
+        specialExamMode = document.getElementById('admin-special-mode-select').value;
+        syncToFirebase();
+        alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
+    }
+
+    function saveSpecialExamModeSettingTeacher() {
+        specialExamMode = document.getElementById('teacher-special-mode-select').value;
+        syncToFirebase();
+        alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
+    }
+
+    function populateAdminSpecialStudentsDropdown() {
+        const select = document.getElementById('admin-special-student-select');
+        select.innerHTML = '<option value="">-- Choose Student --</option>';
+        specialLeaderboardDatabase.forEach((student, index) => {
+            let opt = document.createElement('option');
+            opt.value = index;
+            opt.textContent = `${student.name} (${student.mobile})`;
+            select.appendChild(opt);
+        });
+        document.getElementById('admin-student-details-box').style.display = 'none';
+    }
+
+    function displaySelectedSpecialStudentDetails() {
+        const select = document.getElementById('admin-special-student-select');
+        const index = select.value;
+        const detailsBox = document.getElementById('admin-student-details-box');
+        if(index === "") { detailsBox.style.display = 'none'; return; }
+        const student = specialLeaderboardDatabase[index];
+        document.getElementById('adm-sel-name').innerText = student.name;
+        document.getElementById('adm-sel-mobile').innerText = student.mobile;
+        document.getElementById('adm-sel-score').innerText = student.score;
+        detailsBox.style.display = 'block';
+    }
+
+    function switchFreeLeaderboardTab(type) {
+        document.getElementById('tab-free-daily').style.background = type === 'daily' ? 'var(--primary)' : 'var(--gray)';
+        document.getElementById('tab-free-weekly').style.background = type === 'weekly' ? 'var(--primary)' : 'var(--gray)';
+        document.getElementById('tab-free-monthly').style.background = type === 'monthly' ? 'var(--primary)' : 'var(--gray)';
+
+        const container = document.getElementById('free-leaderboard-content');
+        let sorted = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
+        let limit = type === 'weekly' ? 5 : (type === 'monthly' ? 10 : 1);
+        let sliced = sorted.slice(0, limit);
+        if(sliced.length === 0) { container.innerHTML = `<p style="color: var(--gray);">No records found.</p>`; return; }
+
+        let titleTxt = type === 'daily' ? "🥇 Today's Free Topper" : (type === 'weekly' ? "🏆 Weekly Top 5" : "🌟 Monthly Top 10");
+        let html = `<h3 style="font-size: 14px; color: var(--primary); text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
+        sliced.forEach((item, idx) => {
+            let certBtn = (type === 'monthly' && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
+            let topperBadge = (type === 'monthly' && idx === 0) ? ` <span style="background: #fef08a; color: #854d0e; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold;">🎉 Special Exam Free</span>` : '';
+            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong>${topperBadge}</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function switchSpecialLeaderboardTab(type) {
+        document.getElementById('tab-special-daily').style.background = type === 'daily' ? '#7c3aed' : 'var(--gray)';
+        document.getElementById('tab-special-weekly').style.background = type === 'weekly' ? '#7c3aed' : 'var(--gray)';
+        document.getElementById('tab-special-monthly').style.background = type === 'monthly' ? '#7c3aed' : 'var(--gray)';
+
+        const container = document.getElementById('special-leaderboard-content');
+        let sorted = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
+        let limit = type === 'weekly' ? 5 : (type === 'monthly' ? 10 : 1);
+        let sliced = sorted.slice(0, limit);
+        if(sliced.length === 0) { container.innerHTML = `<p style="color: var(--gray);">No records found.</p>`; return; }
+
+        let titleTxt = type === 'daily' ? "🥇 Today's Special Topper" : (type === 'weekly' ? "🏆 Weekly Top 5" : "🌟 Monthly Top 10");
+        let html = `<h3 style="font-size: 14px; color: #7c3aed; text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
+        sliced.forEach((item, idx) => {
+            let certBtn = (type === 'monthly' && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
+            let topperBadge = (type === 'monthly' && (idx === 0 || idx === 1)) ? ` <span style="background: #fef08a; color: #854d0e; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold;">🎉 Fee Free</span>` : '';
+            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong>${topperBadge}</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function viewCertificate(name, rank, score) {
+        document.getElementById('cert-student-name').innerText = name;
+        document.getElementById('cert-rank-text').innerText = `Rank #${rank}`;
+        document.getElementById('cert-score-text').innerText = score;
+        const d = new Date();
+        document.getElementById('cert-date').innerText = `${d.toLocaleString('default', { month: 'long' })} ${d.getFullYear()}`;
+        showScreen('screen-certificate');
+    }
+
+    function saveTestSettings() {
+        testSettings.questionCount = parseInt(document.getElementById('setting-q-count').value) || 5;
+        testSettings.timerMinutes = parseInt(document.getElementById('setting-timer').value) || 10;
+        syncToFirebase();
+        alert('Settings updated successfully!');
+    }
+
+    function saveTestSettingsTeacher() {
+        testSettings.questionCount = parseInt(document.getElementById('teacher-setting-q-count').value) || 5;
+        testSettings.timerMinutes = parseInt(document.getElementById('teacher-setting-timer').value) || 10;
+        syncToFirebase();
+        alert('Settings updated successfully!');
+    }
+
+    // TEACHER BLOCK, UNBLOCK & DELETE FUNCTIONS
+    function toggleBlockTeacher(index) {
+        let t = teachersDatabase[index];
+        if(!t.status) t.status = "active";
+        if(t.status === "blocked") {
+            t.status = "active";
+            alert(`Teacher ${t.name} unblocked successfully!`);
+        } else {
+            t.status = "blocked";
+            alert(`Teacher ${t.name} has been BLOCKED!`);
+        }
+        syncToFirebase();
+        renderAdminTeacherManageList();
+    }
+
+    function deleteTeacher(index) {
+        let t = teachersDatabase[index];
+        if(!confirm(`Are you sure you want to completely delete teacher: ${t.name}?`)) return;
+        teachersDatabase.splice(index, 1);
+        syncToFirebase();
+        renderAdminTeacherManageList();
+        alert('Teacher removed successfully!');
+    }
+
+    function addNewTeacher() {
+        const name = document.getElementById('new-teacher-name').value.trim();
+        const pin = document.getElementById('new-teacher-pin').value.trim();
+        if(!name || !pin) { alert('Fill all fields!'); return; }
+        teachersDatabase.push({ name, pin, points: 50, mobile: "", upi: "", status: "active" });
+        syncToFirebase();
+        alert(`Teacher ${name} registered successfully!`);
+        document.getElementById('new-teacher-name').value = '';
+        document.getElementById('new-teacher-pin').value = '';
+        renderAdminTeacherManageList();
+        populateAdminTeacherDropdown();
+    }
+
+    function renderAdminTeacherManageList() {
+        const container = document.getElementById('admin-teacher-manage-list');
+        if(!teachersDatabase || teachersDatabase.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray);">No teachers registered.</p>';
+            return;
+        }
+        let html = '';
+        teachersDatabase.forEach((t, index) => {
+            let isBlocked = t.status === "blocked";
+            html += `
+                <div style="border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 8px; background:#0f172a; padding:8px; border-radius:6px;">
+                    <strong>${t.name}</strong> (PIN: <code>${t.pin}</code>) - <strong style="color:var(--success);">${t.points} pts</strong><br>
+                    Status: <span style="color:${isBlocked ? '#ef4444' : '#4ade80'}; font-weight:bold;">${isBlocked ? 'BLOCKED ❌' : 'ACTIVE ✅'}</span><br>
+                    <div style="display: flex; gap: 5px; margin-top: 6px;">
+                        <input type="number" id="bonus-pts-${index}" placeholder="Bonus Pts" style="width: 70px; padding: 2px; font-size: 11px;">
+                        <button onclick="addTeacherBonus(${index})" class="btn-success" style="padding: 4px 8px; font-size: 11px; width: auto; margin-top: 0;">+ Bonus</button>
+                        <button onclick="toggleBlockTeacher(${index})" style="padding: 4px 8px; font-size: 11px; width: auto; background: ${isBlocked ? '#16a34a' : '#d97706'};">${isBlocked ? 'Unblock' : 'Block'}</button>
+                        <button onclick="deleteTeacher(${index})" class="btn-danger" style="padding: 4px 8px; font-size: 11px; width: auto; margin-top: 0;">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function addTeacherBonus(index) {
+        const bonus = parseInt(document.getElementById(`bonus-pts-${index}`).value) || 0;
+        teachersDatabase[index].points += bonus;
+        syncToFirebase();
+        alert(`Added ${bonus} points!`);
+        renderAdminTeacherManageList();
+    }
+
+    function verifyTeacherPin() {
+        const pinInput = document.getElementById('teacher-pin-input').value.trim();
+        const foundIndex = teachersDatabase.findIndex(t => t.pin === pinInput);
+        if(foundIndex !== -1) {
+            let t = teachersDatabase[foundIndex];
+            if(t.status === "blocked") {
+                alert('Your account has been blocked by the Admin!');
+                return;
+            }
+            currentTeacherIndex = foundIndex;
+            document.getElementById('teacher-pin-input').value = '';
+            loggedInRole = 'TEACHER';
+            showScreen('screen-teacher-dash');
+        } else { alert('Wrong PIN!'); }
+    }
+
+    function saveUpiQrSettings() {
+        paymentSettings.upi = document.getElementById('admin-upi-input').value.trim();
+        paymentSettings.qrUrl = document.getElementById('admin-qr-input').value.trim();
+        syncToFirebase();
+        alert('UPI Settings Saved!');
+    }
+
+    function deleteUpiQrSettings() {
+        paymentSettings.qrUrl = "";
+        document.getElementById('admin-qr-input').value = "";
+        syncToFirebase();
+        alert('QR Removed!');
+    }
+
+    function updateStudentPaymentView() {
+        document.getElementById('pay-heading-fee').innerText = `₹${specialExamFee}`;
+        document.getElementById('pay-link-fee').innerText = `₹${specialExamFee}`;
+        document.getElementById('student-view-upi').innerText = paymentSettings.upi;
+        document.getElementById('upi-pay-link').href = `upi://pay?pa=${paymentSettings.upi}&pn=${encodeURIComponent(academyBranding.name)}&am=${specialExamFee}.00&cu=INR`;
+        document.getElementById('student-view-qr-container').innerHTML = paymentSettings.qrUrl ? `<img src="${paymentSettings.qrUrl}" style="width: 130px; height: 130px; border-radius: 8px;">` : '<span>[No QR]</span>';
+    }
+
+    function submitOnlinePaymentRequest() {
+        const name = document.getElementById('pay-name').value.trim();
+        const mobile = document.getElementById('pay-mobile').value.trim();
+        const tx = document.getElementById('pay-tx').value.trim();
+        if(!name || !mobile || !tx) { alert('Fill all fields!'); return; }
+        pendingRequests.push({ id: Date.now(), name, mobile, tx: `Payment UTR: ${tx}` });
+        syncToFirebase();
+        alert('Request submitted! Admin notified via SMS Alert.');
+        showScreen('screen-home');
+    }
+
+    function renderPendingRequests() {
+        const container = document.getElementById('pending-request-container');
+        document.getElementById('admin-alert-badge').innerText = `${pendingRequests.length} Alerts`;
+        if(!pendingRequests || pendingRequests.length === 0) { container.innerHTML = `<p style="font-size: 12px;">No pending requests.</p>`; return; }
+        let html = '';
+        pendingRequests.forEach((req, index) => {
+            html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong> (${req.mobile})<br>${req.tx}<br><button onclick="handleApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function handleApproval(index, isApproved) {
+        const req = pendingRequests[index];
+        if(isApproved && req.mobile && req.mobile !== "Teacher" && req.mobile !== "No Mobile") {
+            approvedMobileNumbers.push(req.mobile);
+        }
+        pendingRequests.splice(index, 1);
+        syncToFirebase();
+        renderPendingRequests();
+        alert(isApproved ? 'Approved & Student Activated!' : 'Dismissed!');
+    }
+
+    function verifyStudentPaidAccess() {
+        const name = document.getElementById('login-student-name').value.trim();
+        const mobile = document.getElementById('login-student-mobile').value.trim();
+        currentStudentName = name || "Student";
+        currentStudentMobile = mobile || "9876543210";
+
+        let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
+        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].name.toLowerCase() === name.toLowerCase() && sortedFree[0].mobile === mobile);
+        let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
+        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].name.toLowerCase() === name.toLowerCase() && sortedSpecial[0].mobile === mobile) || (sortedSpecial.length > 1 && sortedSpecial[1].name.toLowerCase() === name.toLowerCase() && sortedSpecial[1].mobile === mobile));
+
+        if(isFreeMonthlyFirst || isSpecialTopperFree || approvedMobileNumbers.includes(mobile)) {
+            alert(`Welcome ${name}! Access granted.`);
+            showScreen('screen-paid-student-hub');
+        } else {
+            alert('Access Denied! Please pay fee or check your details.');
+        }
+    }
+
+    function renderStudentShortQA() {
+        const container = document.getElementById('student-short-qa-list');
+        const chFilter = document.getElementById('student-short-chapter-select').value;
+        let shortQ = questionDatabase.filter(q => q.type === 'SHORT');
+        if(chFilter !== 'ALL') { shortQ = shortQ.filter(q => q.chapter === chFilter); }
+        container.innerHTML = shortQ.length ? shortQ.map((item, idx) => `<div style="background:#0f172a; padding:8px; border-radius:6px; margin-bottom:6px; border:1px solid #475569;"><strong>Q${idx+1} [${item.chapter}]:</strong> ${item.q}<br><span style="color:var(--success)">Ans:</span> ${item.answer}</div>`).join('') : '<p style="color:var(--gray);">No Short Q/A in this chapter.</p>';
+    }
+
+    function renderManageQuestionsList() {
+        const container = document.getElementById('manage-questions-list');
+        container.innerHTML = questionDatabase.map(item => `
+            <div style="background: #0f172a; border: 1px solid #475569; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
+                [Class ${item.class}-${item.subject} | ${item.chapter}] ${item.q} ${item.specialTag ? '<span style="color:#7c3aed; font-weight:bold;">[Special Set]</span>' : ''}<br>
+                <button onclick="editQuestion(${item.id})" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--primary);">Edit</button>
+                <button onclick="teacherDeleteQuestion(${item.id})" class="btn-danger" style="padding: 2px 6px; font-size: 10px; width: auto; margin-left: 4px;">Delete</button>
+            </div>
+        `).join('') || '<p>No questions added yet.</p>';
+    }
+
+    function editQuestion(id) {
+        const qObj = questionDatabase.find(q => q.id === id);
+        if(!qObj) return;
+        document.getElementById('edit-question-id').value = qObj.id;
+        document.getElementById('q-text').value = qObj.q;
+        openAddQuestionForm(qObj.type);
+    }
+
+    function teacherDeleteQuestion(id) {
+        const index = questionDatabase.findIndex(q => q.id === id);
+        if(index !== -1) {
+            trashDatabase.push(questionDatabase.splice(index, 1)[0]);
+            syncToFirebase();
+            renderManageQuestionsList();
+            alert('Question moved to Trash Bin!');
+        }
+    }
+
+    function renderStudentResources() {
+        document.getElementById('student-ebook-list').innerHTML = ebookDatabase.map(b => `<div>📚 ${b.title} (<a href="${b.link}" target="_blank">Open PDF</a>)</div>`).join('') || '<p>No E-Books.</p>';
+        document.getElementById('student-video-list').innerHTML = videoDatabase.map(v => `<div>🎥 ${v.title} (<a href="${v.link}" target="_blank">Watch Video</a>)</div>`).join('') || '<p>No Videos.</p>';
+    }
+
+    function submitEBook() {
+        const title = document.getElementById('ebook-title').value.trim();
+        const linkInput = document.getElementById('ebook-link').value.trim();
+        const fileInput = document.getElementById('ebook-file-input');
+        if(!title) { alert('Enter title!'); return; }
+        if(fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                ebookDatabase.push({ title: title, link: e.target.result });
+                syncToFirebase(); alert('Uploaded!'); showScreen('screen-home');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else if(linkInput) {
+            ebookDatabase.push({ title: title, link: linkInput });
+            syncToFirebase(); alert('Saved!'); showScreen('screen-home');
+        } else { alert('Select file or link!'); }
+    }
+
+    function submitVideo() {
+        const title = document.getElementById('video-title').value.trim();
+        const linkInput = document.getElementById('video-link').value.trim();
+        const fileInput = document.getElementById('video-file-input');
+        if(!title) { alert('Enter title!'); return; }
+        if(fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                videoDatabase.push({ title: title, link: e.target.result });
+                syncToFirebase(); alert('Uploaded!'); showScreen('screen-home');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else if(linkInput) {
+            videoDatabase.push({ title: title, link: linkInput });
+            syncToFirebase(); alert('Saved!'); showScreen('screen-home');
+        } else { alert('Select file or link!'); }
+    }
+
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function startTimer() {
+        if(timerInterval) clearInterval(timerInterval);
+        timeLeftSeconds = testSettings.timerMinutes * 60;
+        timerInterval = setInterval(() => {
+            timeLeftSeconds--;
+            let mins = Math.floor(timeLeftSeconds / 60);
+            let secs = timeLeftSeconds % 60;
+            document.getElementById('timer-display').innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            if(timeLeftSeconds <= 0) { clearInterval(timerInterval); endQuiz(); }
+        }, 1000);
+    }
+
+    function startFreeQuiz() {
+        currentStudentName = document.getElementById('quiz-student-name').value.trim() || "Student";
+        currentStudentMobile = document.getElementById('quiz-student-mobile').value.trim() || "9876543210";
+        isSpecialExamMode = false;
+        const cls = document.getElementById('free-class').value;
+        const sub = document.getElementById('free-subject').value;
+        const ch = document.getElementById('free-chapter').value;
+        
+        let filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub);
+        if(ch !== 'ALL') { filtered = filtered.filter(item => item.chapter === ch); }
+        if(filtered.length === 0) { alert('No questions found for this selection!'); return; }
+        
+        activeQuizQuestions = shuffleArray([...filtered]).slice(0, testSettings.questionCount);
+        currentQuizIndex = 0; scoreCount = 0;
+        document.getElementById('quiz-heading').innerText = `${sub} (${ch})`;
+        showScreen('screen-quiz-play');
+        startTimer();
+        loadQuizQuestion();
+    }
+
+    function startSpecialExamQuiz() {
+        isSpecialExamMode = true;
+        const cls = document.getElementById('special-sel-class').value;
+        const sub = document.getElementById('special-sel-subject').value;
+        
+        let selectedChapters = [];
+        const checkboxes = document.querySelectorAll('.special-ch-chk:checked');
+        checkboxes.forEach(chk => selectedChapters.push(chk.value));
+
+        if(selectedChapters.length === 0) {
+            alert('Please select at least one chapter!');
+            return;
+        }
+
+        let filtered = [];
+        if(specialExamMode === "manual") {
+            filtered = questionDatabase.filter(item => item.type === "MCQ" && item.specialTag === true && item.class === cls && item.subject === sub && selectedChapters.includes(item.chapter));
+            if(filtered.length === 0) {
+                filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub && selectedChapters.includes(item.chapter));
+            }
+        } else {
+            filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub && selectedChapters.includes(item.chapter));
+        }
+
+        if(filtered.length === 0) { alert('No MCQ questions available for the selected chapters!'); return; }
+
+        activeQuizQuestions = shuffleArray([...filtered]).slice(0, testSettings.questionCount);
+        currentQuizIndex = 0; scoreCount = 0;
+        document.getElementById('quiz-heading').innerText = `⭐ Monthly Special Exam (${sub})`;
+        showScreen('screen-quiz-play');
+        startTimer();
+        loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+        if(currentQuizIndex >= activeQuizQuestions.length) { endQuiz(); return; }
+        const qData = activeQuizQuestions[currentQuizIndex];
+        document.getElementById('quiz-question-box').innerText = `Q${currentQuizIndex + 1}. ${qData.q}`;
+        document.getElementById('quiz-options-box').innerHTML = `
+            <button class="option-btn" id="btn-A" onclick="checkAnswer('A')">A) ${qData.a}</button>
+            <button class="option-btn" id="btn-B" onclick="checkAnswer('B')">B) ${qData.b}</button>
+            <button class="option-btn" id="btn-C" onclick="checkAnswer('C')">C) ${qData.c}</button>
+            <button class="option-btn" id="btn-D" onclick="checkAnswer('D')">D) ${qData.d}</button>
+        `;
+        document.getElementById('next-quiz-btn').style.display = 'none';
+    }
+
+    function checkAnswer(selectedOpt) {
+        const qData = activeQuizQuestions[currentQuizIndex];
+        document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+        if(selectedOpt === qData.correct) {
+            scoreCount += 10;
+            document.getElementById(`btn-${selectedOpt}`).style.background = '#16a34a';
+            document.getElementById(`btn-${selectedOpt}`).style.color = '#ffffff';
+        } else {
+            document.getElementById(`btn-${selectedOpt}`).style.background = '#dc2626';
+            document.getElementById(`btn-${selectedOpt}`).style.color = '#ffffff';
+            document.getElementById(`btn-${qData.correct}`).style.background = '#16a34a';
+            document.getElementById(`btn-${qData.correct}`).style.color = '#ffffff';
+        }
+        document.getElementById('next-quiz-btn').style.display = 'block';
+    }
+
+    function nextQuizQuestion() { currentQuizIndex++; loadQuizQuestion(); }
+
+    function endQuiz() {
+        if(timerInterval) clearInterval(timerInterval);
+        const total = activeQuizQuestions.length * 10;
+        const pct = total > 0 ? Math.round((scoreCount / total) * 100) : 0;
+        if(!isSpecialExamMode) {
+            freeLeaderboardDatabase.push({ name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
+            document.getElementById('result-leaderboard-btn').setAttribute("onclick", "showScreen('screen-free-leaderboard')");
+        } else {
+            specialLeaderboardDatabase.push({ name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
+            document.getElementById('result-leaderboard-btn').setAttribute("onclick", "showScreen('screen-special-leaderboard')");
+        }
+        syncToFirebase();
+        document.getElementById('result-score-text').innerText = `Marks: ${scoreCount} / ${total}`;
+        document.getElementById('result-percentage').innerText = `Percentage: ${pct}%`;
+        showScreen('screen-quiz-result');
+    }
+
+    function verifyAdminPin() {
+        if(document.getElementById('admin-pin-input').value.trim() === ADMIN_SECRET_PIN) {
+            document.getElementById('admin-pin-input').value = '';
+            loggedInRole = 'ADMIN';
+            showScreen('screen-admin-dash');
+        } else { alert('Wrong Admin PIN!'); }
+    }
+
+    function openAddQuestionForm(type) {
+        currentQuestionType = type;
+        const editId = document.getElementById('edit-question-id').value;
+        document.getElementById('form-title-text').innerText = type === 'MCQ' ? 'Add MCQ' : 'Add Short Q/A';
+        document.getElementById('mcq-options-container').style.display = type === 'MCQ' ? 'block' : 'none';
+        document.getElementById('short-answer-container').style.display = type === 'SHORT' ? 'block' : 'none';
+        
+        if(!editId) {
+            document.getElementById('q-text').value = '';
+            document.getElementById('q-special-tag').checked = false;
+        }
+        populateQuestionClassDropdown();
+        showScreen('screen-add-question');
+    }
+
+    function openManageQuestions() { showScreen('screen-manage-questions'); }
+
+    function submitQuestion() {
+        const qText = document.getElementById('q-text').value.trim();
+        const editId = document.getElementById('edit-question-id').value;
+        if(!qText) { alert('Question text diok!'); return; }
+
+        const qObj = {
+            id: editId ? parseInt(editId) : Date.now(),
+            type: currentQuestionType,
+            class: document.getElementById('q-class').value,
+            subject: document.getElementById('q-subject').value,
+            chapter: document.getElementById('q-chapter').value,
+            q: qText,
+            a: document.getElementById('opt-a').value,
+            b: document.getElementById('opt-b').value,
+            c: document.getElementById('opt-c').value,
+            d: document.getElementById('opt-d').value,
+            correct: document.getElementById('correct-opt').value,
+            specialTag: document.getElementById('q-special-tag').checked,
+            answer: document.getElementById('short-ans-text').value
+        };
+
+        if(editId) {
+            let index = questionDatabase.findIndex(q => q.id == editId);
+            if(index !== -1) questionDatabase[index] = qObj;
+            document.getElementById('edit-question-id').value = '';
+        } else {
+            questionDatabase.push(qObj);
+            if(loggedInRole === 'TEACHER') {
+                teachersDatabase[currentTeacherIndex].points += (currentQuestionType === 'MCQ' ? 10 : 15);
+                pendingRequests.push({
+                    id: Date.now(),
+                    name: `${teachersDatabase[currentTeacherIndex].name} (Question Added)`,
+                    mobile: "Teacher",
+                    tx: `Added new ${currentQuestionType} (+${currentQuestionType === 'MCQ' ? 10 : 15} pts)`
+                });
+            }
+        }
+
+        syncToFirebase();
+        alert('Question saved successfully!');
+        goBackToDashboard();
+    }
+
+    function goBackToDashboard() {
+        if(loggedInRole === 'ADMIN') showScreen('screen-admin-dash');
+        else showScreen('screen-teacher-dash');
+    }
+
+    loadDataFromFirebase();
+</script>
+
+</body>
+</html>
