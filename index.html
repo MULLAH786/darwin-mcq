@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">DARWIN ACADEMY- Portal</title>
+    <title id="page-title">DARWIN MCQ - Portal</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -16,7 +16,7 @@
             --success: #16a34a;
             --danger: #dc2626;
             --warning: #d97706;
-            --bg: #0f172a; /* High Quality Dark Theme */
+            --bg: #0f172a;
             --card-bg: #1e293b;
             --text: #f8fafc;
             --gray: #94a3b8;
@@ -32,24 +32,21 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
             min-height: 100vh;
-            padding: 15px;
+            padding: 0;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 100%;
+            min-height: 100vh;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            padding: 25px;
-            max-height: 90vh;
+            border-radius: 0;
+            box-shadow: none;
             overflow-y: auto;
-            border: 1px solid #334155;
+            padding: 15px;
+            border: none;
         }
 
         h2, h3 {
@@ -154,18 +151,65 @@
     <!-- 1. HOME SCREEN -->
     <div id="screen-home" class="screen active">
         <div id="home-logo-container" style="text-align: center; margin-bottom: 10px;"></div>
-        <h2 id="home-academy-name">Darwin MCQ</h2>
+        <h2 id="home-academy-name">DARWIN MCQ</h2>
         <p>Live Firebase Cloud Portal</p>
         
         <div class="form-group" style="margin-top: 20px;">
-            <button onclick="showScreen('screen-free-mcq')" class="btn-success">📚 Free MCQ Practice</button>
+            <button onclick="showScreen('screen-student-auth')" class="btn-success">📚 Free MCQ Practice & Signup</button>
             <button onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-top: 10px;">🏆 Free MCQ Leaderboard & Certificates</button>
             <button onclick="showScreen('screen-special-leaderboard')" style="background: #7c3aed; margin-top: 10px;">🌟 Special Exam Leaderboard & Certificates</button>
             <button onclick="showScreen('screen-student-resources')" style="background: #0284c7; margin-top: 10px;">📖 E-Books & Videos Hub</button>
             <button onclick="showScreen('screen-special-exam-login')" style="background: #475569; margin-top: 10px;">⭐ Special Exam & Short Q/A (Paid/Topper)</button>
-            <button onclick="showScreen('screen-admin-login')" style="background: #0f172a; border: 1px solid #334155; margin-top: 15px;">🔐 Admin Login</button>
-            <button onclick="showScreen('screen-teacher-login')" class="btn-secondary" style="margin-top: 10px;">👨‍🏫 Teacher Login</button>
+            
+            <!-- Honouring Our Dedicated Contributors & Teachers Card (Home Screen) -->
+            <div id="home-contributors-card" style="background: #fffbeb; color: #1e293b; border: 2px solid #d97706; padding: 12px; border-radius: 12px; margin: 15px 0; text-align: center; display: none;">
+                <h4 style="color: #b45309; font-size: 12px; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px;">HONOURING OUR DEDICATED CONTRIBUTORS & TEACHERS</h4>
+                <div id="home-contributors-list" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; justify-content: center;"></div>
+                <p id="home-contributors-count" style="font-size: 10px; color: #78350f; margin: 6px 0 0 0; text-align: center;"></p>
+            </div>
+
+            <button onclick="showScreen('screen-admin-login')" style="background: #0f172a; border: 1px solid #334155; margin-top: 10px;">🔐 Admin Login</button>
+            <button onclick="showScreen('screen-teacher-login')" id="teacher-home-btn" style="background-color: #ea580c !important; color: #ffffff !important; margin-top: 10px; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; display: block; text-align: center;">👨‍🏫 Teacher Login</button>
+
         </div>
+    </div>
+
+    <!-- 1.1 STUDENT AUTH / LOGIN & SIGNUP SCREEN -->
+    <div id="screen-student-auth" class="screen">
+        <h2>🎓 Student Portal Access</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px;">
+            <button onclick="switchStudentAuthTab('login')" id="tab-auth-login" style="margin-top:0; background:var(--primary); font-size:13px;">Login with ID</button>
+            <button onclick="switchStudentAuthTab('signup')" id="tab-auth-signup" style="margin-top:0; background:var(--gray); font-size:13px;">New Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="auth-login-box">
+            <div class="form-group"><label>Enter Student ID (e.g. MCQ5993MR)</label><input type="text" id="student-login-id" placeholder="Enter your Student ID"></div>
+            <button onclick="loginWithStudentId()" class="btn-success">Login & Start Quiz</button>
+            <button onclick="showScreen('screen-forgot-id')" style="background:transparent; color:#38bdf8; border:none; margin-top:10px; font-size:13px; text-decoration:underline; cursor:pointer; width:100%;">🔑 Forgot Student ID?</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="auth-signup-box" style="display:none;">
+            <p style="font-size:12px; color:var(--warning); margin-bottom:10px;">Register once to get your unique Student ID!</p>
+            <div class="form-group"><label>FULL NAME </label><input type="text" id="signup-name" placeholder="Enter full name & title"></div>
+            <div class="form-group"><label>Mobile Number (10-digit)</label><input type="tel" id="signup-mobile" placeholder="Mobile number"></div>
+            <div class="form-group"><label>Date of Birth (DOB)</label><input type="date" id="signup-dob"></div>
+            <button onclick="registerNewStudent()" class="btn-success">Generate Student ID</button>
+        </div>
+
+        <button onclick="showScreen('screen-home')" class="btn-secondary" style="margin-top: 15px;">Back to Home</button>
+    </div>
+
+    <!-- 1.2 FORGOT STUDENT ID SCREEN -->
+    <div id="screen-forgot-id" class="screen">
+        <h2>🔑 Recover Student ID</h2>
+        <p>Enter your registered Mobile Number and Date of Birth to find your Student ID.</p>
+        <div class="form-group"><label>Mobile Number</label><input type="tel" id="recovery-mobile" placeholder="Enter 10-digit mobile"></div>
+        <div class="form-group"><label>Date of Birth (DOB)</label><input type="date" id="recovery-dob"></div>
+        <button onclick="recoverStudentId()" class="btn-warning">Find My ID</button>
+        <div id="recovery-result-box" style="margin-top:15px; font-size:13px; text-align:center;"></div>
+        <button onclick="showScreen('screen-student-auth')" class="btn-secondary" style="margin-top: 15px;">Back to Login</button>
     </div>
 
     <!-- 2. FREE MCQ LEADERBOARD SCREEN -->
@@ -174,12 +218,17 @@
         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 12px; color: #fbbf24; margin: 0;">Monthly <strong>Top 10</strong> get Digital Certificates! 1st Topper gets Special Exam Free.</p>
         </div>
-        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-            <button onclick="switchFreeLeaderboardTab('daily')" id="tab-free-daily" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--primary);">Daily Top</button>
-            <button onclick="switchFreeLeaderboardTab('weekly')" id="tab-free-weekly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Weekly Top 5</button>
-            <button onclick="switchFreeLeaderboardTab('monthly')" id="tab-free-monthly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Monthly Top 10</button>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px;">
+            <button onclick="switchFreeLeaderboardTab('daily')" id="tab-free-daily" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--primary);">Today</button>
+            <button onclick="switchFreeLeaderboardTab('weekly')" id="tab-free-weekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Week</button>
+            <button onclick="switchFreeLeaderboardTab('monthly')" id="tab-free-monthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Month</button>
         </div>
-        <div id="free-leaderboard-content" style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 15px;">
+            <button onclick="switchFreeLeaderboardTab('yesterday')" id="tab-free-yesterday" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Yesterday</button>
+            <button onclick="switchFreeLeaderboardTab('lastweekly')" id="tab-free-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Week Top 5</button>
+            <button onclick="switchFreeLeaderboardTab('lastmonthly')" id="tab-free-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Month Top 10</button>
+        </div>
+        <div id="free-leaderboard-content" style="max-height: 220px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
@@ -189,12 +238,17 @@
         <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 12px; color: #c4b5fd; margin: 0;">Monthly <strong>Top 10</strong> get Certificates! 1st & 2nd Toppers get Fee Free.</p>
         </div>
-        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-            <button onclick="switchSpecialLeaderboardTab('daily')" id="tab-special-daily" style="padding: 6px; font-size: 12px; margin-top: 0; background: #7c3aed;">Daily Top</button>
-            <button onclick="switchSpecialLeaderboardTab('weekly')" id="tab-special-weekly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Weekly Top 5</button>
-            <button onclick="switchSpecialLeaderboardTab('monthly')" id="tab-special-monthly" style="padding: 6px; font-size: 12px; margin-top: 0; background: var(--gray);">Monthly Top 10</button>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px;">
+            <button onclick="switchSpecialLeaderboardTab('daily')" id="tab-special-daily" style="padding: 6px; font-size: 11px; margin-top: 0; background: #7c3aed;">Today</button>
+            <button onclick="switchSpecialLeaderboardTab('weekly')" id="tab-special-weekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Week</button>
+            <button onclick="switchSpecialLeaderboardTab('monthly')" id="tab-special-monthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Month</button>
         </div>
-        <div id="special-leaderboard-content" style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 15px;">
+            <button onclick="switchSpecialLeaderboardTab('yesterday')" id="tab-special-yesterday" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Yesterday</button>
+            <button onclick="switchSpecialLeaderboardTab('lastweekly')" id="tab-special-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Week Top 5</button>
+            <button onclick="switchSpecialLeaderboardTab('lastmonthly')" id="tab-special-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Month Top 10</button>
+        </div>
+        <div id="special-leaderboard-content" style="max-height: 220px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
@@ -202,25 +256,26 @@
     <div id="screen-certificate" class="screen">
         <h2>📜 Certificate of Achievement</h2>
         <div id="certificate-box" style="background: #fffbeb; color: #1e293b; border: 4px double #d97706; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-            <h3 id="cert-academy-title" style="color: #b45309; font-size: 16px; margin-bottom: 5px;">DARWIN ACADEMY</h3>
+            <h3 id="cert-academy-title" style="color: #b45309; font-size: 16px; margin-bottom: 5px;">DARWIN MCQ</h3>
             <p style="font-size: 11px; color: #78350f; margin-bottom: 15px;">Kamalabari, Barpeta, Assam</p>
             <p style="font-size: 12px; margin-bottom: 5px; color: #1e293b;">This is proudly presented to</p>
             <h2 id="cert-student-name" style="color: #1e293b; font-size: 20px; border-bottom: 2px solid #cbd5e1; display: inline-block; padding-bottom: 2px; margin-bottom: 10px;">Student Name</h2>
-            <p style="font-size: 12px; line-height: 1.5; color: #1e293b;">For securing <strong id="cert-rank-text" style="color: var(--primary);">Rank #1</strong> in the Monthly Leaderboard with an outstanding score of <strong id="cert-score-text">50</strong> marks!</p>
+            <p style="font-size: 12px; line-height: 1.5; color: #1e293b;">For securing <strong id="cert-rank-text" style="color: var(--primary);">Rank #1</strong> in the Leaderboard with an outstanding score of <strong id="cert-score-text">50</strong> marks!</p>
             <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; color: #64748b;">
                 <span>Date: <span id="cert-date">2026-11</span></span>
-                <span><strong>Principal / Admin</strong><br><span id="cert-academy-sig">Darwin Academy</span></span>
+                <span><strong>Principal / Admin</strong><br><span id="cert-academy-sig">DARWIN MCQ</span></span>
             </div>
         </div>
         <button onclick="window.print()" class="btn-success" style="margin-bottom: 8px;">🖨️ Print / Save Certificate</button>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 5. FREE MCQ TEST SCREEN -->
+    <!-- 5. FREE MCQ TEST SETUP SCREEN -->
     <div id="screen-free-mcq" class="screen">
         <h2>📚 Free MCQ Practice</h2>
-        <div class="form-group"><label>Student Name</label><input type="text" id="quiz-student-name" placeholder="Enter your full name"></div>
-        <div class="form-group"><label>Mobile Number (For Reward)</label><input type="tel" id="quiz-student-mobile" placeholder="10-digit mobile"></div>
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid var(--primary); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+            <p style="font-size: 12px; color: #38bdf8; margin: 0;">Logged in: <strong id="loggedInStudentDisplay">-</strong></p>
+        </div>
         <div class="form-group"><label>Class</label><select id="free-class" onchange="populateStudentFreeSubjectFilter()"></select></div>
         <div class="form-group"><label>Subject</label><select id="free-subject" onchange="populateStudentFreeChapterFilter()"></select></div>
         <div class="form-group"><label>Chapter Filter</label><select id="free-chapter"><option value="ALL">All Chapters (Full Practice)</option></select></div>
@@ -234,7 +289,7 @@
             <h2 id="quiz-heading" style="margin: 0; font-size: 18px;">Quiz Ongoing</h2>
             <div id="quiz-timer-box" style="background: #334155; color: #f87171; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 14px;">⏱️ <span id="timer-display">00:00</span></div>
         </div>
-        <div id="quiz-question-box" style="background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 600;">Loading...</div>
+        <div id="quiz-question-box" style="background: #1e293b;color: #facc15;padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 600;">Loading...</div>
         <div id="quiz-options-box"></div>
         <button id="next-quiz-btn" onclick="nextQuizQuestion()" style="display: none;" class="btn-success">Next Question</button>
     </div>
@@ -327,8 +382,11 @@
     <!-- 14. TEACHER LOGIN -->
     <div id="screen-teacher-login" class="screen">
         <h2>Teacher Login</h2>
-        <div class="form-group"><label>Teacher PIN</label><input type="password" id="teacher-pin-input" placeholder="Enter your PIN"></div>
-        <button onclick="verifyTeacherPin()">Login as Teacher</button>
+        <div class="form-group">
+            <label>Teacher PIN</label>
+            <input type="password" id="teacher-pin-input" placeholder="Enter your PIN">
+        </div>
+        <button onclick="verifyTeacherPin()" style="background-color: #ea580c !important; color: #ffffff !important; padding: 12px; border-radius: 6px; font-weight: bold; border: none; width: 100%;">Login as Teacher</button>
         <a href="#" class="back-link" onclick="showScreen('screen-home')">← Back to Home</a>
     </div>
 
@@ -339,6 +397,27 @@
         <!-- SMS / Notification Alert Center -->
         <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 13px; color: #f87171; margin: 0;">🔔 <strong>Notifications / Alerts:</strong> <span id="admin-alert-badge" style="background:#dc2626; color:white; padding:2px 6px; border-radius:10px; font-size:11px;">0 Alerts</span></p>
+        </div>
+
+        <!-- Honouring Teachers / Contributors Management Section -->
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🌟 Manage Contributors & Teachers (Home Card)</h3>
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #fbbf24;">
+                    <input type="checkbox" id="admin-hide-contributors-card" onchange="saveContributorCardVisibility()" style="width: auto;"> <strong>Hide this section from Home Screen</strong>
+                </label>
+            </div>
+            
+            <input type="hidden" id="admin-edit-contrib-id" value="">
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher Name</label><input type="text" id="admin-contrib-name" placeholder="Teacher name"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Subject / Role (e.g. Math & Science)</label><input type="text" id="admin-contrib-role" placeholder="Subject"></div>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px; color: #38bdf8;">Upload Teacher Photo from Gallery</label>
+                <input type="file" id="admin-contrib-file" accept="image/*" style="font-size: 11px; padding: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Photo Image URL</label><input type="text" id="admin-contrib-img" placeholder="Paste image link"></div>
+            <button onclick="saveFeaturedContributor()" style="padding: 6px; font-size: 13px; background: #d97706;" id="admin-contrib-save-btn">Add to Home Display</button>
+            <div id="admin-contributors-list-box" style="max-height: 140px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px; background: #0f172a; padding: 6px; border-radius: 6px;"></div>
         </div>
 
         <!-- Add & Manage Classes & Subjects Master Setup -->
@@ -418,11 +497,15 @@
             </div>
         </div>
 
-        <!-- Academy Name & Logo Settings Section -->
+        <!-- Academy Name & Logo Settings Section (With Gallery Upload) -->
         <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Academy Name & Logo Settings</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy / Institution Name</label><input type="text" id="admin-academy-name-input" value="Darwin Academy"></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Logo Image URL (Optional)</label><input type="text" id="admin-academy-logo-input" placeholder="Paste logo image link here"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy / Institution Name</label><input type="text" id="admin-academy-name-input" value="DARWIN MCQ"></div>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px; color: #38bdf8;">Upload Logo from Gallery</label>
+                <input type="file" id="admin-logo-file" accept="image/*" style="font-size: 11px; padding: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Logo Image URL</label><input type="text" id="admin-academy-logo-input" placeholder="Paste logo image link here"></div>
             <button onclick="saveAcademyBranding()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Name & Logo</button>
             <button onclick="removeAcademyLogo()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 4px;">Remove Logo</button>
         </div>
@@ -646,8 +729,12 @@
     let currentQuestionType = 'MCQ';
     let loggedInRole = 'TEACHER';
     let currentTeacherIndex = 0;
+    
+    let currentStudentId = "";
     let currentStudentName = "Student";
     let currentStudentMobile = "9876543210";
+    
+    let registeredStudentsDatabase = {};
     
     let specialExamFee = 10;
     let specialExamMode = "auto";
@@ -663,7 +750,7 @@
         chapterLimit: "1" 
     };
 
-    let academyBranding = { name: "Darwin Academy", logoUrl: "" };
+    let academyBranding = { name: "DARWIN MCQ", logoUrl: "" };
     let testSettings = { questionCount: 5, timerMinutes: 10 };
     
     let timerInterval = null;
@@ -675,6 +762,14 @@
         { id: 2, title: "Academy Reference Book", points: 400, imgUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
         { id: 3, title: "Stylish School Bag", points: 800, imgUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300" }
     ];
+
+    let contributorSettings = { hidden: false };
+    let featuredContributors = [
+        { id: 1, name: "Rahman", role: "Chemistry & Short QA Guru", imgUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" },
+        { id: 2, name: "Dewan", role: "Physics & History Specialist", imgUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" },
+        { id: 3, name: "Ayesha Siddika", role: "Biology & Resource Expert", imgUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" }
+    ];
+
     let approvedMobileNumbers = ["9876543210"];
     let pendingRequests = [];
     let paymentSettings = { upi: "darwinacademy@upi", qrUrl: "" };
@@ -687,6 +782,14 @@
 
     let freeLeaderboardDatabase = [];
     let specialLeaderboardDatabase = [];
+    
+    let pastFreeYesterday = [];
+    let pastFreeLastWeekly = [];
+    let pastFreeLastMonthly = [];
+    let pastSpecialYesterday = [];
+    let pastSpecialLastWeekly = [];
+    let pastSpecialLastMonthly = [];
+
     let questionDatabase = [];
     let trashDatabase = [];
     let trashClassesSubjects = [];
@@ -700,7 +803,7 @@
     let isSpecialExamMode = false;
 
     function loadDataFromFirebase() {
-        db.ref('academy').on('value', (snapshot) => {
+        db.ref('darwin_mcq_app').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
                 if(data.branding) academyBranding = data.branding;
@@ -711,12 +814,23 @@
                 if(data.testSettings) testSettings = data.testSettings;
                 if(data.teachers) teachersDatabase = data.teachers;
                 if(data.teacherGiftRewards) teacherGiftRewards = data.teacherGiftRewards;
+                if(data.contributorSettings) contributorSettings = data.contributorSettings;
+                if(data.featuredContributors) featuredContributors = data.featuredContributors;
+                if(data.registeredStudents) registeredStudentsDatabase = data.registeredStudents;
                 if(data.approvedMobiles) approvedMobileNumbers = data.approvedMobiles;
                 if(data.pendingRequests) pendingRequests = data.pendingRequests;
                 if(data.payment) paymentSettings = data.payment;
                 if(data.chapters) chaptersDatabase = data.chapters;
                 if(data.freeLeaderboard) freeLeaderboardDatabase = data.freeLeaderboard;
                 if(data.specialLeaderboard) specialLeaderboardDatabase = data.specialLeaderboard;
+                
+                if(data.pastFreeYesterday) pastFreeYesterday = data.pastFreeYesterday;
+                if(data.pastFreeLastWeekly) pastFreeLastWeekly = data.pastFreeLastWeekly;
+                if(data.pastFreeLastMonthly) pastFreeLastMonthly = data.pastFreeLastMonthly;
+                if(data.pastSpecialYesterday) pastSpecialYesterday = data.pastSpecialYesterday;
+                if(data.pastSpecialLastWeekly) pastSpecialLastWeekly = data.pastSpecialLastWeekly;
+                if(data.pastSpecialLastMonthly) pastSpecialLastMonthly = data.pastSpecialLastMonthly;
+
                 if(data.questions) questionDatabase = data.questions;
                 if(data.trash) trashDatabase = data.trash;
                 if(data.trashClassesSubjects) trashClassesSubjects = data.trashClassesSubjects;
@@ -725,11 +839,12 @@
                 if(data.videos) videoDatabase = data.videos;
             }
             updateAcademyBrandingUI();
+            renderHomeContributorsUI();
         });
     }
 
     function syncToFirebase() {
-        db.ref('academy').set({
+        db.ref('darwin_mcq_app').set({
             branding: academyBranding,
             fee: specialExamFee,
             specialMode: specialExamMode,
@@ -738,12 +853,17 @@
             testSettings: testSettings,
             teachers: teachersDatabase,
             teacherGiftRewards: teacherGiftRewards,
+            contributorSettings: contributorSettings,
+            featuredContributors: featuredContributors,
+            registeredStudents: registeredStudentsDatabase,
             approvedMobiles: approvedMobileNumbers,
             pendingRequests: pendingRequests,
             payment: paymentSettings,
             chapters: chaptersDatabase,
             freeLeaderboard: freeLeaderboardDatabase,
             specialLeaderboard: specialLeaderboardDatabase,
+            pastFreeYesterday, pastFreeLastWeekly, pastFreeLastMonthly,
+            pastSpecialYesterday, pastSpecialLastWeekly, pastSpecialLastMonthly,
             questions: questionDatabase,
             trash: trashDatabase,
             trashClassesSubjects: trashClassesSubjects,
@@ -760,25 +880,256 @@
         document.getElementById('cert-academy-sig').innerText = academyBranding.name;
         const logoBox = document.getElementById('home-logo-container');
         if(academyBranding.logoUrl) {
-            logoBox.innerHTML = `<img src="${academyBranding.logoUrl}" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">`;
+            logoBox.innerHTML = `<img src="${academyBranding.logoUrl}" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">`;
         } else {
             logoBox.innerHTML = '';
         }
     }
 
+    function renderHomeContributorsUI() {
+        const cardBox = document.getElementById('home-contributors-card');
+        const listContainer = document.getElementById('home-contributors-list');
+        const countContainer = document.getElementById('home-contributors-count');
+        
+        if(contributorSettings.hidden) {
+            cardBox.style.display = 'none';
+            return;
+        } else {
+            cardBox.style.display = 'block';
+        }
+
+        if(!featuredContributors || featuredContributors.length === 0) {
+            listContainer.innerHTML = '<p style="font-size:11px; color:#78350f;">No contributors added yet.</p>';
+            countContainer.innerText = '';
+            return;
+        }
+
+        listContainer.innerHTML = featuredContributors.map(c => `
+            <div style="min-width: 85px; text-align: center; background: #fff; padding: 6px 4px; border-radius: 8px; border: 1px solid #fde68a;">
+                <img src="${c.imgUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #d97706; margin-bottom: 3px;">
+                <div style="font-size: 10px; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.name}</div>
+                <div style="font-size: 8px; color: #78350f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.role}</div>
+            </div>
+        `).join('');
+
+        countContainer.innerText = `(Total ${featuredContributors.length} Active Contributors)`;
+    }
+
+    function switchStudentAuthTab(tab) {
+        document.getElementById('tab-auth-login').style.background = (tab === 'login') ? 'var(--primary)' : 'var(--gray)';
+        document.getElementById('tab-auth-signup').style.background = (tab === 'signup') ? 'var(--primary)' : 'var(--gray)';
+        document.getElementById('auth-login-box').style.display = (tab === 'login') ? 'block' : 'none';
+        document.getElementById('auth-signup-box').style.display = (tab === 'signup') ? 'block' : 'none';
+    }
+
+    function registerNewStudent() {
+        const name = document.getElementById('signup-name').value.trim();
+        const mobile = document.getElementById('signup-mobile').value.trim();
+        const dob = document.getElementById('signup-dob').value;
+
+        if(!name || !mobile || mobile.length < 10 || !dob) {
+            alert('Please enter full name, 10-digit mobile number, and Date of Birth!');
+            return;
+        }
+
+        let existingId = Object.keys(registeredStudentsDatabase).find(id => registeredStudentsDatabase[id].mobile === mobile);
+        if(existingId) {
+            alert(`You are already registered! Your Student ID is: ${existingId}`);
+            document.getElementById('student-login-id').value = existingId;
+            switchStudentAuthTab('login');
+            return;
+        }
+
+        let last4Mob = mobile.slice(-4);
+        let nameParts = name.split(/\s+/).filter(Boolean);
+        let firstLetter = nameParts[0] ? nameParts[0].charAt(0).toUpperCase() : 'X';
+        let titleLetter = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : 'X';
+        
+        let generatedId = `MCQ${last4Mob}${titleLetter}${firstLetter}`;
+
+        let counter = 1;
+        let baseId = generatedId;
+        while(registeredStudentsDatabase[generatedId]) {
+            generatedId = `${baseId}${counter}`;
+            counter++;
+        }
+
+        registeredStudentsDatabase[generatedId] = { name: name, mobile: mobile, dob: dob };
+        syncToFirebase();
+
+        alert(`Registration Successful!\nYour Student ID is: ${generatedId}\nPlease remember or save this ID for future tests.`);
+        document.getElementById('signup-name').value = '';
+        document.getElementById('signup-mobile').value = '';
+        document.getElementById('signup-dob').value = '';
+        document.getElementById('student-login-id').value = generatedId;
+        switchStudentAuthTab('login');
+    }
+
+    function loginWithStudentId() {
+        const idInput = document.getElementById('student-login-id').value.trim();
+        if(!idInput) {
+            alert('Please enter your Student ID!');
+            return;
+        }
+
+        let student = registeredStudentsDatabase[idInput];
+        if(!student) {
+            alert('Invalid Student ID! Please check your ID or Register first.');
+            return;
+        }
+
+        currentStudentId = idInput;
+        currentStudentName = student.name;
+        currentStudentMobile = student.mobile;
+
+        document.getElementById('loggedInStudentDisplay').innerText = `${currentStudentName} (ID: ${currentStudentId})`;
+        document.getElementById('student-login-id').value = '';
+        showScreen('screen-free-mcq');
+    }
+
+    function recoverStudentId() {
+        const mobileInput = document.getElementById('recovery-mobile').value.trim();
+        const dobInput = document.getElementById('recovery-dob').value;
+        const resBox = document.getElementById('recovery-result-box');
+        
+        if(!mobileInput || !dobInput) {
+            alert('Please enter both mobile number and Date of Birth!');
+            return;
+        }
+
+        let foundId = Object.keys(registeredStudentsDatabase).find(id => {
+            let st = registeredStudentsDatabase[id];
+            return st.mobile === mobileInput && st.dob === dobInput;
+        });
+
+        if(foundId) {
+            let st = registeredStudentsDatabase[foundId];
+            resBox.innerHTML = `<div style="background:#0f172a; border:1px solid #16a34a; padding:10px; border-radius:6px; color:#4ade80;">Found! Name: <strong>${st.name}</strong><br>Student ID: <strong style="font-size:16px; color:#38bdf8;">${foundId}</strong></div>`;
+        } else {
+            resBox.innerHTML = `<p style="color:#ef4444;">No student found matching this Mobile Number and Date of Birth.</p>`;
+        }
+    }
+
+    function saveContributorCardVisibility() {
+        contributorSettings.hidden = document.getElementById('admin-hide-contributors-card').checked;
+        syncToFirebase();
+        renderHomeContributorsUI();
+    }
+
+    function saveFeaturedContributor() {
+        const editId = document.getElementById('admin-edit-contrib-id').value;
+        const name = document.getElementById('admin-contrib-name').value.trim();
+        const role = document.getElementById('admin-contrib-role').value.trim();
+        const linkImg = document.getElementById('admin-contrib-img').value.trim();
+        const fileInput = document.getElementById('admin-contrib-file');
+
+        if(!name || !role) { alert('Enter teacher name and subject/role!'); return; }
+
+        if(fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processContributorSave(editId, name, role, e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            let defaultImg = linkImg || (editId ? featuredContributors.find(c => c.id == editId).imgUrl : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150");
+            processContributorSave(editId, name, role, defaultImg);
+        }
+    }
+
+    function processContributorSave(editId, name, role, imgUrl) {
+        if(editId) {
+            let item = featuredContributors.find(c => c.id == editId);
+            if(item) {
+                item.name = name;
+                item.role = role;
+                item.imgUrl = imgUrl;
+            }
+            document.getElementById('admin-edit-contrib-id').value = '';
+            document.getElementById('admin-contrib-save-btn').innerText = 'Add to Home Display';
+        } else {
+            featuredContributors.push({ id: Date.now(), name, role, imgUrl });
+        }
+        syncToFirebase();
+        clearContribForm();
+        renderAdminContributorsList();
+        alert('Contributor saved successfully!');
+    }
+
+    function editFeaturedContributor(id) {
+        let c = featuredContributors.find(item => item.id == id);
+        if(!c) return;
+        document.getElementById('admin-edit-contrib-id').value = c.id;
+        document.getElementById('admin-contrib-name').value = c.name;
+        document.getElementById('admin-contrib-role').value = c.role;
+        document.getElementById('admin-contrib-img').value = c.imgUrl;
+        document.getElementById('admin-contrib-save-btn').innerText = 'Update Contributor';
+    }
+
+    function clearContribForm() {
+        document.getElementById('admin-contrib-name').value = '';
+        document.getElementById('admin-contrib-role').value = '';
+        document.getElementById('admin-contrib-img').value = '';
+        document.getElementById('admin-contrib-file').value = '';
+        document.getElementById('admin-edit-contrib-id').value = '';
+        document.getElementById('admin-contrib-save-btn').innerText = 'Add to Home Display';
+    }
+
+    function renderAdminContributorsList() {
+        const container = document.getElementById('admin-contributors-list-box');
+        if(!container) return;
+        container.innerHTML = featuredContributors.map((c) => `
+            <div style="border-bottom: 1px solid #475569; padding-bottom: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <img src="${c.imgUrl}" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover;">
+                    <span><strong>${c.name}</strong> (${c.role})</span>
+                </div>
+                <div style="display:flex; gap:4px;">
+                    <button onclick="editFeaturedContributor(${c.id})" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--primary);">Edit</button>
+                    <button onclick="deleteFeaturedContributor(${c.id})" class="btn-danger" style="padding: 2px 6px; font-size: 10px; width: auto;">Remove</button>
+                </div>
+            </div>
+        `).join('') || '<p style="color:var(--gray);">No contributors added.</p>';
+    }
+
+    function deleteFeaturedContributor(id) {
+        if(!confirm('Remove this contributor from home display?')) return;
+        let index = featuredContributors.findIndex(c => c.id == id);
+        if(index !== -1) {
+            featuredContributors.splice(index, 1);
+            syncToFirebase();
+            renderAdminContributorsList();
+        }
+    }
+
     function saveAcademyBranding() {
         const name = document.getElementById('admin-academy-name-input').value.trim();
-        const logoUrl = document.getElementById('admin-academy-logo-input').value.trim();
+        const linkImg = document.getElementById('admin-academy-logo-input').value.trim();
+        const fileInput = document.getElementById('admin-logo-file');
+
         if(!name) { alert('Academy name cannot be empty!'); return; }
-        academyBranding.name = name;
-        academyBranding.logoUrl = logoUrl;
-        syncToFirebase();
-        alert('Academy Name & Logo successfully updated and saved to Cloud!');
+
+        if(fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                academyBranding.name = name;
+                academyBranding.logoUrl = e.target.result;
+                syncToFirebase();
+                alert('Portal Name & Logo successfully uploaded and saved!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            academyBranding.name = name;
+            if(linkImg) academyBranding.logoUrl = linkImg;
+            syncToFirebase();
+            alert('Portal Name & Logo updated successfully!');
+        }
     }
 
     function removeAcademyLogo() {
         academyBranding.logoUrl = "";
         document.getElementById('admin-academy-logo-input').value = "";
+        document.getElementById('admin-logo-file').value = "";
         syncToFirebase();
         alert('Logo removed successfully!');
     }
@@ -787,6 +1138,7 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         updateAcademyBrandingUI();
+        renderHomeContributorsUI();
 
         if(screenId !== 'screen-quiz-play' && timerInterval) clearInterval(timerInterval);
 
@@ -801,7 +1153,14 @@
         } else if(screenId === 'screen-student-resources') {
             renderStudentResources();
         } else if(screenId === 'screen-free-mcq') {
+            if(!currentStudentId) {
+                alert('Please login with your Student ID first!');
+                showScreen('screen-student-auth');
+                return;
+            }
             populateStudentFreeClassFilter();
+        } else if(screenId === 'screen-student-auth') {
+            switchStudentAuthTab('login');
         } else if(screenId === 'screen-student-short-qa') {
             populateStudentShortChapterFilter();
         } else if(screenId === 'screen-special-exam-setup') {
@@ -810,6 +1169,7 @@
             renderPendingRequests();
             renderAdminTeacherManageList();
             renderAdminGiftsList();
+            renderAdminContributorsList();
             populateAdminTeacherDropdown();
             populateAdminSpecialStudentsDropdown();
             populateAdminMasterDropdowns();
@@ -825,6 +1185,7 @@
             document.getElementById('admin-academy-logo-input').value = academyBranding.logoUrl;
             document.getElementById('setting-q-count').value = testSettings.questionCount;
             document.getElementById('setting-timer').value = testSettings.timerMinutes;
+            document.getElementById('admin-hide-contributors-card').checked = contributorSettings.hidden;
         } else if(screenId === 'screen-teacher-dash') {
             let t = teachersDatabase[currentTeacherIndex];
             document.getElementById('teacher-points-display').innerText = t.points;
@@ -846,7 +1207,6 @@
         }
     }
 
-    // TEACHER PROFILE & UPI SETTINGS
     function saveTeacherProfile() {
         let t = teachersDatabase[currentTeacherIndex];
         t.name = document.getElementById('teacher-profile-name').value.trim() || t.name;
@@ -856,7 +1216,6 @@
         alert('Profile & UPI ID successfully updated!');
     }
 
-    // ADMIN TEACHER DROPDOWN VIEWER
     function populateAdminTeacherDropdown() {
         const select = document.getElementById('admin-teacher-dropdown');
         select.innerHTML = '<option value="">-- Choose Teacher --</option>';
@@ -882,7 +1241,6 @@
         detailsBox.style.display = 'block';
     }
 
-    // GIFT REWARDS MANAGEMENT WITH DIRECT GALLERY UPLOAD
     function addNewGiftReward() {
         const title = document.getElementById('admin-gift-title').value.trim();
         const linkImg = document.getElementById('admin-gift-img').value.trim();
@@ -921,6 +1279,7 @@
 
     function renderAdminGiftsList() {
         const container = document.getElementById('admin-gifts-list-box');
+        if(!container) return;
         container.innerHTML = teacherGiftRewards.map((g, idx) => `
             <div style="border-bottom:1px solid #bbf7d0; padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:6px; align-items:center;">
@@ -990,7 +1349,6 @@
         }
     }
 
-    // MASTER CLASS & SUBJECT MANAGEMENT (Add, Edit, Hide, Delete -> Trash Bin)
     function addNewClassMaster() {
         const clsName = document.getElementById('admin-new-class-input').value.trim();
         if(!clsName) { alert('Enter class name!'); return; }
@@ -1159,7 +1517,6 @@
         alert('Free Subject & Chapter Access Settings saved successfully!');
     }
 
-    // CHAPTER MANAGEMENT FUNCTIONS WITH EDIT, HIDE & DELETE
     function saveAdminChapter() {
         const cls = document.getElementById('adm-ch-class').value;
         const sub = document.getElementById('adm-ch-subject').value;
@@ -1233,7 +1590,6 @@
         }
     }
 
-    // STUDENT DYNAMIC DROPDOWNS (Excluding Hidden Classes/Subjects/Chapters)
     function populateStudentFreeClassFilter() {
         const clsSelect = document.getElementById('free-class');
         let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
@@ -1327,7 +1683,6 @@
         checkboxes.forEach(chk => chk.checked = master.checked);
     }
 
-    // QUESTION ADD DROPDOWN SETUP
     function populateQuestionClassDropdown() {
         const qClsSel = document.getElementById('q-class');
         let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
@@ -1356,7 +1711,6 @@
         select.innerHTML = html;
     }
 
-    // ADMIN TRASH BIN (PIN Protected)
     function verifyTrashPin() {
         const pinVal = document.getElementById('trash-auth-pin').value;
         if(pinVal === ADMIN_SECRET_PIN) {
@@ -1443,7 +1797,6 @@
         renderTrashBinsContent();
     }
 
-    // OTHER ADMIN / TEACHER SETTINGS
     function saveSpecialExamFee() {
         const val = parseInt(document.getElementById('admin-fee-input').value);
         if(isNaN(val) || val < 0) { alert('Valid amount diok!'); return; }
@@ -1458,6 +1811,7 @@
         alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
     }
 
+    // Teacher special exam mode fix added here
     function saveSpecialExamModeSettingTeacher() {
         specialExamMode = document.getElementById('teacher-special-mode-select').value;
         syncToFirebase();
@@ -1489,43 +1843,87 @@
     }
 
     function switchFreeLeaderboardTab(type) {
-        document.getElementById('tab-free-daily').style.background = type === 'daily' ? 'var(--primary)' : 'var(--gray)';
-        document.getElementById('tab-free-weekly').style.background = type === 'weekly' ? 'var(--primary)' : 'var(--gray)';
-        document.getElementById('tab-free-monthly').style.background = type === 'monthly' ? 'var(--primary)' : 'var(--gray)';
+        ['daily', 'weekly', 'monthly', 'yesterday', 'lastweekly', 'lastmonthly'].forEach(t => {
+            let btn = document.getElementById(`tab-free-${t}`);
+            if(btn) btn.style.background = (t === type) ? 'var(--primary)' : 'var(--gray)';
+        });
 
         const container = document.getElementById('free-leaderboard-content');
-        let sorted = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let limit = type === 'weekly' ? 5 : (type === 'monthly' ? 10 : 1);
-        let sliced = sorted.slice(0, limit);
-        if(sliced.length === 0) { container.innerHTML = `<p style="color: var(--gray);">No records found.</p>`; return; }
+        let dataToRender = [];
+        let titleTxt = "";
 
-        let titleTxt = type === 'daily' ? "🥇 Today's Free Topper" : (type === 'weekly' ? "🏆 Weekly Top 5" : "🌟 Monthly Top 10");
+        if(type === 'daily') {
+            titleTxt = "🥇 Today's Free Topper";
+            dataToRender = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 1);
+        } else if(type === 'weekly') {
+            titleTxt = "🏆 This Week Top 5";
+            dataToRender = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 5);
+        } else if(type === 'monthly') {
+            titleTxt = "🌟 This Month Top 10";
+            dataToRender = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 10);
+        } else if(type === 'yesterday') {
+            titleTxt = "🥇 Yesterday's Free Topper";
+            dataToRender = pastFreeYesterday;
+        } else if(type === 'lastweekly') {
+            titleTxt = "🏆 Last Week Top 5";
+            dataToRender = pastFreeLastWeekly;
+        } else if(type === 'lastmonthly') {
+            titleTxt = "🌟 Last Month Top 10";
+            dataToRender = pastFreeLastMonthly;
+        }
+
+        if(!dataToRender || dataToRender.length === 0) { 
+            container.innerHTML = `<h3 style="font-size: 14px; color: var(--primary); text-align: left; margin-bottom: 8px;">${titleTxt}</h3><p style="color: var(--gray);">No records found.</p>`; 
+            return; 
+        }
+
         let html = `<h3 style="font-size: 14px; color: var(--primary); text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
-        sliced.forEach((item, idx) => {
-            let certBtn = (type === 'monthly' && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
-            let topperBadge = (type === 'monthly' && idx === 0) ? ` <span style="background: #fef08a; color: #854d0e; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold;">🎉 Special Exam Free</span>` : '';
-            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong>${topperBadge}</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+        dataToRender.forEach((item, idx) => {
+            let certBtn = ((type === 'monthly' || type === 'lastmonthly') && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
+            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong> (${item.studentId || '-'})</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
         });
         container.innerHTML = html;
     }
 
     function switchSpecialLeaderboardTab(type) {
-        document.getElementById('tab-special-daily').style.background = type === 'daily' ? '#7c3aed' : 'var(--gray)';
-        document.getElementById('tab-special-weekly').style.background = type === 'weekly' ? '#7c3aed' : 'var(--gray)';
-        document.getElementById('tab-special-monthly').style.background = type === 'monthly' ? '#7c3aed' : 'var(--gray)';
+        ['daily', 'weekly', 'monthly', 'yesterday', 'lastweekly', 'lastmonthly'].forEach(t => {
+            let btn = document.getElementById(`tab-special-${t}`);
+            if(btn) btn.style.background = (t === type) ? '#7c3aed' : 'var(--gray)';
+        });
 
         const container = document.getElementById('special-leaderboard-content');
-        let sorted = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let limit = type === 'weekly' ? 5 : (type === 'monthly' ? 10 : 1);
-        let sliced = sorted.slice(0, limit);
-        if(sliced.length === 0) { container.innerHTML = `<p style="color: var(--gray);">No records found.</p>`; return; }
+        let dataToRender = [];
+        let titleTxt = "";
 
-        let titleTxt = type === 'daily' ? "🥇 Today's Special Topper" : (type === 'weekly' ? "🏆 Weekly Top 5" : "🌟 Monthly Top 10");
+        if(type === 'daily') {
+            titleTxt = "🥇 Today's Special Topper";
+            dataToRender = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 1);
+        } else if(type === 'weekly') {
+            titleTxt = "🏆 This Week Top 5";
+            dataToRender = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 5);
+        } else if(type === 'monthly') {
+            titleTxt = "🌟 This Month Top 10";
+            dataToRender = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score).slice(0, 10);
+        } else if(type === 'yesterday') {
+            titleTxt = "🥇 Yesterday's Special Topper";
+            dataToRender = pastSpecialYesterday;
+        } else if(type === 'lastweekly') {
+            titleTxt = "🏆 Last Week Top 5";
+            dataToRender = pastSpecialLastWeekly;
+        } else if(type === 'lastmonthly') {
+            titleTxt = "🌟 Last Month Top 10";
+            dataToRender = pastSpecialLastMonthly;
+        }
+
+        if(!dataToRender || dataToRender.length === 0) { 
+            container.innerHTML = `<h3 style="font-size: 14px; color: #7c3aed; text-align: left; margin-bottom: 8px;">${titleTxt}</h3><p style="color: var(--gray);">No records found.</p>`; 
+            return; 
+        }
+
         let html = `<h3 style="font-size: 14px; color: #7c3aed; text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
-        sliced.forEach((item, idx) => {
-            let certBtn = (type === 'monthly' && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
-            let topperBadge = (type === 'monthly' && (idx === 0 || idx === 1)) ? ` <span style="background: #fef08a; color: #854d0e; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold;">🎉 Fee Free</span>` : '';
-            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong>${topperBadge}</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+        dataToRender.forEach((item, idx) => {
+            let certBtn = ((type === 'monthly' || type === 'lastmonthly') && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
+            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong></span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -1553,7 +1951,6 @@
         alert('Settings updated successfully!');
     }
 
-    // TEACHER BLOCK, UNBLOCK & DELETE FUNCTIONS
     function toggleBlockTeacher(index) {
         let t = teachersDatabase[index];
         if(!t.status) t.status = "active";
@@ -1814,8 +2211,11 @@
     }
 
     function startFreeQuiz() {
-        currentStudentName = document.getElementById('quiz-student-name').value.trim() || "Student";
-        currentStudentMobile = document.getElementById('quiz-student-mobile').value.trim() || "9876543210";
+        if(!currentStudentId) {
+            alert('Please login with your Student ID first!');
+            showScreen('screen-student-auth');
+            return;
+        }
         isSpecialExamMode = false;
         const cls = document.getElementById('free-class').value;
         const sub = document.getElementById('free-subject').value;
@@ -1903,10 +2303,10 @@
         const total = activeQuizQuestions.length * 10;
         const pct = total > 0 ? Math.round((scoreCount / total) * 100) : 0;
         if(!isSpecialExamMode) {
-            freeLeaderboardDatabase.push({ name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
+            freeLeaderboardDatabase.push({ studentId: currentStudentId, name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
             document.getElementById('result-leaderboard-btn').setAttribute("onclick", "showScreen('screen-free-leaderboard')");
         } else {
-            specialLeaderboardDatabase.push({ name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
+            specialLeaderboardDatabase.push({ studentId: currentStudentId, name: currentStudentName, mobile: currentStudentMobile, score: scoreCount, date: new Date().toISOString() });
             document.getElementById('result-leaderboard-btn').setAttribute("onclick", "showScreen('screen-special-leaderboard')");
         }
         syncToFirebase();
