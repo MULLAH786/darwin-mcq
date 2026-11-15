@@ -775,7 +775,7 @@
     ];
 
     let contributorSettings = { hidden: false };
-    let resourcesButtonSettings = { hidden: false }; // E-Books & Videos Hub visibility setting
+    let resourcesButtonSettings = { hidden: false };
 
     let featuredContributors = [
         { id: 1, name: "Rahman", role: "Chemistry & Short QA Guru", imgUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" },
@@ -1194,7 +1194,7 @@
         } else if(screenId === 'screen-student-short-qa') {
             populateStudentShortChapterFilter();
         } else if(screenId === 'screen-special-exam-setup') {
-            populateSpecialExamSubjectsAndChapters();
+            populateSpecialExamClasses(); // <--- Updated initialization call
         } else if(screenId === 'screen-admin-dash') {
             renderPendingRequests();
             renderAdminTeacherManageList();
@@ -1780,12 +1780,41 @@
         renderStudentShortQA();
     }
 
+    // --- UPDATED SPECIAL EXAM SETUP FUNCTIONS ---
+    function populateSpecialExamClasses() {
+        const clsSelect = document.getElementById('special-sel-class');
+        let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
+        
+        if(keys.length === 0) {
+            clsSelect.innerHTML = '<option value="">No Classes Available</option>';
+            document.getElementById('special-sel-subject').innerHTML = '<option value="">No Subjects Available</option>';
+            document.getElementById('special-chapters-checkbox-container').innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found.</p>';
+            return;
+        }
+
+        clsSelect.innerHTML = keys.map(k => `<option value="${k}">Class ${k}</option>`).join('');
+        populateSpecialExamSubjectsAndChapters();
+    }
+
     function populateSpecialExamSubjectsAndChapters() {
         const cls = document.getElementById('special-sel-class').value;
         const subSelect = document.getElementById('special-sel-subject');
-        if(!cls || !classesAndSubjectsData[cls]) { subSelect.innerHTML = ''; return; }
+        
+        if(!cls || !classesAndSubjectsData[cls]) { 
+            subSelect.innerHTML = '<option value="">No Subjects Available</option>'; 
+            document.getElementById('special-chapters-checkbox-container').innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found.</p>';
+            return; 
+        }
+
         let subsObj = classesAndSubjectsData[cls].subjects || {};
         let subs = Object.keys(subsObj).filter(s => !subsObj[s].hidden);
+        
+        if(subs.length === 0) {
+            subSelect.innerHTML = '<option value="">No Subjects Available</option>';
+            document.getElementById('special-chapters-checkbox-container').innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found.</p>';
+            return;
+        }
+
         subSelect.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
         populateSpecialExamChapterCheckboxes();
     }
@@ -1794,6 +1823,11 @@
         const cls = document.getElementById('special-sel-class').value;
         const sub = document.getElementById('special-sel-subject').value;
         const container = document.getElementById('special-chapters-checkbox-container');
+
+        if(!cls || !sub) {
+            container.innerHTML = '<p style="color:var(--gray); font-size:12px;">Please select class and subject.</p>';
+            return;
+        }
 
         let filtered = chaptersDatabase.filter(c => c.class === cls && c.subject === sub && !c.hidden);
         if(filtered.length === 0) {
@@ -1812,6 +1846,7 @@
         const checkboxes = document.querySelectorAll('.special-ch-chk');
         checkboxes.forEach(chk => chk.checked = master.checked);
     }
+    // ----------------------------------------------
 
     function populateQuestionClassDropdown() {
         const qClsSel = document.getElementById('q-class');
