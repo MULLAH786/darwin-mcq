@@ -314,8 +314,8 @@
     <div id="screen-special-exam-login" class="screen">
         <h2>⭐ Paid Special Exam & Short Q/A</h2>
         <p>Login for Paid Students or Toppers</p>
-        <div class="form-group"><label>Student Name</label><input type="text" id="login-student-name" placeholder="Full name"></div>
-        <div class="form-group"><label>Mobile Number</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
+        <div class="form-group"><label>Student Name (Same as Signup)</label><input type="text" id="login-student-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Mobile Number (Same as Signup)</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
         <button onclick="verifyStudentPaidAccess()" class="btn-success">Login to Hub</button>
         <button onclick="showScreen('screen-online-pay')" class="btn-warning" style="margin-top: 8px;"><span id="pay-btn-label">💳 Pay ₹10 Monthly Fee</span></button>
         <button onclick="showScreen('screen-home')" class="back-link">Back to Home</button>
@@ -2276,35 +2276,38 @@
         alert(isApproved ? 'Approved & Student Activated!' : 'Dismissed!');
     }
 
-    // --- STRICT VERIFICATION FOR PAID SPECIAL EXAM LOGIN ---
+    // --- STRICT VERIFICATION: MATCH SIGNUP NAME & MOBILE ---
     function verifyStudentPaidAccess() {
-        const name = document.getElementById('login-student-name').value.trim();
-        const mobile = document.getElementById('login-student-mobile').value.trim();
+        const nameInput = document.getElementById('login-student-name').value.trim().toLowerCase();
+        const mobileInput = document.getElementById('login-student-mobile').value.trim();
         
-        if(!name || !mobile || mobile.length < 10) {
-            alert('অনুগ্ৰহ কৰি সঠিক নাম আৰু ১০-সংখ্যাতকৈ সৰু নোহোৱাকৈ ম’বাইল নম্বৰ বহুৱাওক!');
+        if(!nameInput || !mobileInput || mobileInput.length < 10) {
+            alert('অনুগ্ৰহ কৰি পঞ্জীয়ন কৰা সঠিক নাম আৰু ম’বাইল নম্বৰ বহুৱাওক!');
             return;
         }
 
-        currentStudentName = name;
-        currentStudentMobile = mobile;
+        currentStudentName = document.getElementById('login-student-name').value.trim();
+        currentStudentMobile = mobileInput;
 
-        // Check Free Monthly Leaderboard 1st Topper
+        // Check if student is registered in registeredStudentsDatabase with EXACT name and mobile
+        let isRegisteredMatch = Object.values(registeredStudentsDatabase).some(st => 
+            st.name.trim().toLowerCase() === nameInput && st.mobile.trim() === mobileInput
+        );
+
+        // Check Leaderboard Toppers or Admin Approved Paid Mobile
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobile);
+        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobileInput);
         
-        // Check Special Leaderboard Toppers (1st & 2nd)
         let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobile) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobile));
+        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobileInput) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobileInput));
 
-        // Check Admin Approved Paid Mobile Numbers list
-        let isPaidApproved = approvedMobileNumbers.includes(mobile);
+        let isPaidApproved = approvedMobileNumbers.includes(mobileInput);
 
-        if(isFreeMonthlyFirst || isSpecialTopperFree || isPaidApproved) {
-            alert(`স্বাগত ${name}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
+        if(isRegisteredMatch || isFreeMonthlyFirst || isSpecialTopperFree || isPaidApproved) {
+            alert(`স্বাগত ${currentStudentName}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
             showScreen('screen-paid-student-hub');
         } else {
-            alert('Access Denied! আপুনি দিয়া এই ম’বাইল নম্বৰটোৰ বিপৰীতে কোনো পেমেন্ট অনুমোদন কৰা হোৱা নাই বা লিডাৰবৰ্ডৰ টপাৰ নহয়। অনুগ্ৰহ কৰি সঠিক পেমেন্ট কৰা ম’বাইল নম্বৰ বহুৱাওক বা এডমিনৰ পৰা অনুমোদন লওক।');
+            alert('Access Denied! আপুনি পঞ্জীয়ন কৰা নাম আৰু ম’বাইল নম্বৰ মিল খোৱা নাই, বা পেমেন্ট অনুমোদন কৰা হোৱা নাই। অনুগ্ৰহ কৰি পঞ্জীয়ন কৰা সঠিক নাম আৰু নম্বৰ দিয়ক।');
         }
     }
     // --------------------------------------------------------
