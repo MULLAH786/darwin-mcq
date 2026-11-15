@@ -1194,7 +1194,7 @@
         } else if(screenId === 'screen-student-short-qa') {
             populateStudentShortChapterFilter();
         } else if(screenId === 'screen-special-exam-setup') {
-            populateSpecialExamClasses(); // <--- Updated initialization call
+            populateSpecialExamClasses();
         } else if(screenId === 'screen-admin-dash') {
             renderPendingRequests();
             renderAdminTeacherManageList();
@@ -1780,7 +1780,6 @@
         renderStudentShortQA();
     }
 
-    // --- UPDATED SPECIAL EXAM SETUP FUNCTIONS ---
     function populateSpecialExamClasses() {
         const clsSelect = document.getElementById('special-sel-class');
         let keys = Object.keys(classesAndSubjectsData).filter(c => !classesAndSubjectsData[c].hidden);
@@ -1846,7 +1845,6 @@
         const checkboxes = document.querySelectorAll('.special-ch-chk');
         checkboxes.forEach(chk => chk.checked = master.checked);
     }
-    // ----------------------------------------------
 
     function populateQuestionClassDropdown() {
         const qClsSel = document.getElementById('q-class');
@@ -2278,24 +2276,38 @@
         alert(isApproved ? 'Approved & Student Activated!' : 'Dismissed!');
     }
 
+    // --- STRICT VERIFICATION FOR PAID SPECIAL EXAM LOGIN ---
     function verifyStudentPaidAccess() {
         const name = document.getElementById('login-student-name').value.trim();
         const mobile = document.getElementById('login-student-mobile').value.trim();
-        currentStudentName = name || "Student";
-        currentStudentMobile = mobile || "9876543210";
+        
+        if(!name || !mobile || mobile.length < 10) {
+            alert('অনুগ্ৰহ কৰি সঠিক নাম আৰু ১০-সংখ্যাতকৈ সৰু নোহোৱাকৈ ম’বাইল নম্বৰ বহুৱাওক!');
+            return;
+        }
 
+        currentStudentName = name;
+        currentStudentMobile = mobile;
+
+        // Check Free Monthly Leaderboard 1st Topper
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
         let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].name.toLowerCase() === name.toLowerCase() && sortedFree[0].mobile === mobile);
+        
+        // Check Special Leaderboard Toppers (1st & 2nd)
         let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
         let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].name.toLowerCase() === name.toLowerCase() && sortedSpecial[0].mobile === mobile) || (sortedSpecial.length > 1 && sortedSpecial[1].name.toLowerCase() === name.toLowerCase() && sortedSpecial[1].mobile === mobile));
 
-        if(isFreeMonthlyFirst || isSpecialTopperFree || approvedMobileNumbers.includes(mobile)) {
-            alert(`Welcome ${name}! Access granted.`);
+        // Check Admin Approved Paid Mobile Numbers list
+        let isPaidApproved = approvedMobileNumbers.includes(mobile);
+
+        if(isFreeMonthlyFirst || isSpecialTopperFree || isPaidApproved) {
+            alert(`স্বাগত ${name}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
             showScreen('screen-paid-student-hub');
         } else {
-            alert('Access Denied! Please pay fee or check your details.');
+            alert('Access Denied! আপুনি এতিয়ালৈকে ফিচ পৰিশোধ কৰা নাই বা লিডাৰবৰ্ডৰ টপাৰ নহয়। অনুগ্ৰহ কৰি প্ৰথমে ফিচ দি বা পেমেন্ট অনুৰোধ পঠিয়াই এডমিনৰ পৰা অনুমোদন লওক।');
         }
     }
+    // --------------------------------------------------------
 
     function renderStudentShortQA() {
         const container = document.getElementById('student-short-qa-list');
