@@ -2291,11 +2291,11 @@
 
         // Check Free Monthly Leaderboard 1st Topper
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].name.toLowerCase() === name.toLowerCase() && sortedFree[0].mobile === mobile);
+        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobile);
         
         // Check Special Leaderboard Toppers (1st & 2nd)
         let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].name.toLowerCase() === name.toLowerCase() && sortedSpecial[0].mobile === mobile) || (sortedSpecial.length > 1 && sortedSpecial[1].name.toLowerCase() === name.toLowerCase() && sortedSpecial[1].mobile === mobile));
+        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobile) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobile));
 
         // Check Admin Approved Paid Mobile Numbers list
         let isPaidApproved = approvedMobileNumbers.includes(mobile);
@@ -2304,7 +2304,7 @@
             alert(`স্বাগত ${name}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
             showScreen('screen-paid-student-hub');
         } else {
-            alert('Access Denied! আপুনি এতিয়ালৈকে ফিচ পৰিশোধ কৰা নাই বা লিডাৰবৰ্ডৰ টপাৰ নহয়। অনুগ্ৰহ কৰি প্ৰথমে ফিচ দি বা পেমেন্ট অনুৰোধ পঠিয়াই এডমিনৰ পৰা অনুমোদন লওক।');
+            alert('Access Denied! আপুনি দিয়া এই ম’বাইল নম্বৰটোৰ বিপৰীতে কোনো পেমেন্ট অনুমোদন কৰা হোৱা নাই বা লিডাৰবৰ্ডৰ টপাৰ নহয়। অনুগ্ৰহ কৰি সঠিক পেমেন্ট কৰা ম’বাইল নম্বৰ বহুৱাওক বা এডমিনৰ পৰা অনুমোদন লওক।');
         }
     }
     // --------------------------------------------------------
