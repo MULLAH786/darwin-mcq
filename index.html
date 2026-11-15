@@ -146,6 +146,15 @@
 </head>
 <body>
 
+<!-- Custom Popup Modal (Replaces browser default alert) -->
+<div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1e293b; border: 1px solid #475569; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 16px;" id="custom-alert-title">DARWIN ACADEMY</h3>
+        <p id="custom-alert-message" style="color: #f8fafc; font-size: 14px; margin-bottom: 20px; text-align: center;"></p>
+        <button onclick="closeCustomAlert()" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%;">OK</button>
+    </div>
+</div>
+
 <div class="container">
 
     <!-- 1. HOME SCREEN -->
@@ -399,6 +408,18 @@
         <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
             <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">📋 Approved Records & Activities</h3>
             <div id="pending-request-container"><p style="color: var(--gray); font-size: 12px;">No pending requests.</p></div>
+        </div>
+
+        <!-- Free MCQ Test Students Dropdown Filter Section -->
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">📊 Free MCQ Test Students (Dropdown Filter)</h3>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Select Filter / View</label>
+                <select id="admin-free-filter-class" onchange="renderFilteredFreeStudents()">
+                    <option value="ALL">All Classes & Students</option>
+                </select>
+            </div>
+            <div id="admin-dropdown-free-students-container" style="max-height: 200px; overflow-y: auto; text-align: left; font-size: 12px; background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569; margin-top: 8px;"></div>
         </div>
 
         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
@@ -721,6 +742,16 @@
 </div>
 
 <script>
+    // Custom Alert Function (Replaces browser default alert)
+    function showCustomAlert(message) {
+        document.getElementById('custom-alert-message').innerText = message;
+        document.getElementById('custom-alert-modal').style.display = 'flex';
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('custom-alert-modal').style.display = 'none';
+    }
+
     // Firebase Initialization
     const firebaseConfig = {
         apiKey: "AIzaSyDa2wT9DTX0qNqLUa",
@@ -746,7 +777,7 @@
     let currentStudentMobile = "9876543210";
     
     let registeredStudentsDatabase = {};
-    let approvedNamesDatabase = {}; // Stores approved exact names against mobile keys
+    let approvedNamesDatabase = {}; 
     
     let specialExamFee = 10;
     let specialExamMode = "auto";
@@ -960,13 +991,13 @@
         const dob = document.getElementById('signup-dob').value;
 
         if(!name || !mobile || mobile.length < 10 || !dob) {
-            alert('Please enter full name, 10-digit mobile number, and Date of Birth!');
+            showCustomAlert('Please enter full name, 10-digit mobile number, and Date of Birth!');
             return;
         }
 
         let existingId = Object.keys(registeredStudentsDatabase).find(id => registeredStudentsDatabase[id].mobile === mobile);
         if(existingId) {
-            alert(`You are already registered! Your Student ID is: ${existingId}`);
+            showCustomAlert(`You are already registered! Your Student ID is: ${existingId}`);
             document.getElementById('student-login-id').value = existingId;
             switchStudentAuthTab('login');
             return;
@@ -989,7 +1020,7 @@
         registeredStudentsDatabase[generatedId] = { name: name, mobile: mobile, dob: dob };
         syncToFirebase();
 
-        alert(`Registration Successful!\nYour Student ID is: ${generatedId}\nPlease remember or save this ID for future tests.`);
+        showCustomAlert(`Registration Successful!\nYour Student ID is: ${generatedId}\nPlease remember or save this ID for future tests.`);
         document.getElementById('signup-name').value = '';
         document.getElementById('signup-mobile').value = '';
         document.getElementById('signup-dob').value = '';
@@ -1000,13 +1031,13 @@
     function loginWithStudentId() {
         const idInput = document.getElementById('student-login-id').value.trim();
         if(!idInput) {
-            alert('Please enter your Student ID!');
+            showCustomAlert('Please enter your Student ID!');
             return;
         }
 
         let student = registeredStudentsDatabase[idInput];
         if(!student) {
-            alert('Invalid Student ID! Please check your ID or Register first.');
+            showCustomAlert('Invalid Student ID! Please check your ID or Register first.');
             return;
         }
 
@@ -1025,7 +1056,7 @@
         const resBox = document.getElementById('recovery-result-box');
         
         if(!mobileInput || !dobInput) {
-            alert('Please enter both mobile number and Date of Birth!');
+            showCustomAlert('Please enter both mobile number and Date of Birth!');
             return;
         }
 
@@ -1055,7 +1086,7 @@
         const linkImg = document.getElementById('admin-contrib-img').value.trim();
         const fileInput = document.getElementById('admin-contrib-file');
 
-        if(!name || !role) { alert('Enter teacher name and subject/role!'); return; }
+        if(!name || !role) { showCustomAlert('Enter teacher name and subject/role!'); return; }
 
         if(fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
@@ -1085,7 +1116,7 @@
         syncToFirebase();
         clearContribForm();
         renderAdminContributorsList();
-        alert('Contributor saved successfully!');
+        showCustomAlert('Contributor saved successfully!');
     }
 
     function editFeaturedContributor(id) {
@@ -1139,7 +1170,7 @@
         const linkImg = document.getElementById('admin-academy-logo-input').value.trim();
         const fileInput = document.getElementById('admin-logo-file');
 
-        if(!name) { alert('Academy name cannot be empty!'); return; }
+        if(!name) { showCustomAlert('Academy name cannot be empty!'); return; }
 
         if(fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
@@ -1147,14 +1178,14 @@
                 academyBranding.name = name;
                 academyBranding.logoUrl = e.target.result;
                 syncToFirebase();
-                alert('Portal Name & Logo successfully uploaded and saved!');
+                showCustomAlert('Portal Name & Logo successfully uploaded and saved!');
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else {
             academyBranding.name = name;
             if(linkImg) academyBranding.logoUrl = linkImg;
             syncToFirebase();
-            alert('Portal Name & Logo updated successfully!');
+            showCustomAlert('Portal Name & Logo updated successfully!');
         }
     }
 
@@ -1163,7 +1194,7 @@
         document.getElementById('admin-academy-logo-input').value = "";
         document.getElementById('admin-logo-file').value = "";
         syncToFirebase();
-        alert('Logo removed successfully!');
+        showCustomAlert('Logo removed successfully!');
     }
 
     function showScreen(screenId) {
@@ -1187,7 +1218,7 @@
             renderStudentResources();
         } else if(screenId === 'screen-free-mcq') {
             if(!currentStudentId) {
-                alert('Please login with your Student ID first!');
+                showCustomAlert('Please login with your Student ID first!');
                 showScreen('screen-student-auth');
                 return;
             }
@@ -1209,6 +1240,7 @@
             renderAdminClassesAndSubjectsList();
             renderAdminChapterList();
             renderAdminFreeSubjectsCheckboxes();
+            populateAdminFreeStudentsDropdownFilter();
             document.getElementById('admin-alert-badge').innerText = `${pendingRequests.length} Alerts`;
             document.getElementById('admin-fee-input').value = specialExamFee;
             document.getElementById('admin-special-mode-select').value = specialExamMode;
@@ -1243,13 +1275,54 @@
         }
     }
 
+    function populateAdminFreeStudentsDropdownFilter() {
+        const select = document.getElementById('admin-free-filter-class');
+        let classKeys = Object.keys(classesAndSubjectsData);
+        let html = '<option value="ALL">All Classes & Students</option>';
+        classKeys.forEach(c => {
+            html += `<option value="${c}">Class ${c}</option>`;
+        });
+        select.innerHTML = html;
+        renderFilteredFreeStudents();
+    }
+
+    function renderFilteredFreeStudents() {
+        const container = document.getElementById('admin-dropdown-free-students-container');
+        
+        if(!freeLeaderboardDatabase || freeLeaderboardDatabase.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray);">No free MCQ test records found.</p>';
+            return;
+        }
+
+        let filteredList = freeLeaderboardDatabase;
+        
+        let html = `<table style="width:100%; border-collapse: collapse; font-size:11px;">
+            <tr style="background:#334155; color:#38bdf8;">
+                <th style="padding:4px; border:1px solid #475569;">Name</th>
+                <th style="padding:4px; border:1px solid #475569;">Mobile</th>
+                <th style="padding:4px; border:1px solid #475569;">Student ID</th>
+                <th style="padding:4px; border:1px solid #475569;">Score</th>
+            </tr>`;
+        
+        filteredList.forEach((item) => {
+            html += `<tr>
+                <td style="padding:4px; border:1px solid #475569;">${item.name}</td>
+                <td style="padding:4px; border:1px solid #475569;">${item.mobile || '-'}</td>
+                <td style="padding:4px; border:1px solid #475569;">${item.studentId || '-'}</td>
+                <td style="padding:4px; border:1px solid #475569; color:#4ade80; font-weight:bold;">${item.score}</td>
+            </tr>`;
+        });
+        html += `</table>`;
+        container.innerHTML = html;
+    }
+
     function saveTeacherProfile() {
         let t = teachersDatabase[currentTeacherIndex];
         t.name = document.getElementById('teacher-profile-name').value.trim() || t.name;
         t.mobile = document.getElementById('teacher-profile-mobile').value.trim() || "";
         t.upi = document.getElementById('teacher-profile-upi').value.trim() || "";
         syncToFirebase();
-        alert('Profile & UPI ID successfully updated!');
+        showCustomAlert('Profile & UPI ID successfully updated!');
     }
 
     function teacherSendFundRequest() {
@@ -1257,7 +1330,7 @@
         const utr = document.getElementById('teacher-req-fund-utr').value.trim();
 
         if(isNaN(amt) || amt <= 0 || !utr) {
-            alert('সঠিক ফাণ্ডৰ এমাউণ্ট আৰু UTR / Transaction ID বহুৱাওক!');
+            showCustomAlert('সঠিক ফাণ্ডৰ এমাউণ্ট আৰু UTR / Transaction ID বহুৱাওক!');
             return;
         }
 
@@ -1277,7 +1350,7 @@
 
         document.getElementById('teacher-req-fund-amt').value = '';
         document.getElementById('teacher-req-fund-utr').value = '';
-        alert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱা হ’ل! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
+        showCustomAlert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱਾ হ’ল! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
     }
 
     function teacherInstantAddPaidStudent() {
@@ -1286,7 +1359,7 @@
         const totalFee = parseFloat(document.getElementById('teacher-student-fee').value);
 
         if(!name || !mobile || mobile.length < 10 || isNaN(totalFee) || totalFee <= 0) {
-            alert('সোপিকেইটা সঠিকভাৱে পূৰণ কৰক (নাম, ম’বাইল আৰু ৩ মাহৰ ফিচ এমাউণ্ট)!');
+            showCustomAlert('সোপিকেইটা সঠিকভাৱে পূৰণ কৰক (নাম, ম’বাইল আৰু ৩ মাহৰ ফিচ এমাউণ্ট)!');
             return;
         }
 
@@ -1296,7 +1369,7 @@
         let adminOrDeductionShare = totalFee * 0.50;
 
         if(t.wallet < adminOrDeductionShare) {
-            alert(`আপোনাৰ ৱালেটত পৰ্যাপ্ত টকা নাই!\nপ্ৰয়োজনীয় ৫০% অংশ: ₹${adminOrDeductionShare}\nআপোনাৰ ৱালেট বেলেঞ্চ: ₹${t.wallet}\nঅনুগ্ৰহ কৰি প্ৰথমে এডমিনলৈ ফাণ্ড অনুৰোধ (Fund Request) পঠিয়াই ৱালেট টকা এড কৰি লওক।`);
+            showCustomAlert(`আপোনাৰ ৱালেটত পৰ্যাপ্ত টকা নাই!\nপ্ৰয়োজনীয় ৫০% অংশ: ₹${adminOrDeductionShare}\nআপোনাৰ ৱালেট বেলেঞ্চ: ₹${t.wallet}\nঅনুগ্ৰহ কৰি প্ৰথমে এডমিনলৈ ফাণ্ড অনুৰোধ (Fund Request) পঠিয়াই ৱালেট টকা এড কৰি লওক।`);
             return;
         }
 
@@ -1322,7 +1395,7 @@
         document.getElementById('teacher-student-fee').value = '';
         document.getElementById('teacher-wallet-balance').innerText = `₹${t.wallet}`;
 
-        alert(`সফলভাৱে ছাত্ৰজন পঞ্জীয়ন হ’ল!\nমুঠ ফিচ: ₹${totalFee}\nৱালেটৰ পৰা ৫০% (₹${adminOrDeductionShare}) মাইনাস হ’ল।\nবাকী বেলেঞ্চ: ₹${t.wallet}`);
+        showCustomAlert(`সফলভাৱে ছাত্ৰজন পঞ্জীয়ন হ’ল!\nমুঠ ফিচ: ₹${totalFee}\nৱালেটৰ পৰা ৫০% (₹${adminOrDeductionShare}) মাইনাস হ’ল।\nবাকী বেলেঞ্চ: ₹${t.wallet}`);
     }
 
     function populateAdminTeacherDropdown() {
@@ -1356,7 +1429,7 @@
         const fileInput = document.getElementById('admin-gift-file');
         const pts = parseInt(document.getElementById('admin-gift-pts').value);
 
-        if(!title || isNaN(pts)) { alert('Enter title and required points!'); return; }
+        if(!title || isNaN(pts)) { showCustomAlert('Enter title and required points!'); return; }
 
         if(fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
@@ -1365,7 +1438,7 @@
                 syncToFirebase();
                 clearGiftForm();
                 renderAdminGiftsList();
-                alert('Gift uploaded and added successfully!');
+                showCustomAlert('Gift uploaded and added successfully!');
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else if(linkImg) {
@@ -1373,9 +1446,9 @@
             syncToFirebase();
             clearGiftForm();
             renderAdminGiftsList();
-            alert('Gift added successfully!');
+            showCustomAlert('Gift added successfully!');
         } else {
-            alert('Please select an image file from gallery or paste image URL!');
+            showCustomAlert('Please select an image file from gallery or paste image URL!');
         }
     }
 
@@ -1451,18 +1524,18 @@
         if(!teacher.claimedGifts) teacher.claimedGifts = [];
 
         if(teacher.claimedGifts.includes(giftId)) {
-            alert('You have already claimed this gift! You cannot claim the same gift twice.');
+            showCustomAlert('You have already claimed this gift! You cannot claim the same gift twice.');
             return;
         }
 
         if(!teacher.upi) {
-            alert('Please update your UPI ID in Profile & UPI Settings before claiming gifts!');
+            showCustomAlert('Please update your UPI ID in Profile & UPI Settings before claiming gifts!');
             showScreen('screen-teacher-dash');
             return;
         }
 
         if(teacher.points < gift.points) {
-            alert('Insufficient points! You do not have enough points for this gift.');
+            showCustomAlert('Insufficient points! You do not have enough points for this gift.');
             return;
         }
 
@@ -1479,35 +1552,35 @@
             
             syncToFirebase();
             renderTeacherGiftGallery();
-            alert(`Congratulations! Gift claimed successfully.\nRemaining Points: ${teacher.points} pts`);
+            showCustomAlert(`Congratulations! Gift claimed successfully.\nRemaining Points: ${teacher.points} pts`);
         }
     }
 
     function addNewClassMaster() {
         const clsName = document.getElementById('admin-new-class-input').value.trim();
-        if(!clsName) { alert('Enter class name!'); return; }
-        if(classesAndSubjectsData[clsName]) { alert('Class already exists!'); return; }
+        if(!clsName) { showCustomAlert('Enter class name!'); return; }
+        if(classesAndSubjectsData[clsName]) { showCustomAlert('Class already exists!'); return; }
         classesAndSubjectsData[clsName] = { hidden: false, subjects: { "General": { hidden: false } } };
         syncToFirebase();
         document.getElementById('admin-new-class-input').value = '';
         populateAdminMasterDropdowns();
         renderAdminClassesAndSubjectsList();
-        alert(`Class ${clsName} added successfully!`);
+        showCustomAlert(`Class ${clsName} added successfully!`);
     }
 
     function addNewSubjectMaster() {
         const cls = document.getElementById('admin-target-class-select').value;
         const subName = document.getElementById('admin-new-subject-input').value.trim();
-        if(!cls || !subName) { alert('Select class and enter subject name!'); return; }
+        if(!cls || !subName) { showCustomAlert('Select class and enter subject name!'); return; }
         if(!classesAndSubjectsData[cls]) classesAndSubjectsData[cls] = { hidden: false, subjects: {} };
-        if(classesAndSubjectsData[cls].subjects[subName]) { alert('Subject already exists in this class!'); return; }
+        if(classesAndSubjectsData[cls].subjects[subName]) { showCustomAlert('Subject already exists in this class!'); return; }
         classesAndSubjectsData[cls].subjects[subName] = { hidden: false };
         syncToFirebase();
         document.getElementById('admin-new-subject-input').value = '';
         populateAdminMasterDropdowns();
         renderAdminClassesAndSubjectsList();
         renderAdminFreeSubjectsCheckboxes();
-        alert(`Subject ${subName} added to Class ${cls}!`);
+        showCustomAlert(`Subject ${subName} added to Class ${cls}!`);
     }
 
     function populateAdminMasterDropdowns() {
@@ -1556,13 +1629,13 @@
         let newCls = prompt("Enter new Class name:", oldCls);
         if(!newCls || newCls.trim() === "" || newCls === oldCls) return;
         newCls = newCls.trim();
-        if(classesAndSubjectsData[newCls]) { alert('Class name already exists!'); return; }
+        if(classesAndSubjectsData[newCls]) { showCustomAlert('Class name already exists!'); return; }
         classesAndSubjectsData[newCls] = classesAndSubjectsData[oldCls];
         delete classesAndSubjectsData[oldCls];
         syncToFirebase();
         populateAdminMasterDropdowns();
         renderAdminClassesAndSubjectsList();
-        alert('Class updated successfully!');
+        showCustomAlert('Class updated successfully!');
     }
 
     function toggleClassHide(cls) {
@@ -1578,20 +1651,20 @@
         syncToFirebase();
         populateAdminMasterDropdowns();
         renderAdminClassesAndSubjectsList();
-        alert('Class moved to Trash Bin!');
+        showCustomAlert('Class moved to Trash Bin!');
     }
 
     function editSubjectName(cls, oldSub) {
         let newSub = prompt(`Enter new Subject name for Class ${cls}:`, oldSub);
         if(!newSub || newSub.trim() === "" || newSub === oldSub) return;
         newSub = newSub.trim();
-        if(classesAndSubjectsData[cls].subjects[newSub]) { alert('Subject already exists!'); return; }
+        if(classesAndSubjectsData[cls].subjects[newSub]) { showCustomAlert('Subject already exists!'); return; }
         classesAndSubjectsData[cls].subjects[newSub] = classesAndSubjectsData[cls].subjects[oldSub];
         delete classesAndSubjectsData[cls].subjects[oldSub];
         syncToFirebase();
         populateAdminSubjectDropdownForChapter();
         renderAdminClassesAndSubjectsList();
-        alert('Subject updated successfully!');
+        showCustomAlert('Subject updated successfully!');
     }
 
     function toggleSubjectHide(cls, sub) {
@@ -1607,7 +1680,7 @@
         syncToFirebase();
         populateAdminSubjectDropdownForChapter();
         renderAdminClassesAndSubjectsList();
-        alert('Subject moved to Trash Bin!');
+        showCustomAlert('Subject moved to Trash Bin!');
     }
 
     function populateAdminSubjectDropdownForChapter() {
@@ -1648,7 +1721,7 @@
         freeControlSettings.allowedSubjects = checkedSubs;
 
         syncToFirebase();
-        alert('Free Subject & Chapter Access Settings saved successfully!');
+        showCustomAlert('Free Subject & Chapter Access Settings saved successfully!');
     }
 
     function saveAdminChapter() {
@@ -1657,7 +1730,7 @@
         const name = document.getElementById('adm-ch-name').value.trim();
         const editId = document.getElementById('adm-ch-edit-id').value;
 
-        if(!name) { alert('Chapter name diok!'); return; }
+        if(!name) { showCustomAlert('Chapter name diok!'); return; }
 
         if(editId) {
             let ch = chaptersDatabase.find(c => c.id == editId);
@@ -1670,7 +1743,7 @@
         document.getElementById('adm-ch-name').value = '';
         syncToFirebase();
         renderAdminChapterList();
-        alert('Chapter successfully saved!');
+        showCustomAlert('Chapter successfully saved!');
     }
 
     function renderAdminChapterList() {
@@ -1720,7 +1793,7 @@
             trashChapters.push(chaptersDatabase.splice(index, 1)[0]);
             syncToFirebase();
             renderAdminChapterList();
-            alert('Chapter moved to Trash Bin!');
+            showCustomAlert('Chapter moved to Trash Bin!');
         }
     }
 
@@ -1884,7 +1957,7 @@
             document.getElementById('trash-pin-box').style.display = 'none';
             document.getElementById('trash-content-box').style.display = 'block';
             renderTrashBinsContent();
-        } else { alert('Wrong Admin PIN!'); }
+        } else { showCustomAlert('Wrong Admin PIN!'); }
     }
 
     function renderTrashBinsContent() {
@@ -1968,22 +2041,22 @@
 
     function saveSpecialExamFee() {
         const val = parseInt(document.getElementById('admin-fee-input').value);
-        if(isNaN(val) || val < 0) { alert('Valid amount diok!'); return; }
+        if(isNaN(val) || val < 0) { showCustomAlert('Valid amount diok!'); return; }
         specialExamFee = val;
         syncToFirebase();
-        alert(`Special Exam fee successfully updated to ₹${specialExamFee}!`);
+        showCustomAlert(`Special Exam fee successfully updated to ₹${specialExamFee}!`);
     }
 
     function saveSpecialExamModeSetting() {
         specialExamMode = document.getElementById('admin-special-mode-select').value;
         syncToFirebase();
-        alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
+        showCustomAlert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
     }
 
     function saveSpecialExamModeSettingTeacher() {
         specialExamMode = document.getElementById('teacher-special-mode-select').value;
         syncToFirebase();
-        alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
+        showCustomAlert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
     }
 
     function populateAdminSpecialStudentsDropdown() {
@@ -2109,14 +2182,14 @@
         testSettings.questionCount = parseInt(document.getElementById('setting-q-count').value) || 5;
         testSettings.timerMinutes = parseInt(document.getElementById('setting-timer').value) || 10;
         syncToFirebase();
-        alert('Settings updated successfully!');
+        showCustomAlert('Settings updated successfully!');
     }
 
     function saveTestSettingsTeacher() {
         testSettings.questionCount = parseInt(document.getElementById('teacher-setting-q-count').value) || 5;
         testSettings.timerMinutes = parseInt(document.getElementById('teacher-setting-timer').value) || 10;
         syncToFirebase();
-        alert('Settings updated successfully!');
+        showCustomAlert('Settings updated successfully!');
     }
 
     function toggleBlockTeacher(index) {
@@ -2124,10 +2197,10 @@
         if(!t.status) t.status = "active";
         if(t.status === "blocked") {
             t.status = "active";
-            alert(`Teacher ${t.name} unblocked successfully!`);
+            showCustomAlert(`Teacher ${t.name} unblocked successfully!`);
         } else {
             t.status = "blocked";
-            alert(`Teacher ${t.name} has been BLOCKED!`);
+            showCustomAlert(`Teacher ${t.name} has been BLOCKED!`);
         }
         syncToFirebase();
         renderAdminTeacherManageList();
@@ -2139,16 +2212,16 @@
         teachersDatabase.splice(index, 1);
         syncToFirebase();
         renderAdminTeacherManageList();
-        alert('Teacher removed successfully!');
+        showCustomAlert('Teacher removed successfully!');
     }
 
     function addNewTeacher() {
         const name = document.getElementById('new-teacher-name').value.trim();
         const pin = document.getElementById('new-teacher-pin').value.trim();
-        if(!name || !pin) { alert('Fill all fields!'); return; }
+        if(!name || !pin) { showCustomAlert('Fill all fields!'); return; }
         teachersDatabase.push({ name, pin, points: 50, wallet: 0, mobile: "", upi: "", status: "active", claimedGifts: [] });
         syncToFirebase();
-        alert(`Teacher ${name} registered successfully!`);
+        showCustomAlert(`Teacher ${name} registered successfully!`);
         document.getElementById('new-teacher-name').value = '';
         document.getElementById('new-teacher-pin').value = '';
         renderAdminTeacherManageList();
@@ -2186,7 +2259,7 @@
         const bonus = parseInt(document.getElementById(`bonus-pts-${index}`).value) || 0;
         teachersDatabase[index].points += bonus;
         syncToFirebase();
-        alert(`Added ${bonus} points!`);
+        showCustomAlert(`Added ${bonus} points!`);
         renderAdminTeacherManageList();
     }
 
@@ -2196,28 +2269,28 @@
         if(foundIndex !== -1) {
             let t = teachersDatabase[foundIndex];
             if(t.status === "blocked") {
-                alert('Your account has been blocked by the Admin!');
+                showCustomAlert('Your account has been blocked by the Admin!');
                 return;
             }
             currentTeacherIndex = foundIndex;
             document.getElementById('teacher-pin-input').value = '';
             loggedInRole = 'TEACHER';
             showScreen('screen-teacher-dash');
-        } else { alert('Wrong PIN!'); }
+        } else { showCustomAlert('Wrong PIN!'); }
     }
 
     function saveUpiQrSettings() {
         paymentSettings.upi = document.getElementById('admin-upi-input').value.trim();
         paymentSettings.qrUrl = document.getElementById('admin-qr-input').value.trim();
         syncToFirebase();
-        alert('UPI Settings Saved!');
+        showCustomAlert('UPI Settings Saved!');
     }
 
     function deleteUpiQrSettings() {
         paymentSettings.qrUrl = "";
         document.getElementById('admin-qr-input').value = "";
         syncToFirebase();
-        alert('QR Removed!');
+        showCustomAlert('QR Removed!');
     }
 
     function updateStudentPaymentView() {
@@ -2234,7 +2307,7 @@
         const tx = document.getElementById('pay-tx').value.trim();
         
         if(!name || !mobile || !tx || mobile.length < 10) {
-            alert('অনুগ্ৰহ কৰি সঠিক নাম, ১০-সংখ্যাতকৈ সৰু নোহোৱাকৈ ম’বাইল নম্বৰ আৰু UTR নম্বৰ দিয়ক!');
+            showCustomAlert('Please enter valid Name, 10-digit Mobile Number and UTR number!');
             return;
         }
 
@@ -2247,7 +2320,7 @@
         });
         
         syncToFirebase();
-        alert('পেমেন্ট অনুৰোধ সফলভাৱে পঠিওৱা হ’ল! এডমিনে অনুমোদন কৰাৰ পিছতে আপুনি এই নাম আৰু নম্বৰেৰে লগইন কৰিব পাৰিব।');
+        showCustomAlert('Payment request submitted successfully! You can login after admin approval.');
         showScreen('screen-home');
     }
 
@@ -2278,7 +2351,7 @@
         pendingRequests.splice(index, 1);
         syncToFirebase();
         renderPendingRequests();
-        alert(isApproved ? 'Fund approved and added to teacher wallet!' : 'Fund request dismissed!');
+        showCustomAlert(isApproved ? 'Fund approved and added to teacher wallet!' : 'Fund request dismissed!');
     }
 
     function handleApproval(index, isApproved) {
@@ -2287,13 +2360,12 @@
             if(!approvedMobileNumbers.includes(req.mobile)) {
                 approvedMobileNumbers.push(req.mobile);
             }
-            // Save the exact approved name against this mobile number
             approvedNamesDatabase[req.mobile] = req.name.trim().toLowerCase();
         }
         pendingRequests.splice(index, 1);
         syncToFirebase();
         renderPendingRequests();
-        alert(isApproved ? 'অনুমোদন সফল হ’ল! এতিয়া এই ছাত্ৰজনে পেমেন্ট কৰোঁতে দিয়া সঠিক নাম আৰু ম’বাইল নম্বৰেৰেহে লগইন কৰিব পাৰিব।' : 'অনুমোদন নাকচ কৰা হ’ল!');
+        showCustomAlert(isApproved ? 'Approval successful! Student can now login using the exact name and mobile number provided during payment.' : 'Approval dismissed!');
     }
 
     // --- STRICT VERIFICATION: MATCH PAYMENT NAME & MOBILE ---
@@ -2302,21 +2374,17 @@
         const mobileInput = document.getElementById('login-student-mobile').value.trim();
         
         if(!nameInput || !mobileInput || mobileInput.length < 10) {
-            alert('অনুগ্ৰহ কৰি পেমেন্ট কৰোঁতে দিয়া সঠিক নাম আৰু ম’বাইল নম্বৰ বহুৱাওক!');
+            showCustomAlert('Please enter the exact Name and 10-digit Mobile Number used during payment!');
             return;
         }
 
         currentStudentName = document.getElementById('login-student-name').value.trim();
         currentStudentMobile = mobileInput;
 
-        // Check if mobile number is approved
         let isPaidApproved = approvedMobileNumbers.includes(mobileInput);
-        
-        // Check if the entered name matches the exact approved name for this mobile
         let registeredExactName = approvedNamesDatabase[mobileInput];
         let isNameMatch = registeredExactName && registeredExactName === nameInput;
 
-        // Also check Leaderboard Toppers or default admin number
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
         let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobileInput);
         
@@ -2324,10 +2392,10 @@
         let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobileInput) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobileInput));
 
         if((isPaidApproved && isNameMatch) || isFreeMonthlyFirst || isSpecialTopperFree || mobileInput === "9876543210") {
-            alert(`স্বাগত ${currentStudentName}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
+            showCustomAlert(`Welcome ${currentStudentName}! You have successfully accessed the Special Exam Hub.`);
             showScreen('screen-paid-student-hub');
         } else {
-            alert('Access Denied! আপুনি দিয়া নাম বা ম’বাইল নম্বৰটো পেমেন্ট অনুৰোধত দিয়া নাম-নম্বৰৰ লগত নিমিলে। অনুগ্ৰহ কৰি পেমেন্ট কৰোঁতে যিটো নাম দিছিল, একেবাৰে হুবহু সেই নামটো দি লগইন কৰক।');
+            showCustomAlert('Access Denied! The Name or Mobile Number you entered does not match the payment request records. Please enter the exact name you used while making the payment.');
         }
     }
     // --------------------------------------------------------
@@ -2381,7 +2449,7 @@
 
             syncToFirebase();
             renderManageQuestionsList();
-            alert('Question moved to Trash Bin and points deducted successfully!');
+            showCustomAlert('Question moved to Trash Bin and points deducted successfully!');
         }
     }
 
@@ -2394,36 +2462,36 @@
         const title = document.getElementById('ebook-title').value.trim();
         const linkInput = document.getElementById('ebook-link').value.trim();
         const fileInput = document.getElementById('ebook-file-input');
-        if(!title) { alert('Enter title!'); return; }
+        if(!title) { showCustomAlert('Enter title!'); return; }
         if(fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 ebookDatabase.push({ title: title, link: e.target.result });
-                syncToFirebase(); alert('Uploaded!'); showScreen('screen-home');
+                syncToFirebase(); showCustomAlert('Uploaded!'); showScreen('screen-home');
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else if(linkInput) {
             ebookDatabase.push({ title: title, link: linkInput });
-            syncToFirebase(); alert('Saved!'); showScreen('screen-home');
-        } else { alert('Select file or link!'); }
+            syncToFirebase(); showCustomAlert('Saved!'); showScreen('screen-home');
+        } else { showCustomAlert('Select file or link!'); }
     }
 
     function submitVideo() {
         const title = document.getElementById('video-title').value.trim();
         const linkInput = document.getElementById('video-link').value.trim();
         const fileInput = document.getElementById('video-file-input');
-        if(!title) { alert('Enter title!'); return; }
+        if(!title) { showCustomAlert('Enter title!'); return; }
         if(fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 videoDatabase.push({ title: title, link: e.target.result });
-                syncToFirebase(); alert('Uploaded!'); showScreen('screen-home');
+                syncToFirebase(); showCustomAlert('Uploaded!'); showScreen('screen-home');
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else if(linkInput) {
             videoDatabase.push({ title: title, link: linkInput });
-            syncToFirebase(); alert('Saved!'); showScreen('screen-home');
-        } else { alert('Select file or link!'); }
+            syncToFirebase(); showCustomAlert('Saved!'); showScreen('screen-home');
+        } else { showCustomAlert('Select file or link!'); }
     }
 
     function shuffleArray(array) {
@@ -2450,7 +2518,7 @@
 
     function startFreeQuiz() {
         if(!currentStudentId) {
-            alert('Please login with your Student ID first!');
+            showCustomAlert('Please login with your Student ID first!');
             showScreen('screen-student-auth');
             return;
         }
@@ -2461,7 +2529,7 @@
         
         let filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub);
         if(ch !== 'ALL') { filtered = filtered.filter(item => item.chapter === ch); }
-        if(filtered.length === 0) { alert('No questions found for this selection!'); return; }
+        if(filtered.length === 0) { showCustomAlert('No questions found for this selection!'); return; }
         
         activeQuizQuestions = shuffleArray([...filtered]).slice(0, testSettings.questionCount);
         currentQuizIndex = 0; scoreCount = 0;
@@ -2481,7 +2549,7 @@
         checkboxes.forEach(chk => selectedChapters.push(chk.value));
 
         if(selectedChapters.length === 0) {
-            alert('Please select at least one chapter!');
+            showCustomAlert('Please select at least one chapter!');
             return;
         }
 
@@ -2495,7 +2563,7 @@
             filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub && selectedChapters.includes(item.chapter));
         }
 
-        if(filtered.length === 0) { alert('No MCQ questions available for the selected chapters!'); return; }
+        if(filtered.length === 0) { showCustomAlert('No MCQ questions available for the selected chapters!'); return; }
 
         activeQuizQuestions = shuffleArray([...filtered]).slice(0, testSettings.questionCount);
         currentQuizIndex = 0; scoreCount = 0;
@@ -2558,7 +2626,7 @@
             document.getElementById('admin-pin-input').value = '';
             loggedInRole = 'ADMIN';
             showScreen('screen-admin-dash');
-        } else { alert('Wrong Admin PIN!'); }
+        } else { showCustomAlert('Wrong Admin PIN!'); }
     }
 
     function openAddQuestionForm(type) {
@@ -2581,7 +2649,7 @@
     function submitQuestion() {
         const qText = document.getElementById('q-text').value.trim();
         const editId = document.getElementById('edit-question-id').value;
-        if(!qText) { alert('Question text diok!'); return; }
+        if(!qText) { showCustomAlert('Question text diok!'); return; }
 
         const qObj = {
             id: editId ? parseInt(editId) : Date.now(),
@@ -2617,7 +2685,7 @@
         }
 
         syncToFirebase();
-        alert('Question saved successfully!');
+        showCustomAlert('Question saved successfully!');
         goBackToDashboard();
     }
 
