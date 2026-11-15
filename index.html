@@ -158,10 +158,9 @@
             <button onclick="showScreen('screen-student-auth')" class="btn-success">📚 Free MCQ Practice & Signup</button>
             <button onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-top: 10px;">🏆 Free MCQ Leaderboard & Certificates</button>
             <button onclick="showScreen('screen-special-leaderboard')" style="background: #7c3aed; margin-top: 10px;">🌟 Special Exam Leaderboard & Certificates</button>
-            <button onclick="showScreen('screen-student-resources')" style="background: #0284c7; margin-top: 10px;">📖 E-Books & Videos Hub</button>
+            <button id="home-resources-btn" onclick="showScreen('screen-student-resources')" style="background: #0284c7; margin-top: 10px;">📖 E-Books & Videos Hub</button>
             <button onclick="showScreen('screen-special-exam-login')" style="background: #475569; margin-top: 10px;">⭐ Special Exam & Short Q/A (Paid/Topper)</button>
             
-            <!-- Honouring Our Dedicated Contributors & Teachers Card (Home Screen) -->
             <div id="home-contributors-card" style="background: #fffbeb; color: #1e293b; border: 2px solid #d97706; padding: 12px; border-radius: 12px; margin: 15px 0; text-align: center; display: none;">
                 <h4 style="color: #b45309; font-size: 12px; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px;">HONOURING OUR DEDICATED CONTRIBUTORS & TEACHERS</h4>
                 <div id="home-contributors-list" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; justify-content: center;"></div>
@@ -182,14 +181,12 @@
             <button onclick="switchStudentAuthTab('signup')" id="tab-auth-signup" style="margin-top:0; background:var(--gray); font-size:13px;">New Register</button>
         </div>
 
-        <!-- Login Form -->
         <div id="auth-login-box">
             <div class="form-group"><label>Enter Student ID (e.g. MCQ5993MR)</label><input type="text" id="student-login-id" placeholder="Enter your Student ID"></div>
             <button onclick="loginWithStudentId()" class="btn-success">Login & Start Quiz</button>
             <button onclick="showScreen('screen-forgot-id')" style="background:transparent; color:#38bdf8; border:none; margin-top:10px; font-size:13px; text-decoration:underline; cursor:pointer; width:100%;">🔑 Forgot Student ID?</button>
         </div>
 
-        <!-- Signup Form -->
         <div id="auth-signup-box" style="display:none;">
             <p style="font-size:12px; color:var(--warning); margin-bottom:10px;">Register once to get your unique Student ID!</p>
             <div class="form-group"><label>FULL NAME </label><input type="text" id="signup-name" placeholder="Enter full name & title"></div>
@@ -394,12 +391,16 @@
     <div id="screen-admin-dash" class="screen">
         <h2>👑 Admin Control Panel</h2>
         
-        <!-- SMS / Notification Alert Center -->
         <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 13px; color: #f87171; margin: 0;">🔔 <strong>Notifications / Alerts:</strong> <span id="admin-alert-badge" style="background:#dc2626; color:white; padding:2px 6px; border-radius:10px; font-size:11px;">0 Alerts</span></p>
         </div>
 
-        <!-- Honouring Teachers / Contributors Management Section -->
+        <!-- Approved Records & Activities -->
+        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">📋 Approved Records & Activities</h3>
+            <div id="pending-request-container"><p style="color: var(--gray); font-size: 12px;">No pending requests.</p></div>
+        </div>
+
         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🌟 Manage Contributors & Teachers (Home Card)</h3>
             <div class="form-group" style="margin-bottom: 8px;">
@@ -420,7 +421,16 @@
             <div id="admin-contributors-list-box" style="max-height: 140px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px; background: #0f172a; padding: 6px; border-radius: 6px;"></div>
         </div>
 
-        <!-- Add & Manage Classes & Subjects Master Setup -->
+        <!-- Hide E-Books & Video Hub Control -->
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">📖 E-Books & Videos Hub Control</h3>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #38bdf8;">
+                    <input type="checkbox" id="admin-hide-resources-btn" onchange="saveResourcesButtonVisibility()" style="width: auto;"> <strong>Hide E-Books & Videos Hub from Home Screen</strong>
+                </label>
+            </div>
+        </div>
+
         <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #d97706; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🏫 Manage Classes & Subjects (Add/Edit/Hide)</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add New Class</label><input type="text" id="admin-new-class-input" placeholder="Class name (e.g. 9, 10, 11)"></div>
@@ -431,7 +441,6 @@
             <div id="admin-classes-subjects-manage-box" style="max-height: 160px; overflow-y: auto; background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; border: 1px solid #475569;"></div>
         </div>
 
-        <!-- Free MCQ Subject & Chapter Access Control Section -->
         <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">🔐 Free MCQ Subject & Chapter Control</h3>
             <div class="form-group" style="margin-bottom: 6px;">
@@ -452,7 +461,6 @@
             <button onclick="saveFreeControlSettings()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Free Rules</button>
         </div>
 
-        <!-- Chapter Management Section with Edit, Hide & Delete -->
         <div style="background: rgba(162, 28, 175, 0.1); border: 1px solid #e879f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #e879f9; margin-bottom: 8px;">📚 Manage Chapters (Edit, Hide, Del)</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Class</label><select id="adm-ch-class" onchange="populateAdminSubjectDropdownForChapter()"></select></div>
@@ -463,7 +471,6 @@
             <div id="admin-chapter-list" style="max-height: 160px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
         </div>
 
-        <!-- Manage Teacher Gift Rewards with Direct Gallery Photo Upload -->
         <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">🎁 Manage Teacher Gift Rewards</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Gift Title (e.g. Premium Pen Set)</label><input type="text" id="admin-gift-title" placeholder="Gift name"></div>
@@ -477,7 +484,6 @@
             <div id="admin-gifts-list-box" style="max-height: 120px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
         </div>
 
-        <!-- Teacher Directory & UPI ID Dropdown Viewer (Admin) -->
         <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">👨‍🏫 Teacher Directory & UPI Details</h3>
             <div class="form-group" style="margin-bottom: 6px;">
@@ -494,7 +500,6 @@
             </div>
         </div>
 
-        <!-- Academy Name & Logo Settings Section (With Gallery Upload) -->
         <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Academy Name & Logo Settings</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy / Institution Name</label><input type="text" id="admin-academy-name-input" value="DARWIN MCQ"></div>
@@ -507,20 +512,17 @@
             <button onclick="removeAcademyLogo()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 4px;">Remove Logo</button>
         </div>
 
-        <!-- Special Exam Mode -->
         <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">📋 Special Exam Paper Mode</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Selection Strategy</label><select id="admin-special-mode-select" onchange="saveSpecialExamModeSetting()"><option value="auto">Auto Random Selection</option><option value="manual">Manual Selected Question Set</option></select></div>
         </div>
 
-        <!-- Update Special Exam Fee -->
         <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">💳 Update Special Exam Fee</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Monthly Fee Amount (₹)</label><input type="number" id="admin-fee-input" value="10"></div>
             <button onclick="saveSpecialExamFee()" style="padding: 6px; font-size: 13px; background: #d97706;">Save Fee Amount</button>
         </div>
 
-        <!-- Special Exam Students Directory -->
         <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">⭐ Special Exam Students Directory</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Select Student</label><select id="admin-special-student-select" onchange="displaySelectedSpecialStudentDetails()"><option value="">-- Choose Student --</option></select></div>
@@ -545,7 +547,6 @@
             <button onclick="addNewTeacher()" style="padding: 6px; font-size: 13px; background: var(--success);">Register Teacher</button>
         </div>
 
-        <!-- Manage Teachers (Block / Remove / Delete & Bonus Points) -->
         <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #f87171; margin-bottom: 8px;">⚖️ Manage Teachers (Block / Delete & Bonus)</h3>
             <div id="admin-teacher-manage-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 8px; text-align: left; font-size: 13px;"></div>
@@ -557,11 +558,6 @@
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">QR Image URL</label><input type="text" id="admin-qr-input" placeholder="QR image link"></div>
             <button onclick="saveUpiQrSettings()" style="padding: 6px; font-size: 13px; background: var(--primary);">Save / Update</button>
             <button onclick="deleteUpiQrSettings()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 5px;">Remove QR Code</button>
-        </div>
-
-        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
-            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">📥 Monthly Exam Requests & Claims</h3>
-            <div id="pending-request-container"><p style="color: var(--gray); font-size: 12px;">No pending requests.</p></div>
         </div>
 
         <button onclick="showScreen('screen-admin-trash')" class="btn-danger" style="margin-bottom: 8px;">🗑️ Trash Bin</button>
@@ -578,6 +574,24 @@
         <h2>👨‍🏫 Teacher Dashboard</h2>
         <p id="teacher-welcome-text" style="color: #38bdf8; font-weight: bold; margin-bottom: 10px;"></p>
         
+        <!-- Teacher Fund Request & Wallet -->
+        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #22c55e; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 6px;">💰 Teacher Wallet & Fund Request</h3>
+            <p style="font-size: 12px; color: #f8fafc; margin-bottom: 8px;">Wallet Balance: <strong id="teacher-wallet-balance" style="font-size: 16px; color: #4ade80;">₹0</strong></p>
+            
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Request Fund Amount (₹)</label><input type="number" id="teacher-req-fund-amt" placeholder="e.g. 100"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UTR / Payment Reference ID</label><input type="text" id="teacher-req-fund-utr" placeholder="12-digit UTR No"></div>
+            <button onclick="teacherSendFundRequest()" style="padding: 6px; font-size: 13px; background: #16a34a; margin-bottom: 10px;">Send Fund Request to Admin</button>
+
+            <hr style="border:0; border-top:1px solid #475569; margin:10px 0;">
+            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 6px;">🎓 Instant Add Paid Student (Min. 3 Months)</h3>
+            <p style="font-size: 11px; color: #fbbf24; margin-bottom: 6px; text-align: left;">50% share will be instantly deducted from your wallet!</p>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Student Full Name</label><input type="text" id="teacher-student-name" placeholder="Student name"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Mobile Number</label><input type="tel" id="teacher-student-mobile" placeholder="10-digit mobile"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Total 3 Months Fee (₹)</label><input type="number" id="teacher-student-fee" placeholder="e.g. 30 (for 3 months)"></div>
+            <button onclick="teacherInstantAddPaidStudent()" style="padding: 6px; font-size: 13px; background: #0284c7;">Instant Register Student & Deduct 50%</button>
+        </div>
+
         <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">👤 My Profile & UPI Settings</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Full Name</label><input type="text" id="teacher-profile-name" placeholder="Your name"></div>
@@ -586,8 +600,8 @@
             <button onclick="saveTeacherProfile()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Profile & UPI</button>
         </div>
 
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
-            <strong>My Points: <span id="teacher-points-display" style="color: #4ade80; font-size: 18px;">120</span> pts</strong>
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid var(--primary); padding: 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <strong>Reward Points: <span id="teacher-points-display" style="color: #4ade80; font-size: 18px;">120</span> pts</strong>
         </div>
         <button onclick="showScreen('screen-teacher-gifts')" class="btn-warning" style="margin-bottom: 12px;">🎁 View Gift Gallery & Redeem Rewards</button>
         
@@ -744,7 +758,7 @@
     let freeControlSettings = {
         masterUnlock: false,
         allowedSubjects: ["Math", "Science"], 
-        chapterLimit: "1" 
+        chapterLimit: "ALL" 
     };
 
     let academyBranding = { name: "DARWIN MCQ", logoUrl: "" };
@@ -753,7 +767,7 @@
     let timerInterval = null;
     let timeLeftSeconds = 0;
 
-    let teachersDatabase = [{ name: "Default Teacher", pin: "1122", points: 120, mobile: "9876543210", upi: "default@upi", status: "active" }];
+    let teachersDatabase = [{ name: "Default Teacher", pin: "1122", points: 120, wallet: 0, mobile: "9876543210", upi: "default@upi", status: "active", claimedGifts: [] }];
     let teacherGiftRewards = [
         { id: 1, title: "Premium Pen Set", points: 200, imgUrl: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300" },
         { id: 2, title: "Academy Reference Book", points: 400, imgUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
@@ -761,6 +775,8 @@
     ];
 
     let contributorSettings = { hidden: false };
+    let resourcesButtonSettings = { hidden: false }; // E-Books & Videos Hub visibility setting
+
     let featuredContributors = [
         { id: 1, name: "Rahman", role: "Chemistry & Short QA Guru", imgUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" },
         { id: 2, name: "Dewan", role: "Physics & History Specialist", imgUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" },
@@ -812,6 +828,7 @@
                 if(data.teachers) teachersDatabase = data.teachers;
                 if(data.teacherGiftRewards) teacherGiftRewards = data.teacherGiftRewards;
                 if(data.contributorSettings) contributorSettings = data.contributorSettings;
+                if(data.resourcesButtonSettings) resourcesButtonSettings = data.resourcesButtonSettings;
                 if(data.featuredContributors) featuredContributors = data.featuredContributors;
                 if(data.registeredStudents) registeredStudentsDatabase = data.registeredStudents;
                 if(data.approvedMobiles) approvedMobileNumbers = data.approvedMobiles;
@@ -837,6 +854,7 @@
             }
             updateAcademyBrandingUI();
             renderHomeContributorsUI();
+            updateResourcesButtonVisibilityUI();
         });
     }
 
@@ -851,6 +869,7 @@
             teachers: teachersDatabase,
             teacherGiftRewards: teacherGiftRewards,
             contributorSettings: contributorSettings,
+            resourcesButtonSettings: resourcesButtonSettings,
             featuredContributors: featuredContributors,
             registeredStudents: registeredStudentsDatabase,
             approvedMobiles: approvedMobileNumbers,
@@ -910,6 +929,19 @@
         `).join('');
 
         countContainer.innerText = `(Total ${featuredContributors.length} Active Contributors)`;
+    }
+
+    function updateResourcesButtonVisibilityUI() {
+        const resBtn = document.getElementById('home-resources-btn');
+        if(resBtn) {
+            resBtn.style.display = resourcesButtonSettings.hidden ? 'none' : 'block';
+        }
+    }
+
+    function saveResourcesButtonVisibility() {
+        resourcesButtonSettings.hidden = document.getElementById('admin-hide-resources-btn').checked;
+        syncToFirebase();
+        updateResourcesButtonVisibilityUI();
     }
 
     function switchStudentAuthTab(tab) {
@@ -1136,6 +1168,7 @@
         document.getElementById(screenId).classList.add('active');
         updateAcademyBrandingUI();
         renderHomeContributorsUI();
+        updateResourcesButtonVisibilityUI();
 
         if(screenId !== 'screen-quiz-play' && timerInterval) clearInterval(timerInterval);
 
@@ -1183,9 +1216,12 @@
             document.getElementById('setting-q-count').value = testSettings.questionCount;
             document.getElementById('setting-timer').value = testSettings.timerMinutes;
             document.getElementById('admin-hide-contributors-card').checked = contributorSettings.hidden;
+            document.getElementById('admin-hide-resources-btn').checked = resourcesButtonSettings.hidden;
         } else if(screenId === 'screen-teacher-dash') {
             let t = teachersDatabase[currentTeacherIndex];
+            if(t.wallet === undefined) t.wallet = 0;
             document.getElementById('teacher-points-display').innerText = t.points;
+            document.getElementById('teacher-wallet-balance').innerText = `₹${t.wallet}`;
             document.getElementById('teacher-welcome-text').innerText = `Welcome, ${t.name}!`;
             document.getElementById('teacher-profile-name').value = t.name || "";
             document.getElementById('teacher-profile-mobile').value = t.mobile || "";
@@ -1211,6 +1247,78 @@
         t.upi = document.getElementById('teacher-profile-upi').value.trim() || "";
         syncToFirebase();
         alert('Profile & UPI ID successfully updated!');
+    }
+
+    function teacherSendFundRequest() {
+        const amt = parseFloat(document.getElementById('teacher-req-fund-amt').value);
+        const utr = document.getElementById('teacher-req-fund-utr').value.trim();
+
+        if(isNaN(amt) || amt <= 0 || !utr) {
+            alert('সঠিক ফাণ্ডৰ এমাউণ্ট আৰু UTR / Transaction ID বহুৱাওক!');
+            return;
+        }
+
+        let teacher = teachersDatabase[currentTeacherIndex];
+        
+        pendingRequests.push({
+            id: Date.now(),
+            type: "teacher_fund_request",
+            teacherIndex: currentTeacherIndex,
+            name: `Fund Request: ${teacher.name}`,
+            mobile: teacher.mobile || "Teacher",
+            tx: `Requested Fund Amount: ₹${amt} | UTR: ${utr}`,
+            amount: amt
+        });
+
+        syncToFirebase();
+
+        document.getElementById('teacher-req-fund-amt').value = '';
+        document.getElementById('teacher-req-fund-utr').value = '';
+        alert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱা হ’ল! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
+    }
+
+    function teacherInstantAddPaidStudent() {
+        const name = document.getElementById('teacher-student-name').value.trim();
+        const mobile = document.getElementById('teacher-student-mobile').value.trim();
+        const totalFee = parseFloat(document.getElementById('teacher-student-fee').value);
+
+        if(!name || !mobile || mobile.length < 10 || isNaN(totalFee) || totalFee <= 0) {
+            alert('সোপিকেইটা সঠিকভাৱে পূৰণ কৰক (নাম, ম’বাইল আৰু ৩ মাহৰ ফিচ এমাউণ্ট)!');
+            return;
+        }
+
+        let t = teachersDatabase[currentTeacherIndex];
+        if(t.wallet === undefined) t.wallet = 0;
+
+        let adminOrDeductionShare = totalFee * 0.50;
+
+        if(t.wallet < adminOrDeductionShare) {
+            alert(`আপোনাৰ ৱালেটত পৰ্যাপ্ত টকা নাই!\nপ্ৰয়োজনীয় ৫০% অংশ: ₹${adminOrDeductionShare}\nআপোনাৰ ৱালেট বেলেঞ্চ: ₹${t.wallet}\nঅনুগ্ৰহ কৰি প্ৰথমে এডমিনলৈ ফাণ্ড অনুৰোধ (Fund Request) পঠিয়াই ৱালেট টকা এড কৰি লওক।`);
+            return;
+        }
+
+        t.wallet -= adminOrDeductionShare;
+
+        if(!approvedMobileNumbers.includes(mobile)) {
+            approvedMobileNumbers.push(mobile);
+        }
+
+        pendingRequests.push({
+            id: Date.now(),
+            type: "student_added",
+            name: `${name} (Instant Added by Teacher: ${t.name})`,
+            mobile: mobile,
+            tx: `Total Fee: ₹${totalFee} | Wallet Deducted 50%: ₹${adminOrDeductionShare}`
+        });
+
+        syncToFirebase();
+
+        document.getElementById('teacher-student-name').value = '';
+        document.getElementById('teacher-student-mobile').value = '';
+        document.getElementById('teacher-student-fee').value = '';
+        document.getElementById('teacher-wallet-balance').innerText = `₹${t.wallet}`;
+
+        alert(`সফলভাৱে ছাত্ৰজন পঞ্জীয়ন হ’ল!\nমুঠ ফিচ: ₹${totalFee}\nৱালেটৰ পৰা ৫০% (₹${adminOrDeductionShare}) মাইনাস হ’ল।\nবাকী বেলেঞ্চ: ₹${t.wallet}`);
     }
 
     function populateAdminTeacherDropdown() {
@@ -1298,18 +1406,33 @@
     function renderTeacherGiftGallery() {
         const container = document.getElementById('teacher-gift-gallery-container');
         let teacher = teachersDatabase[currentTeacherIndex];
+        if(!teacher.claimedGifts) teacher.claimedGifts = [];
+        
         const currentPts = teacher.points;
         document.getElementById('gift-screen-pts').innerText = currentPts;
 
         container.innerHTML = teacherGiftRewards.map(g => {
-            let canClaim = currentPts >= g.points;
+            let isClaimed = teacher.claimedGifts.includes(g.id);
+            let canClaim = currentPts >= g.points && !isClaimed;
+            
+            let btnLabel = '🎁 Claim Gift';
+            let btnClass = 'btn-success';
+            
+            if(isClaimed) {
+                btnLabel = '✅ Already Claimed';
+                btnClass = 'btn-secondary';
+            } else if(!canClaim) {
+                btnLabel = '🔒 Need More Pts';
+                btnClass = 'btn-secondary';
+            }
+
             return `
                 <div style="background:#0f172a; border:1px solid #475569; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; gap:10px; align-items:center;">
                     <img src="${g.imgUrl}" style="width:60px; height:60px; border-radius:6px; object-fit:cover;">
                     <div style="flex:1;">
                         <strong style="font-size:14px; color:var(--text);">${g.title}</strong><br>
                         <span style="font-size:12px; color:var(--warning); font-weight:bold;">Cost: ${g.points} Points</span><br>
-                        <button onclick="claimTeacherGift(${g.id})" ${canClaim ? '' : 'disabled'} class="${canClaim ? 'btn-success' : 'btn-secondary'}" style="padding:4px 10px; font-size:12px; width:auto; margin-top:4px;">${canClaim ? '🎁 Claim Gift' : '🔒 Need More Pts'}</button>
+                        <button onclick="claimTeacherGift(${g.id})" ${canClaim ? '' : 'disabled'} class="${btnClass}" style="padding:4px 10px; font-size:12px; width:auto; margin-top:4px;">${btnLabel}</button>
                     </div>
                 </div>
             `;
@@ -1321,6 +1444,13 @@
         if(!gift) return;
 
         let teacher = teachersDatabase[currentTeacherIndex];
+        if(!teacher.claimedGifts) teacher.claimedGifts = [];
+
+        if(teacher.claimedGifts.includes(giftId)) {
+            alert('You have already claimed this gift! You cannot claim the same gift twice.');
+            return;
+        }
+
         if(!teacher.upi) {
             alert('Please update your UPI ID in Profile & UPI Settings before claiming gifts!');
             showScreen('screen-teacher-dash');
@@ -1328,21 +1458,24 @@
         }
 
         if(teacher.points < gift.points) {
-            alert('Insufficient points!');
+            alert('Insufficient points! You do not have enough points for this gift.');
             return;
         }
 
-        if(confirm(`Claim "${gift.title}" for ${gift.points} points? This will be deducted immediately.`)) {
+        if(confirm(`Claim "${gift.title}" for ${gift.points} points? Your remaining points will stay safe in your account.`)) {
             teacher.points -= gift.points;
+            teacher.claimedGifts.push(giftId);
+            
             pendingRequests.push({ 
                 id: Date.now(), 
                 name: `${teacher.name} (Gift Claim)`, 
                 mobile: teacher.mobile || 'No Mobile', 
-                tx: `Claimed: ${gift.title} (${gift.points} pts). UPI: ${teacher.upi}` 
+                tx: `Claimed: ${gift.title} (${gift.points} pts). Remaining Pts: ${teacher.points}. UPI: ${teacher.upi}` 
             });
+            
             syncToFirebase();
             renderTeacherGiftGallery();
-            alert(`Congratulations! Gift claimed. Admin notified via SMS Alert.`);
+            alert(`Congratulations! Gift claimed successfully.\nRemaining Points: ${teacher.points} pts`);
         }
     }
 
@@ -1720,8 +1853,9 @@
     function renderTrashBinsContent() {
         const qContainer = document.getElementById('trash-questions-list');
         qContainer.innerHTML = trashDatabase.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
-                ${item.q || item.name}<br>
+            <div style="border-bottom:1px solid #475569; padding-bottom:6px; margin-bottom:6px;">
+                <strong>[${item.type}]</strong> ${item.q || item.name}<br>
+                <span style="font-size:11px; color:#38bdf8;">Class: ${item.class} | Subject: ${item.subject} | Chapter: ${item.chapter}</span><br>
                 <button onclick="adminRestoreQuestion(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteQuestion(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
             </div>
@@ -1729,7 +1863,7 @@
 
         const csContainer = document.getElementById('trash-classes-subjects-list');
         csContainer.innerHTML = trashClassesSubjects.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
+            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:6px;">
                 ${item.type === 'class' ? `Class: <strong>${item.key}</strong>` : `Subject: <strong>${item.subjectKey}</strong> (Class ${item.classKey})`}<br>
                 <button onclick="adminRestoreCS(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteCS(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
@@ -1738,7 +1872,7 @@
 
         const chContainer = document.getElementById('trash-chapters-list');
         chContainer.innerHTML = trashChapters.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">
+            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:6px;">
                 Chapter: <strong>${item.name}</strong> (Class ${item.class} - ${item.subject})<br>
                 <button onclick="adminRestoreChapter(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteChapter(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
@@ -1791,6 +1925,7 @@
         if(!confirm('Permanently delete this chapter?')) return;
         trashChapters.splice(idx, 1);
         syncToFirebase();
+        renderAdminChapterList();
         renderTrashBinsContent();
     }
 
@@ -1808,7 +1943,6 @@
         alert(`Special Exam mode set to: ${specialExamMode.toUpperCase()}`);
     }
 
-    // Teacher special exam mode fix added here
     function saveSpecialExamModeSettingTeacher() {
         specialExamMode = document.getElementById('teacher-special-mode-select').value;
         syncToFirebase();
@@ -1975,7 +2109,7 @@
         const name = document.getElementById('new-teacher-name').value.trim();
         const pin = document.getElementById('new-teacher-pin').value.trim();
         if(!name || !pin) { alert('Fill all fields!'); return; }
-        teachersDatabase.push({ name, pin, points: 50, mobile: "", upi: "", status: "active" });
+        teachersDatabase.push({ name, pin, points: 50, wallet: 0, mobile: "", upi: "", status: "active", claimedGifts: [] });
         syncToFirebase();
         alert(`Teacher ${name} registered successfully!`);
         document.getElementById('new-teacher-name').value = '';
@@ -1993,9 +2127,11 @@
         let html = '';
         teachersDatabase.forEach((t, index) => {
             let isBlocked = t.status === "blocked";
+            if(t.wallet === undefined) t.wallet = 0;
             html += `
                 <div style="border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 8px; background:#0f172a; padding:8px; border-radius:6px;">
-                    <strong>${t.name}</strong> (PIN: <code>${t.pin}</code>) - <strong style="color:var(--success);">${t.points} pts</strong><br>
+                    <strong>${t.name}</strong> (PIN: <code>${t.pin}</code>)<br>
+                    Points: <strong style="color:var(--success);">${t.points} pts</strong> | Wallet: <strong style="color:#4ade80;">₹${t.wallet}</strong><br>
                     Status: <span style="color:${isBlocked ? '#ef4444' : '#4ade80'}; font-weight:bold;">${isBlocked ? 'BLOCKED ❌' : 'ACTIVE ✅'}</span><br>
                     <div style="display: flex; gap: 5px; margin-top: 6px;">
                         <input type="number" id="bonus-pts-${index}" placeholder="Bonus Pts" style="width: 70px; padding: 2px; font-size: 11px;">
@@ -2060,7 +2196,7 @@
         const mobile = document.getElementById('pay-mobile').value.trim();
         const tx = document.getElementById('pay-tx').value.trim();
         if(!name || !mobile || !tx) { alert('Fill all fields!'); return; }
-        pendingRequests.push({ id: Date.now(), name, mobile, tx: `Payment UTR: ${tx}` });
+        pendingRequests.push({ id: Date.now(), type: "student_pay", name, mobile, tx: `Payment UTR: ${tx}` });
         syncToFirebase();
         alert('Request submitted! Admin notified via SMS Alert.');
         showScreen('screen-home');
@@ -2072,9 +2208,28 @@
         if(!pendingRequests || pendingRequests.length === 0) { container.innerHTML = `<p style="font-size: 12px;">No pending requests.</p>`; return; }
         let html = '';
         pendingRequests.forEach((req, index) => {
-            html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong> (${req.mobile})<br>${req.tx}<br><button onclick="handleApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+            if(req.type === "teacher_fund_request") {
+                html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong><br>${req.tx}<br><button onclick="handleTeacherFundApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve Fund</button><button onclick="handleTeacherFundApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+            } else {
+                html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong> (${req.mobile})<br>${req.tx}<br><button onclick="handleApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+            }
         });
         container.innerHTML = html;
+    }
+
+    function handleTeacherFundApproval(index, isApproved) {
+        const req = pendingRequests[index];
+        if(isApproved && req.teacherIndex !== undefined) {
+            let t = teachersDatabase[req.teacherIndex];
+            if(t) {
+                if(t.wallet === undefined) t.wallet = 0;
+                t.wallet += req.amount;
+            }
+        }
+        pendingRequests.splice(index, 1);
+        syncToFirebase();
+        renderPendingRequests();
+        alert(isApproved ? 'Fund approved and added to teacher wallet!' : 'Fund request dismissed!');
     }
 
     function handleApproval(index, isApproved) {
@@ -2137,10 +2292,26 @@
     function teacherDeleteQuestion(id) {
         const index = questionDatabase.findIndex(q => q.id === id);
         if(index !== -1) {
-            trashDatabase.push(questionDatabase.splice(index, 1)[0]);
+            let deletedQ = questionDatabase.splice(index, 1)[0];
+            trashDatabase.push(deletedQ);
+
+            if(loggedInRole === 'TEACHER' && teachersDatabase[currentTeacherIndex]) {
+                let ptsDeduct = (deletedQ.type === 'MCQ' ? 10 : 15);
+                teachersDatabase[currentTeacherIndex].points -= ptsDeduct;
+                if(teachersDatabase[currentTeacherIndex].points < 0) teachersDatabase[currentTeacherIndex].points = 0;
+
+                let teacherName = teachersDatabase[currentTeacherIndex].name;
+                pendingRequests.push({
+                    id: Date.now(),
+                    name: `${teacherName} (Question Deleted)`,
+                    mobile: "Teacher Log",
+                    tx: `Deleted ${deletedQ.type} question. Deducted -${ptsDeduct} pts.`
+                });
+            }
+
             syncToFirebase();
             renderManageQuestionsList();
-            alert('Question moved to Trash Bin!');
+            alert('Question moved to Trash Bin and points deducted successfully!');
         }
     }
 
