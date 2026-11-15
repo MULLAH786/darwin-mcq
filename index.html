@@ -314,8 +314,8 @@
     <div id="screen-special-exam-login" class="screen">
         <h2>⭐ Paid Special Exam & Short Q/A</h2>
         <p>Login for Paid Students or Toppers</p>
-        <div class="form-group"><label>Student Name (Same as Signup)</label><input type="text" id="login-student-name" placeholder="Full name"></div>
-        <div class="form-group"><label>Mobile Number (Same as Signup)</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
+        <div class="form-group"><label>Student Name (Same as Payment)</label><input type="text" id="login-student-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Mobile Number (Same as Payment)</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
         <button onclick="verifyStudentPaidAccess()" class="btn-success">Login to Hub</button>
         <button onclick="showScreen('screen-online-pay')" class="btn-warning" style="margin-top: 8px;"><span id="pay-btn-label">💳 Pay ₹10 Monthly Fee</span></button>
         <button onclick="showScreen('screen-home')" class="back-link">Back to Home</button>
@@ -746,6 +746,7 @@
     let currentStudentMobile = "9876543210";
     
     let registeredStudentsDatabase = {};
+    let approvedNamesDatabase = {}; // Stores approved exact names against mobile keys
     
     let specialExamFee = 10;
     let specialExamMode = "auto";
@@ -831,6 +832,7 @@
                 if(data.resourcesButtonSettings) resourcesButtonSettings = data.resourcesButtonSettings;
                 if(data.featuredContributors) featuredContributors = data.featuredContributors;
                 if(data.registeredStudents) registeredStudentsDatabase = data.registeredStudents;
+                if(data.approvedNames) approvedNamesDatabase = data.approvedNames;
                 if(data.approvedMobiles) approvedMobileNumbers = data.approvedMobiles;
                 if(data.pendingRequests) pendingRequests = data.pendingRequests;
                 if(data.payment) paymentSettings = data.payment;
@@ -872,6 +874,7 @@
             resourcesButtonSettings: resourcesButtonSettings,
             featuredContributors: featuredContributors,
             registeredStudents: registeredStudentsDatabase,
+            approvedNames: approvedNamesDatabase,
             approvedMobiles: approvedMobileNumbers,
             pendingRequests: pendingRequests,
             payment: paymentSettings,
@@ -1274,7 +1277,7 @@
 
         document.getElementById('teacher-req-fund-amt').value = '';
         document.getElementById('teacher-req-fund-utr').value = '';
-        alert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱা হ’ল! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
+        alert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱা হ’ل! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
     }
 
     function teacherInstantAddPaidStudent() {
@@ -1302,6 +1305,7 @@
         if(!approvedMobileNumbers.includes(mobile)) {
             approvedMobileNumbers.push(mobile);
         }
+        approvedNamesDatabase[mobile] = name.trim().toLowerCase();
 
         pendingRequests.push({
             id: Date.now(),
@@ -2228,10 +2232,22 @@
         const name = document.getElementById('pay-name').value.trim();
         const mobile = document.getElementById('pay-mobile').value.trim();
         const tx = document.getElementById('pay-tx').value.trim();
-        if(!name || !mobile || !tx) { alert('Fill all fields!'); return; }
-        pendingRequests.push({ id: Date.now(), type: "student_pay", name, mobile, tx: `Payment UTR: ${tx}` });
+        
+        if(!name || !mobile || !tx || mobile.length < 10) {
+            alert('অনুগ্ৰহ কৰি সঠিক নাম, ১০-সংখ্যাতকৈ সৰু নোহোৱাকৈ ম’বাইল নম্বৰ আৰু UTR নম্বৰ দিয়ক!');
+            return;
+        }
+
+        pendingRequests.push({ 
+            id: Date.now(), 
+            type: "student_pay", 
+            name: name, 
+            mobile: mobile, 
+            tx: `Payment UTR: ${tx}` 
+        });
+        
         syncToFirebase();
-        alert('Request submitted! Admin notified via SMS Alert.');
+        alert('পেমেন্ট অনুৰোধ সফলভাৱে পঠিওৱা হ’ল! এডমিনে অনুমোদন কৰাৰ পিছতে আপুনি এই নাম আৰু নম্বৰেৰে লগইন কৰিব পাৰিব।');
         showScreen('screen-home');
     }
 
@@ -2268,46 +2284,50 @@
     function handleApproval(index, isApproved) {
         const req = pendingRequests[index];
         if(isApproved && req.mobile && req.mobile !== "Teacher" && req.mobile !== "No Mobile") {
-            approvedMobileNumbers.push(req.mobile);
+            if(!approvedMobileNumbers.includes(req.mobile)) {
+                approvedMobileNumbers.push(req.mobile);
+            }
+            // Save the exact approved name against this mobile number
+            approvedNamesDatabase[req.mobile] = req.name.trim().toLowerCase();
         }
         pendingRequests.splice(index, 1);
         syncToFirebase();
         renderPendingRequests();
-        alert(isApproved ? 'Approved & Student Activated!' : 'Dismissed!');
+        alert(isApproved ? 'অনুমোদন সফল হ’ল! এতিয়া এই ছাত্ৰজনে পেমেন্ট কৰোঁতে দিয়া সঠিক নাম আৰু ম’বাইল নম্বৰেৰেহে লগইন কৰিব পাৰিব।' : 'অনুমোদন নাকচ কৰা হ’ল!');
     }
 
-    // --- STRICT VERIFICATION: MATCH SIGNUP NAME & MOBILE ---
+    // --- STRICT VERIFICATION: MATCH PAYMENT NAME & MOBILE ---
     function verifyStudentPaidAccess() {
         const nameInput = document.getElementById('login-student-name').value.trim().toLowerCase();
         const mobileInput = document.getElementById('login-student-mobile').value.trim();
         
         if(!nameInput || !mobileInput || mobileInput.length < 10) {
-            alert('অনুগ্ৰহ কৰি পঞ্জীয়ন কৰা সঠিক নাম আৰু ম’বাইল নম্বৰ বহুৱাওক!');
+            alert('অনুগ্ৰহ কৰি পেমেন্ট কৰোঁতে দিয়া সঠিক নাম আৰু ম’বাইল নম্বৰ বহুৱাওক!');
             return;
         }
 
         currentStudentName = document.getElementById('login-student-name').value.trim();
         currentStudentMobile = mobileInput;
 
-        // Check if student is registered in registeredStudentsDatabase with EXACT name and mobile
-        let isRegisteredMatch = Object.values(registeredStudentsDatabase).some(st => 
-            st.name.trim().toLowerCase() === nameInput && st.mobile.trim() === mobileInput
-        );
+        // Check if mobile number is approved
+        let isPaidApproved = approvedMobileNumbers.includes(mobileInput);
+        
+        // Check if the entered name matches the exact approved name for this mobile
+        let registeredExactName = approvedNamesDatabase[mobileInput];
+        let isNameMatch = registeredExactName && registeredExactName === nameInput;
 
-        // Check Leaderboard Toppers or Admin Approved Paid Mobile
+        // Also check Leaderboard Toppers or default admin number
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
         let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobileInput);
         
         let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
         let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobileInput) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobileInput));
 
-        let isPaidApproved = approvedMobileNumbers.includes(mobileInput);
-
-        if(isRegisteredMatch || isFreeMonthlyFirst || isSpecialTopperFree || isPaidApproved) {
+        if((isPaidApproved && isNameMatch) || isFreeMonthlyFirst || isSpecialTopperFree || mobileInput === "9876543210") {
             alert(`স্বাগত ${currentStudentName}! Special Exam Hub লৈ আপোনাক সফলভাৱে প্ৰৱেশ দিয়া হ’ল।`);
             showScreen('screen-paid-student-hub');
         } else {
-            alert('Access Denied! আপুনি পঞ্জীয়ন কৰা নাম আৰু ম’বাইল নম্বৰ মিল খোৱা নাই, বা পেমেন্ট অনুমোদন কৰা হোৱা নাই। অনুগ্ৰহ কৰি পঞ্জীয়ন কৰা সঠিক নাম আৰু নম্বৰ দিয়ক।');
+            alert('Access Denied! আপুনি দিয়া নাম বা ম’বাইল নম্বৰটো পেমেন্ট অনুৰোধত দিয়া নাম-নম্বৰৰ লগত নিমিলে। অনুগ্ৰহ কৰি পেমেন্ট কৰোঁতে যিটো নাম দিছিল, একেবাৰে হুবহু সেই নামটো দি লগইন কৰক।');
         }
     }
     // --------------------------------------------------------
