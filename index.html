@@ -11,13 +11,15 @@
 
     <style>
         :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #d97706;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent: #8b5cf6;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0b0f19;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
             --text: #f8fafc;
             --gray: #94a3b8;
         }
@@ -31,127 +33,193 @@
 
         body {
             background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.08), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.08), transparent 40%);
             color: var(--text);
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
             padding: 0;
         }
 
         .container {
-            width: 100%;
-            max-width: 100%;
-            min-height: 100vh;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 100vh !important;
             background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: none;
             border-radius: 0;
             box-shadow: none;
             overflow-y: auto;
-            padding: 15px;
-            border: none;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         h2, h3 {
             margin-bottom: 15px;
-            color: #38bdf8;
+            color: var(--primary);
             text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         p {
             color: var(--gray);
-            font-size: 14px;
+            font-size: 13.5px;
             margin-bottom: 20px;
             text-align: center;
+            line-height: 1.4;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--text);
+            margin-bottom: 6px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 10px 12px;
-            background: #0f172a;
-            border: 1px solid #475569;
-            border-radius: 8px;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             font-size: 14px;
             outline: none;
             color: white;
-            transition: border-color 0.2s;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: var(--primary);
+            padding: 13px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
             margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
         }
 
-        button:hover { background: var(--primary-dark); }
-        .btn-danger { background: var(--danger); }
-        .btn-danger:hover { background: #b91c1c; }
-        .btn-secondary { background: #475569; }
-        .btn-secondary:hover { background: #334155; }
-        .btn-success { background: var(--success); }
-        .btn-success:hover { background: #15803d; }
-        .btn-warning { background: var(--warning); }
-        .btn-warning:hover { background: #b45309; }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .btn-danger { background: linear-gradient(135deg, #f43f5e, #e11d48); box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3); }
+        .btn-secondary { background: rgba(51, 65, 85, 0.8); border: 1px solid var(--border); box-shadow: none; }
+        .btn-secondary:hover { background: #475569; }
+        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .btn-purple { background: linear-gradient(135deg, #a855f7, #7c3aed); box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); }
 
         .screen { display: none; }
-        .screen.active { display: block; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .option-btn {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: #334155;
-            border: 1px solid #475569;
-            border-radius: 8px;
+            padding: 13px;
+            margin-bottom: 10px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             text-align: left;
-            font-size: 15px;
+            font-size: 14.5px;
             cursor: pointer;
             color: var(--text);
+            transition: all 0.2s ease;
         }
-        .option-btn:hover { background: #475569; }
+        .option-btn:hover { background: #334155; border-color: var(--primary); }
 
         .back-link {
             display: inline-block;
             margin-top: 15px;
             color: var(--gray);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             text-align: center;
             width: 100%;
+            transition: color 0.2s;
         }
         .back-link:hover { color: var(--primary); }
+
+        /* Print Optimization for Single Page Certificate */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                display: block !important;
+                padding: 0 !important;
+            }
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: 100vh !important;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 10px !important;
+            }
+            .screen { display: none !important; }
+            #screen-certificate {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #certificate-box {
+                border: 4px double #d97706 !important;
+                background: #fffbeb !important;
+                color: #1e293b !important;
+                padding: 30px !important;
+                margin: auto !important;
+                box-shadow: none !important;
+            }
+            button, .back-link, #screen-certificate button {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- Custom Popup Modal (Replaces browser default alert) -->
-<div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1e293b; border: 1px solid #475569; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-        <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 16px;" id="custom-alert-title">DARWIN ACADEMY</h3>
-        <p id="custom-alert-message" style="color: #f8fafc; font-size: 14px; margin-bottom: 20px; text-align: center;"></p>
-        <button onclick="closeCustomAlert()" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%;">OK</button>
+<!-- Custom Popup Modal -->
+<div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1e293b; border: 1px solid var(--border); padding: 25px; border-radius: 16px; width: 85%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+        <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 17px;" id="custom-alert-title">DARWIN ACADEMY</h3>
+        <p id="custom-alert-message" style="color: #cbd5e1; font-size: 14px; margin-bottom: 20px; text-align: center;"></p>
+        <button onclick="closeCustomAlert()" style="margin-top: 0; padding: 10px;">OK</button>
     </div>
 </div>
 
@@ -159,46 +227,46 @@
 
     <!-- 1. HOME SCREEN -->
     <div id="screen-home" class="screen active">
-        <div id="home-logo-container" style="text-align: center; margin-bottom: 10px;"></div>
-        <h2 id="home-academy-name">DARWIN MCQ</h2>
-        <p>Live Firebase Cloud Portal</p>
+        <!-- Logo Position Adjusted as per Idea -->
+        <div id="home-logo-container" style="text-align: center; margin-bottom: 8px; margin-top: 5px;"></div>
+        <h2 id="home-academy-name" style="font-size: 24px; margin-bottom: 2px;">DARWIN MCQ</h2>
+        <p style="margin-bottom: 15px;">Live Firebase Cloud Portal</p>
         
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group" style="margin-top: 10px;">
             <button onclick="showScreen('screen-student-auth')" class="btn-success">📚 Free MCQ Practice & Signup</button>
             <button onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-top: 10px;">🏆 Free MCQ Leaderboard & Certificates</button>
-            <button onclick="showScreen('screen-special-leaderboard')" style="background: #7c3aed; margin-top: 10px;">🌟 Special Exam Leaderboard & Certificates</button>
-            <button id="home-resources-btn" onclick="showScreen('screen-student-resources')" style="background: #0284c7; margin-top: 10px;">📖 E-Books & Videos Hub</button>
-            <button onclick="showScreen('screen-special-exam-login')" style="background: #475569; margin-top: 10px;">⭐ Special Exam & Short Q/A (Paid/Topper)</button>
+            <button onclick="showScreen('screen-special-leaderboard')" class="btn-purple" style="margin-top: 10px;">🌟 Special Exam Leaderboard & Certificates</button>
+            <button id="home-resources-btn" onclick="showScreen('screen-student-resources')" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); margin-top: 10px;">📖 E-Books & Videos Hub</button>
+            <button onclick="showScreen('screen-special-exam-login')" style="background: linear-gradient(135deg, #475569, #334155); margin-top: 10px;">⭐ Special Exam & Short Q/A (Paid/Topper)</button>
             
-            <div id="home-contributors-card" style="background: #fffbeb; color: #1e293b; border: 2px solid #d97706; padding: 12px; border-radius: 12px; margin: 15px 0; text-align: center; display: none;">
-                <h4 style="color: #b45309; font-size: 12px; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px;">HONOURING OUR DEDICATED CONTRIBUTORS & TEACHERS</h4>
+            <div id="home-contributors-card" style="background: rgba(255, 251, 235, 0.05); color: #f8fafc; border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 14px; margin: 15px 0; text-align: center; display: none;">
+                <h4 style="color: #fbbf24; font-size: 11.5px; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px;">HONOURING OUR DEDICATED CONTRIBUTORS & TEACHERS</h4>
                 <div id="home-contributors-list" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; justify-content: center;"></div>
-                <p id="home-contributors-count" style="font-size: 10px; color: #78350f; margin: 6px 0 0 0; text-align: center;"></p>
+                <p id="home-contributors-count" style="font-size: 10px; color: var(--gray); margin: 6px 0 0 0; text-align: center;"></p>
             </div>
 
-            <button onclick="showScreen('screen-admin-login')" style="background: #0f172a; border: 1px solid #334155; margin-top: 10px;">🔐 Admin Login</button>
-            <button onclick="showScreen('screen-teacher-login')" id="teacher-home-btn" style="background-color: #ea580c !important; color: #ffffff !important; margin-top: 10px; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; display: block; text-align: center;">👨‍🏫 Teacher Login</button>
-
+            <button onclick="showScreen('screen-admin-login')" class="btn-secondary" style="margin-top: 10px;">🔐 Admin Login</button>
+            <button onclick="showScreen('screen-teacher-login')" id="teacher-home-btn" style="background: linear-gradient(135deg, #ea580c, #c2410c); margin-top: 10px; font-weight: bold;">👨‍🏫 Teacher Login</button>
         </div>
     </div>
 
-    <!-- 1.1 STUDENT AUTH / LOGIN & SIGNUP SCREEN -->
+    <!-- 1.1 STUDENT AUTH -->
     <div id="screen-student-auth" class="screen">
         <h2>🎓 Student Portal Access</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px;">
-            <button onclick="switchStudentAuthTab('login')" id="tab-auth-login" style="margin-top:0; background:var(--primary); font-size:13px;">Login with ID</button>
-            <button onclick="switchStudentAuthTab('signup')" id="tab-auth-signup" style="margin-top:0; background:var(--gray); font-size:13px;">New Register</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+            <button onclick="switchStudentAuthTab('login')" id="tab-auth-login" style="margin-top:0; font-size:13px; padding:10px;">Login with ID</button>
+            <button onclick="switchStudentAuthTab('signup')" id="tab-auth-signup" style="margin-top:0; background:var(--gray); font-size:13px; padding:10px;">New Register</button>
         </div>
 
         <div id="auth-login-box">
             <div class="form-group"><label>Enter Student ID (e.g. MCQ5993MR)</label><input type="text" id="student-login-id" placeholder="Enter your Student ID"></div>
             <button onclick="loginWithStudentId()" class="btn-success">Login & Start Quiz</button>
-            <button onclick="showScreen('screen-forgot-id')" style="background:transparent; color:#38bdf8; border:none; margin-top:10px; font-size:13px; text-decoration:underline; cursor:pointer; width:100%;">🔑 Forgot Student ID?</button>
+            <button onclick="showScreen('screen-forgot-id')" style="background:transparent; color:var(--primary); border:none; margin-top:12px; font-size:13px; text-decoration:underline; cursor:pointer; width:100%;">🔑 Forgot Student ID?</button>
         </div>
 
         <div id="auth-signup-box" style="display:none;">
             <p style="font-size:12px; color:var(--warning); margin-bottom:10px;">Register once to get your unique Student ID!</p>
-            <div class="form-group"><label>FULL NAME </label><input type="text" id="signup-name" placeholder="Enter full name & title"></div>
+            <div class="form-group"><label>FULL NAME</label><input type="text" id="signup-name" placeholder="Enter full name & title"></div>
             <div class="form-group"><label>Mobile Number (10-digit)</label><input type="tel" id="signup-mobile" placeholder="Mobile number"></div>
             <div class="form-group"><label>Date of Birth (DOB)</label><input type="date" id="signup-dob"></div>
             <button onclick="registerNewStudent()" class="btn-success">Generate Student ID</button>
@@ -207,7 +275,7 @@
         <button onclick="showScreen('screen-home')" class="btn-secondary" style="margin-top: 15px;">Back to Home</button>
     </div>
 
-    <!-- 1.2 FORGOT STUDENT ID SCREEN -->
+    <!-- 1.2 FORGOT STUDENT ID -->
     <div id="screen-forgot-id" class="screen">
         <h2>🔑 Recover Student ID</h2>
         <p>Enter your registered Mobile Number and Date of Birth to find your Student ID.</p>
@@ -218,56 +286,56 @@
         <button onclick="showScreen('screen-student-auth')" class="btn-secondary" style="margin-top: 15px;">Back to Login</button>
     </div>
 
-    <!-- 2. FREE MCQ LEADERBOARD SCREEN -->
+    <!-- 2. FREE MCQ LEADERBOARD -->
     <div id="screen-free-leaderboard" class="screen">
         <h2>🏆 Free MCQ Leaderboard</h2>
-        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 12px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 12px; color: #fbbf24; margin: 0;">Monthly <strong>Top 10</strong> get Digital Certificates! 1st Topper gets Special Exam Free.</p>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px;">
-            <button onclick="switchFreeLeaderboardTab('daily')" id="tab-free-daily" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--primary);">Today</button>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px;">
+            <button onclick="switchFreeLeaderboardTab('daily')" id="tab-free-daily" style="padding: 6px; font-size: 11px; margin-top: 0;">Today</button>
             <button onclick="switchFreeLeaderboardTab('weekly')" id="tab-free-weekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Week</button>
             <button onclick="switchFreeLeaderboardTab('monthly')" id="tab-free-monthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Month</button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 15px;">
             <button onclick="switchFreeLeaderboardTab('yesterday')" id="tab-free-yesterday" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Yesterday</button>
-            <button onclick="switchFreeLeaderboardTab('lastweekly')" id="tab-free-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Week Top 5</button>
-            <button onclick="switchFreeLeaderboardTab('lastmonthly')" id="tab-free-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Month Top 10</button>
+            <button onclick="switchFreeLeaderboardTab('lastweekly')" id="tab-free-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Wk Top 5</button>
+            <button onclick="switchFreeLeaderboardTab('lastmonthly')" id="tab-free-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Mo Top 10</button>
         </div>
-        <div id="free-leaderboard-content" style="max-height: 220px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <div id="free-leaderboard-content" style="max-height: 200px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 3. SPECIAL EXAM LEADERBOARD SCREEN -->
+    <!-- 3. SPECIAL EXAM LEADERBOARD -->
     <div id="screen-special-leaderboard" class="screen">
         <h2>🌟 Special Exam Leaderboard</h2>
-        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 10px; border-radius: 12px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 12px; color: #c4b5fd; margin: 0;">Monthly <strong>Top 10</strong> get Certificates! 1st & 2nd Toppers get Fee Free.</p>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px;">
             <button onclick="switchSpecialLeaderboardTab('daily')" id="tab-special-daily" style="padding: 6px; font-size: 11px; margin-top: 0; background: #7c3aed;">Today</button>
             <button onclick="switchSpecialLeaderboardTab('weekly')" id="tab-special-weekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Week</button>
             <button onclick="switchSpecialLeaderboardTab('monthly')" id="tab-special-monthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">This Month</button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 15px;">
             <button onclick="switchSpecialLeaderboardTab('yesterday')" id="tab-special-yesterday" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Yesterday</button>
-            <button onclick="switchSpecialLeaderboardTab('lastweekly')" id="tab-special-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Week Top 5</button>
-            <button onclick="switchSpecialLeaderboardTab('lastmonthly')" id="tab-special-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Month Top 10</button>
+            <button onclick="switchSpecialLeaderboardTab('lastweekly')" id="tab-special-lastweekly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Wk Top 5</button>
+            <button onclick="switchSpecialLeaderboardTab('lastmonthly')" id="tab-special-lastmonthly" style="padding: 6px; font-size: 11px; margin-top: 0; background: var(--gray);">Last Mo Top 10</button>
         </div>
-        <div id="special-leaderboard-content" style="max-height: 220px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
+        <div id="special-leaderboard-content" style="max-height: 200px; overflow-y: auto; text-align: left; font-size: 13px; margin-bottom: 15px;"></div>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 4. CERTIFICATE VIEWER SCREEN -->
+    <!-- 4. CERTIFICATE VIEWER -->
     <div id="screen-certificate" class="screen">
         <h2>📜 Certificate of Achievement</h2>
-        <div id="certificate-box" style="background: #fffbeb; color: #1e293b; border: 4px double #d97706; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-            <h3 id="cert-academy-title" style="color: #b45309; font-size: 16px; margin-bottom: 5px;">DARWIN MCQ</h3>
-            <p style="font-size: 11px; color: #78350f; margin-bottom: 15px;">Kamalabari, Barpeta, Assam</p>
-            <p style="font-size: 12px; margin-bottom: 5px; color: #1e293b;">This is proudly presented to</p>
-            <h2 id="cert-student-name" style="color: #1e293b; font-size: 20px; border-bottom: 2px solid #cbd5e1; display: inline-block; padding-bottom: 2px; margin-bottom: 10px;">Student Name</h2>
-            <p style="font-size: 12px; line-height: 1.5; color: #1e293b;">For securing <strong id="cert-rank-text" style="color: var(--primary);">Rank #1</strong> in the Leaderboard with an outstanding score of <strong id="cert-score-text">50</strong> marks!</p>
-            <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; color: #64748b;">
+        <div id="certificate-box" style="background: #fffbeb; color: #1e293b; border: 4px double #d97706; padding: 20px; border-radius: 14px; text-align: center; margin-bottom: 15px;">
+            <h3 id="cert-academy-title" style="color: #b45309; font-size: 16px; margin-bottom: 4px;">DARWIN MCQ</h3>
+            <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">Kamalabari, Barpeta, Assam</p>
+            <p style="font-size: 12px; margin-bottom: 4px; color: #1e293b;">This is proudly presented to</p>
+            <h2 id="cert-student-name" style="color: #1e293b; font-size: 19px; border-bottom: 2px solid #cbd5e1; display: inline-block; padding-bottom: 2px; margin-bottom: 8px;">Student Name</h2>
+            <p style="font-size: 11.5px; line-height: 1.4; color: #1e293b;">For securing <strong id="cert-rank-text" style="color: var(--primary-dark);">Rank #1</strong> in the Leaderboard with an outstanding score of <strong id="cert-score-text">50</strong> marks!</p>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 10.5px; color: #475569;">
                 <span>Date: <span id="cert-date">2026-11</span></span>
                 <span><strong>Principal / Admin</strong><br><span id="cert-academy-sig">DARWIN MCQ</span></span>
             </div>
@@ -276,11 +344,11 @@
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 5. FREE MCQ TEST SETUP SCREEN -->
+    <!-- 5. FREE MCQ TEST SETUP -->
     <div id="screen-free-mcq" class="screen">
         <h2>📚 Free MCQ Practice</h2>
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid var(--primary); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
-            <p style="font-size: 12px; color: #38bdf8; margin: 0;">Logged in: <strong id="loggedInStudentDisplay">-</strong></p>
+        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.3); padding: 10px; border-radius: 12px; margin-bottom: 12px;">
+            <p style="font-size: 12px; color: var(--primary); margin: 0;">Logged in: <strong id="loggedInStudentDisplay">-</strong></p>
         </div>
         <div class="form-group"><label>Class</label><select id="free-class" onchange="populateStudentFreeSubjectFilter()"></select></div>
         <div class="form-group"><label>Subject</label><select id="free-subject" onchange="populateStudentFreeChapterFilter()"></select></div>
@@ -289,29 +357,29 @@
         <button onclick="showScreen('screen-home')" class="btn-secondary" style="margin-top: 10px;">Back to Home</button>
     </div>
 
-    <!-- 6. LIVE QUIZ PLAY SCREEN -->
+    <!-- 6. LIVE QUIZ PLAY -->
     <div id="screen-quiz-play" class="screen">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h2 id="quiz-heading" style="margin: 0; font-size: 18px;">Quiz Ongoing</h2>
-            <div id="quiz-timer-box" style="background: #334155; color: #f87171; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 14px;">⏱️ <span id="timer-display">00:00</span></div>
+            <h2 id="quiz-heading" style="margin: 0; font-size: 17px;">Quiz Ongoing</h2>
+            <div id="quiz-timer-box" style="background: rgba(51, 65, 85, 0.8); color: #f87171; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 13px;">⏱️ <span id="timer-display">00:00</span></div>
         </div>
-        <div id="quiz-question-box" style="background: #1e293b;color: #facc15;padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 600;">Loading...</div>
+        <div id="quiz-question-box" style="background: rgba(30, 41, 59, 0.9); color: #facc15; padding: 15px; border-radius: 12px; margin-bottom: 15px; font-weight: 600; border: 1px solid var(--border);">Loading...</div>
         <div id="quiz-options-box"></div>
         <button id="next-quiz-btn" onclick="nextQuizQuestion()" style="display: none;" class="btn-success">Next Question</button>
     </div>
 
-    <!-- 7. QUIZ RESULT SCREEN -->
+    <!-- 7. QUIZ RESULT -->
     <div id="screen-quiz-result" class="screen">
         <h2>🎉 Exam Completed!</h2>
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #16a34a; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-            <h3 id="result-score-text" style="color: #4ade80; font-size: 24px; margin-bottom: 5px;">Marks: 0 / 0</h3>
-            <p id="result-percentage" style="font-size: 14px; color: var(--gray);">Percentage: 0%</p>
+        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 20px; border-radius: 14px; text-align: center; margin-bottom: 20px;">
+            <h3 id="result-score-text" style="color: #4ade80; font-size: 22px; margin-bottom: 5px;">Marks: 0 / 0</h3>
+            <p id="result-percentage" style="font-size: 13.5px; color: var(--gray);">Percentage: 0%</p>
         </div>
         <button id="result-leaderboard-btn" onclick="showScreen('screen-free-leaderboard')" class="btn-warning" style="margin-bottom: 8px;">🏆 View Leaderboard</button>
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 8. STUDENT RESOURCES (E-Books & Videos) -->
+    <!-- 8. STUDENT RESOURCES -->
     <div id="screen-student-resources" class="screen">
         <h2>📖 E-Books & Video Hub</h2>
         <div id="student-ebook-list" style="margin-bottom: 15px; text-align: left; font-size: 13px;"></div>
@@ -319,14 +387,14 @@
         <button onclick="showScreen('screen-home')" class="btn-secondary">Back to Home</button>
     </div>
 
-    <!-- 9. PAID SPECIAL EXAM & SHORT Q/A LOGIN -->
+    <!-- 9. PAID SPECIAL EXAM LOGIN -->
     <div id="screen-special-exam-login" class="screen">
         <h2>⭐ Paid Special Exam & Short Q/A</h2>
         <p>Login for Paid Students or Toppers</p>
         <div class="form-group"><label>Student Name (Same as Payment)</label><input type="text" id="login-student-name" placeholder="Full name"></div>
         <div class="form-group"><label>Mobile Number (Same as Payment)</label><input type="tel" id="login-student-mobile" placeholder="10-digit mobile"></div>
         <button onclick="verifyStudentPaidAccess()" class="btn-success">Login to Hub</button>
-        <button onclick="showScreen('screen-online-pay')" class="btn-warning" style="margin-top: 8px;"><span id="pay-btn-label">💳 Pay ₹10 Monthly Fee</span></button>
+        <button onclick="showScreen('screen-online-pay')" class="btn-warning" style="margin-top: 8px;"><span id="pay-btn-label">💳 Pay ₹50 Monthly Fee</span></button>
         <button onclick="showScreen('screen-home')" class="back-link">Back to Home</button>
     </div>
 
@@ -339,7 +407,7 @@
         <button onclick="showScreen('screen-home')" class="btn-secondary">Logout</button>
     </div>
 
-    <!-- 10.1 SPECIAL EXAM CHAPTER SETUP SCREEN -->
+    <!-- 10.1 SPECIAL EXAM CHAPTER SETUP -->
     <div id="screen-special-exam-setup" class="screen">
         <h2>⭐ Special Exam Setup</h2>
         <p>Select Chapters for your Special Exam</p>
@@ -347,7 +415,7 @@
         <div class="form-group"><label>Subject</label><select id="special-sel-subject" onchange="populateSpecialExamChapterCheckboxes()"></select></div>
         <div class="form-group">
             <label>Select Chapters (Check multiple or ALL)</label>
-            <div id="special-chapters-checkbox-container" style="max-height: 150px; overflow-y: auto; border: 1px solid #475569; padding: 8px; border-radius: 6px; text-align: left; font-size: 13px; background: #0f172a;"></div>
+            <div id="special-chapters-checkbox-container" style="max-height: 140px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 10px; text-align: left; font-size: 13px; background: rgba(15, 23, 42, 0.8);"></div>
         </div>
         <button onclick="startSpecialExamQuiz()" class="btn-success">Start Exam Now</button>
         <button onclick="showScreen('screen-paid-student-hub')" class="btn-secondary" style="margin-top: 10px;">Back</button>
@@ -357,20 +425,20 @@
     <div id="screen-student-short-qa" class="screen">
         <h2>📖 Short Question Answers</h2>
         <div class="form-group"><label>Select Chapter Filter</label><select id="student-short-chapter-select" onchange="renderStudentShortQA()"><option value="ALL">All Chapters</option></select></div>
-        <div id="student-short-qa-list" style="max-height: 250px; overflow-y: auto; text-align: left; margin-bottom: 15px; font-size: 13px;"></div>
+        <div id="student-short-qa-list" style="max-height: 220px; overflow-y: auto; text-align: left; margin-bottom: 15px; font-size: 13px;"></div>
         <button onclick="showScreen('screen-paid-student-hub')" class="btn-secondary">Back</button>
     </div>
 
-    <!-- 12. ONLINE PAYMENT SCREEN -->
+    <!-- 12. ONLINE PAYMENT -->
     <div id="screen-online-pay" class="screen">
-        <h2>💳 Monthly Payment (<span id="pay-heading-fee">₹10</span>)</h2>
+        <h2>💳 Monthly Payment (<span id="pay-heading-fee">₹50</span>)</h2>
         <p>Scan QR or pay via UPI link below</p>
         <div class="form-group"><label>Full Name</label><input type="text" id="pay-name" placeholder="Full name"></div>
         <div class="form-group"><label>Mobile Number</label><input type="tel" id="pay-mobile" placeholder="Mobile number"></div>
-        <div style="background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 5px;">UPI ID: <strong id="student-view-upi">darwinacademy@upi</strong></p>
+        <div style="background: rgba(51, 65, 85, 0.6); padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center; border: 1px solid var(--border);">
+            <p style="font-size: 13px; margin-bottom: 5px; color: #fff;">UPI ID: <strong id="student-view-upi" style="color: var(--primary);">darwinacademy@upi</strong></p>
             <div id="student-view-qr-container" style="margin: 10px 0;"></div>
-            <a id="upi-pay-link" href="upi://pay?pa=darwinacademy@upi&pn=DarwinAcademy&am=10.00&cu=INR" target="_blank" style="display: inline-block; background: #7c3aed; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; margin-top: 5px;">Pay <span id="pay-link-fee">₹10</span> Now via UPI</a>
+            <a id="upi-pay-link" href="upi://pay?pa=darwinacademy@upi&pn=DarwinAcademy&am=50.00&cu=INR" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px; margin-top: 5px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">Pay <span id="pay-link-fee">₹50</span> Now via UPI</a>
         </div>
         <div class="form-group"><label>UTR / Transaction ID</label><input type="text" id="pay-tx" placeholder="12-digit UTR No"></div>
         <button onclick="submitOnlinePaymentRequest()" class="btn-success">Submit Approval Request</button>
@@ -381,7 +449,7 @@
     <div id="screen-admin-login" class="screen">
         <h2>Admin Login</h2>
         <div class="form-group"><label>Admin PIN</label><input type="password" id="admin-pin-input" placeholder="Enter Admin PIN"></div>
-        <button onclick="verifyAdminPin()" style="background: #7c3aed;">Login as Admin</button>
+        <button onclick="verifyAdminPin()" class="btn-purple">Login as Admin</button>
         <a href="#" class="back-link" onclick="showScreen('screen-home')">← Back to Home</a>
     </div>
 
@@ -392,7 +460,7 @@
             <label>Teacher PIN</label>
             <input type="password" id="teacher-pin-input" placeholder="Enter your PIN">
         </div>
-        <button onclick="verifyTeacherPin()" style="background-color: #ea580c !important; color: #ffffff !important; padding: 12px; border-radius: 6px; font-weight: bold; border: none; width: 100%;">Login as Teacher</button>
+        <button onclick="verifyTeacherPin()" style="background: linear-gradient(135deg, #ea580c, #c2410c); font-weight: bold;">Login as Teacher</button>
         <a href="#" class="back-link" onclick="showScreen('screen-home')">← Back to Home</a>
     </div>
 
@@ -400,285 +468,317 @@
     <div id="screen-admin-dash" class="screen">
         <h2>👑 Admin Control Panel</h2>
         
-        <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 12px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 13px; color: #f87171; margin: 0;">🔔 <strong>Notifications / Alerts:</strong> <span id="admin-alert-badge" style="background:#dc2626; color:white; padding:2px 6px; border-radius:10px; font-size:11px;">0 Alerts</span></p>
         </div>
 
         <!-- Approved Records & Activities -->
-        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
+        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px; font-size: 13px;">
             <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">📋 Approved Records & Activities</h3>
             <div id="pending-request-container"><p style="color: var(--gray); font-size: 12px;">No pending requests.</p></div>
         </div>
 
-        <!-- Free MCQ Test Students Dropdown Filter Section -->
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">📊 Free MCQ Test Students (Dropdown Filter)</h3>
+        <!-- Teacher Direct Added Students Ledger -->
+        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">📊 Teacher Direct Added Students Ledger</h3>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Select Teacher Filter</label>
+                <select id="admin-ledger-teacher-select" onchange="renderAdminTeacherLedger()">
+                    <option value="ALL">All Teachers (Complete Ledger)</option>
+                </select>
+            </div>
+            <div id="admin-teacher-collected-ledger" style="max-height: 140px; overflow-y: auto; text-align: left; font-size: 12px; background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px;"></div>
+        </div>
+
+        <!-- Free MCQ Test Students Dropdown Filter -->
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">📊 Free MCQ Test Students</h3>
             <div class="form-group" style="margin-bottom: 6px;">
                 <label style="font-size: 11px;">Select Filter / View</label>
                 <select id="admin-free-filter-class" onchange="renderFilteredFreeStudents()">
                     <option value="ALL">All Classes & Students</option>
                 </select>
             </div>
-            <div id="admin-dropdown-free-students-container" style="max-height: 200px; overflow-y: auto; text-align: left; font-size: 12px; background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569; margin-top: 8px;"></div>
+            <div id="admin-dropdown-free-students-container" style="max-height: 160px; overflow-y: auto; text-align: left; font-size: 12px; background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px;"></div>
         </div>
 
-        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🌟 Manage Contributors & Teachers (Home Card)</h3>
+        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🌟 Manage Contributors & Teachers</h3>
             <div class="form-group" style="margin-bottom: 8px;">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #fbbf24;">
-                    <input type="checkbox" id="admin-hide-contributors-card" onchange="saveContributorCardVisibility()" style="width: auto;"> <strong>Hide this section from Home Screen</strong>
+                    <input type="checkbox" id="admin-hide-contributors-card" onchange="saveContributorCardVisibility()" style="width: auto;"> <strong>Hide section from Home</strong>
                 </label>
             </div>
             
             <input type="hidden" id="admin-edit-contrib-id" value="">
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher Name</label><input type="text" id="admin-contrib-name" placeholder="Teacher name"></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Subject / Role (e.g. Math & Science)</label><input type="text" id="admin-contrib-role" placeholder="Subject"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Subject / Role</label><input type="text" id="admin-contrib-role" placeholder="Subject"></div>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px; color: #38bdf8;">Upload Teacher Photo from Gallery</label>
+                <label style="font-size: 11px; color: var(--primary);">Upload Teacher Photo</label>
                 <input type="file" id="admin-contrib-file" accept="image/*" style="font-size: 11px; padding: 4px;">
             </div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Photo Image URL</label><input type="text" id="admin-contrib-img" placeholder="Paste image link"></div>
-            <button onclick="saveFeaturedContributor()" style="padding: 6px; font-size: 13px; background: #d97706;" id="admin-contrib-save-btn">Add to Home Display</button>
-            <div id="admin-contributors-list-box" style="max-height: 140px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px; background: #0f172a; padding: 6px; border-radius: 6px;"></div>
+            <button onclick="saveFeaturedContributor()" style="padding: 8px; font-size: 13px;" id="admin-contrib-save-btn" class="btn-warning">Add to Home Display</button>
+            <div id="admin-contributors-list-box" style="max-height: 120px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px; background: rgba(15, 23, 42, 0.8); padding: 6px; border-radius: 8px;"></div>
         </div>
 
-        <!-- Hide E-Books & Video Hub Control -->
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">📖 E-Books & Videos Hub Control</h3>
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">📖 E-Books & Videos Hub Control</h3>
             <div class="form-group" style="margin-bottom: 0;">
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #38bdf8;">
-                    <input type="checkbox" id="admin-hide-resources-btn" onchange="saveResourcesButtonVisibility()" style="width: auto;"> <strong>Hide E-Books & Videos Hub from Home Screen</strong>
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--primary);">
+                    <input type="checkbox" id="admin-hide-resources-btn" onchange="saveResourcesButtonVisibility()" style="width: auto;"> <strong>Hide Hub from Home Screen</strong>
                 </label>
             </div>
         </div>
 
-        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #d97706; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🏫 Manage Classes & Subjects (Add/Edit/Hide)</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add New Class</label><input type="text" id="admin-new-class-input" placeholder="Class name (e.g. 9, 10, 11)"></div>
-            <button onclick="addNewClassMaster()" style="padding: 6px; font-size: 13px; background: #d97706; margin-bottom: 8px;">Add Class</button>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Select Class</label><select id="admin-target-class-select" onchange="renderAdminClassesAndSubjectsList()"></select></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add Subject to Selected Class</label><input type="text" id="admin-new-subject-input" placeholder="Subject name"></div>
-            <button onclick="addNewSubjectMaster()" style="padding: 6px; font-size: 13px; background: #b45309; margin-bottom: 8px;">Add Subject</button>
-            <div id="admin-classes-subjects-manage-box" style="max-height: 160px; overflow-y: auto; background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; border: 1px solid #475569;"></div>
+        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">🏫 Manage Classes & Subjects</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add New Class</label><input type="text" id="admin-new-class-input" placeholder="Class name (e.g. 9, 10)"></div>
+            <button onclick="addNewClassMaster()" style="padding: 8px; font-size: 13px;" class="btn-warning">Add Class</button>
+            <div class="form-group" style="margin-top: 8px; margin-bottom: 6px;"><label style="font-size: 11px;">Select Class</label><select id="admin-target-class-select" onchange="renderAdminClassesAndSubjectsList()"></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Add Subject</label><input type="text" id="admin-new-subject-input" placeholder="Subject name"></div>
+            <button onclick="addNewSubjectMaster()" style="padding: 8px; font-size: 13px;" class="btn-warning">Add Subject</button>
+            <div id="admin-classes-subjects-manage-box" style="max-height: 140px; overflow-y: auto; background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border); margin-top: 8px;"></div>
         </div>
 
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">🔐 Free MCQ Subject & Chapter Control</h3>
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">🔐 Free MCQ Subject & Chapter Control</h3>
             <div class="form-group" style="margin-bottom: 6px;">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                    <input type="checkbox" id="admin-master-unlock-free" onchange="saveFreeControlSettings()" style="width: auto;"> <strong>Unlock All Subjects & Chapters for Free Practice</strong>
+                    <input type="checkbox" id="admin-master-unlock-free" onchange="saveFreeControlSettings()" style="width: auto;"> <strong>Unlock All Subjects & Chapters</strong>
                 </label>
             </div>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px;">Select Free Practice Subjects (Check multiple)</label>
-                <div id="admin-free-subjects-checkboxes" style="max-height: 100px; overflow-y: auto; border: 1px solid #475569; padding: 6px; border-radius: 6px; text-align: left; font-size: 12px; background: #0f172a;"></div>
+                <label style="font-size: 11px;">Select Free Subjects</label>
+                <div id="admin-free-subjects-checkboxes" style="max-height: 90px; overflow-y: auto; border: 1px solid var(--border); padding: 6px; border-radius: 8px; text-align: left; font-size: 12px; background: rgba(15, 23, 42, 0.8);"></div>
             </div>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px;">Allow Free Practice Upto Chapters Limit</label>
-                <select id="admin-free-chapter-limit">
-                    <option value="ALL">All Chapters Free</option>
-                </select>
+                <label style="font-size: 11px;">Chapter Limit</label>
+                <select id="admin-free-chapter-limit"><option value="ALL">All Chapters Free</option></select>
             </div>
-            <button onclick="saveFreeControlSettings()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Free Rules</button>
+            <button onclick="saveFreeControlSettings()" style="padding: 8px; font-size: 13px;">Save Free Rules</button>
         </div>
 
-        <div style="background: rgba(162, 28, 175, 0.1); border: 1px solid #e879f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #e879f9; margin-bottom: 8px;">📚 Manage Chapters (Edit, Hide, Del)</h3>
+        <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #e879f9; margin-bottom: 8px;">📚 Manage Chapters</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Class</label><select id="adm-ch-class" onchange="populateAdminSubjectDropdownForChapter()"></select></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Subject</label><select id="adm-ch-subject" onchange="renderAdminChapterList()"></select></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Chapter Name</label><input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1: Number Systems"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Chapter Name</label><input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1"></div>
             <input type="hidden" id="adm-ch-edit-id" value="">
-            <button onclick="saveAdminChapter()" style="padding: 6px; font-size: 13px; background: #c026d3;">Save / Add Chapter</button>
-            <div id="admin-chapter-list" style="max-height: 160px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
+            <button onclick="saveAdminChapter()" style="padding: 8px; font-size: 13px;" class="btn-purple">Save / Add Chapter</button>
+            <div id="admin-chapter-list" style="max-height: 140px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
         </div>
 
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">🎁 Manage Teacher Gift Rewards</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Gift Title (e.g. Premium Pen Set)</label><input type="text" id="admin-gift-title" placeholder="Gift name"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Gift Title</label><input type="text" id="admin-gift-title" placeholder="Gift name"></div>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px; color: #38bdf8;">Upload Gift Photo from Gallery (or Paste URL below)</label>
+                <label style="font-size: 11px; color: var(--primary);">Upload Gift Photo</label>
                 <input type="file" id="admin-gift-file" accept="image/*" style="font-size: 11px; padding: 4px;">
             </div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Gift Photo Image URL</label><input type="text" id="admin-gift-img" placeholder="Paste image link here"></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Required Points</label><input type="number" id="admin-gift-pts" placeholder="e.g. 300"></div>
-            <button onclick="addNewGiftReward()" style="padding: 6px; font-size: 13px; background: var(--success);">Add Gift to Gallery</button>
-            <div id="admin-gifts-list-box" style="max-height: 120px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Photo URL</label><input type="text" id="admin-gift-img" placeholder="Paste image link"></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Required Points</label><input type="number" id="admin-gift-pts" placeholder="e.g. 200"></div>
+            <button onclick="addNewGiftReward()" style="padding: 8px; font-size: 13px;" class="btn-success">Add Gift to Gallery</button>
+            <div id="admin-gifts-list-box" style="max-height: 100px; overflow-y: auto; margin-top: 8px; text-align: left; font-size: 12px;"></div>
         </div>
 
-        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">👨‍🏫 Teacher Directory & UPI Details</h3>
+        <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">👨‍🏫 Teacher Directory & UPI</h3>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px;">Select Teacher (Dropdown)</label>
+                <label style="font-size: 11px;">Select Teacher</label>
                 <select id="admin-teacher-dropdown" onchange="displaySelectedTeacherDetails()">
                     <option value="">-- Choose Teacher --</option>
                 </select>
             </div>
-            <div id="admin-teacher-details-box" style="background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; display: none; border: 1px solid #c4b5fd;">
+            <div id="admin-teacher-details-box" style="background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; font-size: 12px; display: none; border: 1px solid rgba(139, 92, 246, 0.3);">
                 <p style="margin: 0; text-align: left; color: #f8fafc;"><strong>Name:</strong> <span id="adm-t-name">-</span></p>
                 <p style="margin: 2px 0 0 0; text-align: left; color: #f8fafc;"><strong>Mobile:</strong> <span id="adm-t-mobile">-</span></p>
-                <p style="margin: 2px 0 0 0; text-align: left; color: #38bdf8;"><strong>UPI ID:</strong> <span id="adm-t-upi">-</span></p>
+                <p style="margin: 2px 0 0 0; text-align: left; color: var(--primary);"><strong>UPI ID:</strong> <span id="adm-t-upi">-</span></p>
                 <p style="margin: 2px 0 0 0; text-align: left; color: #4ade80;"><strong>Points:</strong> <span id="adm-t-pts">-</span> pts</p>
             </div>
         </div>
 
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Academy Name & Logo Settings</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy / Institution Name</label><input type="text" id="admin-academy-name-input" value="DARWIN MCQ"></div>
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">⚙️ Academy Name & Logo</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Academy Name</label><input type="text" id="admin-academy-name-input" value="DARWIN MCQ"></div>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label style="font-size: 11px; color: #38bdf8;">Upload Logo from Gallery</label>
+                <label style="font-size: 11px; color: var(--primary);">Upload Logo</label>
                 <input type="file" id="admin-logo-file" accept="image/*" style="font-size: 11px; padding: 4px;">
             </div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Logo Image URL</label><input type="text" id="admin-academy-logo-input" placeholder="Paste logo image link here"></div>
-            <button onclick="saveAcademyBranding()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Name & Logo</button>
-            <button onclick="removeAcademyLogo()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 4px;">Remove Logo</button>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Or Logo URL</label><input type="text" id="admin-academy-logo-input" placeholder="Paste logo link"></div>
+            <button onclick="saveAcademyBranding()" style="padding: 8px; font-size: 13px;">Save Name & Logo</button>
+            <button onclick="removeAcademyLogo()" class="btn-danger" style="padding: 8px; font-size: 13px; margin-top: 4px;">Remove Logo</button>
         </div>
 
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">📋 Special Exam Paper Mode</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Selection Strategy</label><select id="admin-special-mode-select" onchange="saveSpecialExamModeSetting()"><option value="auto">Auto Random Selection</option><option value="manual">Manual Selected Question Set</option></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Strategy</label><select id="admin-special-mode-select" onchange="saveSpecialExamModeSetting()"><option value="auto">Auto Random</option><option value="manual">Manual Set</option></select></div>
         </div>
 
-        <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">💳 Update Special Exam Fee</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Monthly Fee Amount (₹)</label><input type="number" id="admin-fee-input" value="10"></div>
-            <button onclick="saveSpecialExamFee()" style="padding: 6px; font-size: 13px; background: #d97706;">Save Fee Amount</button>
+        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 8px;">💳 Update Monthly Fee</h3>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Fee Amount (₹)</label><input type="number" id="admin-fee-input" value="50"></div>
+            <button onclick="saveSpecialExamFee()" style="padding: 8px; font-size: 13px;" class="btn-warning">Save Fee Amount</button>
         </div>
 
-        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">⭐ Special Exam Students Directory</h3>
+        <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #c4b5fd; margin-bottom: 8px;">⭐ Special Exam Students</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Select Student</label><select id="admin-special-student-select" onchange="displaySelectedSpecialStudentDetails()"><option value="">-- Choose Student --</option></select></div>
-            <div id="admin-student-details-box" style="background: #0f172a; padding: 8px; border-radius: 6px; font-size: 12px; display: none; border: 1px solid #c4b5fd;">
+            <div id="admin-student-details-box" style="background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; font-size: 12px; display: none; border: 1px solid rgba(139, 92, 246, 0.3);">
                 <p style="margin: 0; text-align: left; color: #f8fafc;"><strong>Name:</strong> <span id="adm-sel-name">-</span></p>
                 <p style="margin: 2px 0 0 0; text-align: left; color: #f8fafc;"><strong>Mobile:</strong> <span id="adm-sel-mobile">-</span></p>
                 <p style="margin: 2px 0 0 0; text-align: left; color: #4ade80;"><strong>Score:</strong> <span id="adm-sel-score">-</span> Marks</p>
             </div>
         </div>
 
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Free Test & Exam Settings</h3>
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Test & Exam Settings</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Questions per Test</label><input type="number" id="setting-q-count" value="5"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Timer (Minutes)</label><input type="number" id="setting-timer" value="10"></div>
-            <button onclick="saveTestSettings()" style="padding: 6px; font-size: 13px; background: var(--success);">Save Settings</button>
+            <button onclick="saveTestSettings()" style="padding: 8px; font-size: 13px;" class="btn-success">Save Settings</button>
         </div>
 
-        <div style="background: #334155; border: 1px solid #475569; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">👨‍🏫 Add New Teacher</h3>
+        <div style="background: rgba(51, 65, 85, 0.6); border: 1px solid var(--border); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">👨‍🏫 Add New Teacher</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher Name</label><input type="text" id="new-teacher-name" placeholder="Name"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Teacher PIN</label><input type="password" id="new-teacher-pin" placeholder="Secret PIN"></div>
-            <button onclick="addNewTeacher()" style="padding: 6px; font-size: 13px; background: var(--success);">Register Teacher</button>
+            <button onclick="addNewTeacher()" style="padding: 8px; font-size: 13px;" class="btn-success">Register Teacher</button>
         </div>
 
-        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #f87171; margin-bottom: 8px;">⚖️ Manage Teachers (Block / Delete & Bonus)</h3>
-            <div id="admin-teacher-manage-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 8px; text-align: left; font-size: 13px;"></div>
+        <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #f87171; margin-bottom: 8px;">⚖️ Manage Teachers</h3>
+            <div id="admin-teacher-manage-list" style="max-height: 180px; overflow-y: auto; margin-bottom: 8px; text-align: left; font-size: 13px;"></div>
         </div>
 
-        <div style="background: #334155; border: 1px solid #475569; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">⚙️ Manage UPI ID & QR Code</h3>
+        <div style="background: rgba(51, 65, 85, 0.6); border: 1px solid var(--border); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">⚙️ Manage UPI ID & QR</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UPI ID</label><input type="text" id="admin-upi-input" value="darwinacademy@upi"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">QR Image URL</label><input type="text" id="admin-qr-input" placeholder="QR image link"></div>
-            <button onclick="saveUpiQrSettings()" style="padding: 6px; font-size: 13px; background: var(--primary);">Save / Update</button>
-            <button onclick="deleteUpiQrSettings()" class="btn-danger" style="padding: 6px; font-size: 13px; margin-top: 5px;">Remove QR Code</button>
+            <button onclick="saveUpiQrSettings()" style="padding: 8px; font-size: 13px;">Save / Update</button>
+            <button onclick="deleteUpiQrSettings()" class="btn-danger" style="padding: 8px; font-size: 13px; margin-top: 5px;">Remove QR</button>
         </div>
 
-        <button onclick="showScreen('screen-admin-trash')" class="btn-danger" style="margin-bottom: 8px;">🗑️ Trash Bin</button>
-        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px;">+ Add MCQ (+10 Pts)</button>
-        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px;">+ Add Short Q/A (+15 Pts)</button>
-        <button onclick="showScreen('screen-add-ebook')" class="btn-secondary" style="margin-bottom: 8px; background: #0284c7;">+ Add E-Book</button>
-        <button onclick="showScreen('screen-add-video')" class="btn-secondary" style="margin-bottom: 8px; background: #7c3aed;">+ Add Video Class</button>
-        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px;">✏️ Edit / Delete Questions</button>
+        <button onclick="showScreen('screen-admin-trash')" class="btn-danger" style="margin-bottom: 8px; padding: 10px;">🗑️ Trash Bin</button>
+        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px; padding: 10px;">+ Add MCQ (+10 Pts)</button>
+        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px; padding: 10px;">+ Add Short Q/A (+15 Pts)</button>
+        <button onclick="showScreen('screen-add-ebook')" style="margin-bottom: 8px; padding: 10px; background: linear-gradient(135deg, #0ea5e9, #0284c7);">+ Add E-Book</button>
+        <button onclick="showScreen('screen-add-video')" style="margin-bottom: 8px; padding: 10px; background: linear-gradient(135deg, #a855f7, #7c3aed);">+ Add Video Class</button>
+        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px; padding: 10px;">✏️ Edit / Delete Questions</button>
         <a href="#" class="back-link" onclick="showScreen('screen-home')">Logout</a>
     </div>
 
     <!-- 16. TEACHER DASHBOARD -->
     <div id="screen-teacher-dash" class="screen">
         <h2>👨‍🏫 Teacher Dashboard</h2>
-        <p id="teacher-welcome-text" style="color: #38bdf8; font-weight: bold; margin-bottom: 10px;"></p>
+        <p id="teacher-welcome-text" style="color: var(--primary); font-weight: bold; margin-bottom: 10px;"></p>
         
         <!-- Teacher Fund Request & Wallet -->
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #22c55e; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 6px;">💰 Teacher Wallet & Fund Request</h3>
-            <p style="font-size: 12px; color: #f8fafc; margin-bottom: 8px;">Wallet Balance: <strong id="teacher-wallet-balance" style="font-size: 16px; color: #4ade80;">₹0</strong></p>
+            <p style="font-size: 12px; color: var(--text); margin-bottom: 8px;">Wallet Balance: <strong id="teacher-wallet-balance" style="font-size: 16px; color: #4ade80;">₹0</strong></p>
             
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Request Fund Amount (₹)</label><input type="number" id="teacher-req-fund-amt" placeholder="e.g. 100"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UTR / Payment Reference ID</label><input type="text" id="teacher-req-fund-utr" placeholder="12-digit UTR No"></div>
-            <button onclick="teacherSendFundRequest()" style="padding: 6px; font-size: 13px; background: #16a34a; margin-bottom: 10px;">Send Fund Request to Admin</button>
+            <button onclick="teacherSendFundRequest()" style="padding: 8px; font-size: 13px; margin-bottom: 10px;" class="btn-success">Send Fund Request to Admin</button>
 
-            <hr style="border:0; border-top:1px solid #475569; margin:10px 0;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 6px;">🎓 Instant Add Paid Student (Min. 3 Months)</h3>
-            <p style="font-size: 11px; color: #fbbf24; margin-bottom: 6px; text-align: left;">50% share will be instantly deducted from your wallet!</p>
+            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 6px;">🎓 Instant Add Paid Student</h3>
+            <p style="font-size: 11px; color: #fbbf24; margin-bottom: 6px; text-align: left;">Select duration (Min 3 months gets 20% discount). 50% share will be deducted from your wallet!</p>
+            
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Student Full Name</label><input type="text" id="teacher-student-name" placeholder="Student name"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Mobile Number</label><input type="tel" id="teacher-student-mobile" placeholder="10-digit mobile"></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Total 3 Months Fee (₹)</label><input type="number" id="teacher-student-fee" placeholder="e.g. 30 (for 3 months)"></div>
-            <button onclick="teacherInstantAddPaidStudent()" style="padding: 6px; font-size: 13px; background: #0284c7;">Instant Register Student & Deduct 50%</button>
+            
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label style="font-size: 11px;">Select Duration (Months)</label>
+                <select id="teacher-student-months" onchange="calculateTeacherStudentFeePreview()">
+                    <option value="3">3 Months (20% Discount)</option>
+                    <option value="6">6 Months (20% Discount)</option>
+                    <option value="12">12 Months (20% Discount)</option>
+                    <option value="1">1 Month (Standard)</option>
+                    <option value="2">2 Months (Standard)</option>
+                </select>
+            </div>
+            
+            <div style="background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 12px; text-align: left;">
+                <p style="margin: 0; color: var(--primary);">Calculated Fee: <strong id="preview-total-fee" style="color: #fff;">₹120</strong></p>
+                <p style="margin: 2px 0 0 0; color: #4ade80;">Your Wallet Deduction (50%): <strong id="preview-wallet-deduct" style="color: #4ade80;">₹60</strong></p>
+            </div>
+
+            <button onclick="teacherInstantAddPaidStudent()" style="padding: 8px; font-size: 13px;" class="btn-success">Instant Register & Deduct</button>
         </div>
 
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid #38bdf8; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #38bdf8; margin-bottom: 8px;">👤 My Profile & UPI Settings</h3>
+        <!-- Teacher Added Students History -->
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">📋 My Added Students History</h3>
+            <div id="teacher-added-students-container" style="max-height: 130px; overflow-y: auto; text-align: left; font-size: 12px; background: rgba(15, 23, 42, 0.8); padding: 8px; border-radius: 8px; border: 1px solid var(--border);"></div>
+        </div>
+
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">👤 My Profile & UPI Settings</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Full Name</label><input type="text" id="teacher-profile-name" placeholder="Your name"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Mobile Number</label><input type="tel" id="teacher-profile-mobile" placeholder="Mobile number"></div>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UPI ID (For Rewards / Payouts)</label><input type="text" id="teacher-profile-upi" placeholder="e.g. teacher@paytm"></div>
-            <button onclick="saveTeacherProfile()" style="padding: 6px; font-size: 13px; background: #0284c7;">Save Profile & UPI</button>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">UPI ID</label><input type="text" id="teacher-profile-upi" placeholder="e.g. teacher@paytm"></div>
+            <button onclick="saveTeacherProfile()" style="padding: 8px; font-size: 13px;">Save Profile & UPI</button>
         </div>
 
-        <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid var(--primary); padding: 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+        <div style="background: rgba(2, 132, 199, 0.05); border: 1px solid var(--border); padding: 12px; border-radius: 12px; margin-bottom: 12px; text-align: center;">
             <strong>Reward Points: <span id="teacher-points-display" style="color: #4ade80; font-size: 18px;">120</span> pts</strong>
         </div>
         <button onclick="showScreen('screen-teacher-gifts')" class="btn-warning" style="margin-bottom: 12px;">🎁 View Gift Gallery & Redeem Rewards</button>
         
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
             <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">📋 Special Exam Selection</h3>
-            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Selection Mode</label><select id="teacher-special-mode-select" onchange="saveSpecialExamModeSettingTeacher()"><option value="auto">Auto Random Selection</option><option value="manual">Manual Selected Question Set</option></select></div>
+            <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Question Mode</label><select id="teacher-special-mode-select" onchange="saveSpecialExamModeSettingTeacher()"><option value="auto">Auto Random</option><option value="manual">Manual Set</option></select></div>
         </div>
-        <div style="background: rgba(22, 163, 74, 0.1); border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Free Test & Exam Settings</h3>
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; color: #4ade80; margin-bottom: 8px;">⚙️ Free Test Settings</h3>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Questions per Test</label><input type="number" id="teacher-setting-q-count" value="5"></div>
             <div class="form-group" style="margin-bottom: 6px;"><label style="font-size: 11px;">Timer (Minutes)</label><input type="number" id="teacher-setting-timer" value="10"></div>
-            <button onclick="saveTestSettingsTeacher()" style="padding: 6px; font-size: 13px; background: var(--success);">Save Settings</button>
+            <button onclick="saveTestSettingsTeacher()" style="padding: 8px; font-size: 13px;" class="btn-success">Save Settings</button>
         </div>
-        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px;">+ Add MCQ Question (+10 Pts)</button>
-        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px;">+ Add Short Q/A (+15 Pts)</button>
-        <button onclick="showScreen('screen-add-ebook')" class="btn-secondary" style="margin-bottom: 8px; background: #0284c7;">+ Add E-Book</button>
-        <button onclick="showScreen('screen-add-video')" class="btn-secondary" style="margin-bottom: 8px; background: #7c3aed;">+ Add Video Class</button>
-        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px;">✏️ Edit / Delete Questions</button>
+        <button onclick="openAddQuestionForm('MCQ')" class="btn-success" style="margin-bottom: 8px; padding: 10px;">+ Add MCQ Question (+10 Pts)</button>
+        <button onclick="openAddQuestionForm('SHORT')" class="btn-warning" style="margin-bottom: 8px; padding: 10px;">+ Add Short Q/A (+15 Pts)</button>
+        <button onclick="showScreen('screen-add-ebook')" style="margin-bottom: 8px; padding: 10px; background: linear-gradient(135deg, #0ea5e9, #0284c7);">+ Add E-Book</button>
+        <button onclick="showScreen('screen-add-video')" style="margin-bottom: 8px; padding: 10px; background: linear-gradient(135deg, #a855f7, #7c3aed);">+ Add Video Class</button>
+        <button onclick="openManageQuestions()" class="btn-secondary" style="margin-bottom: 8px; padding: 10px;">✏️ Edit / Delete Questions</button>
         <a href="#" class="back-link" onclick="showScreen('screen-home')">Logout</a>
     </div>
 
-    <!-- 16.1 TEACHER GIFT REWARDS GALLERY -->
+    <!-- 16.1 TEACHER GIFT GALLERY -->
     <div id="screen-teacher-gifts" class="screen">
         <h2>🎁 Teacher Gift Gallery</h2>
         <p>Redeem your points for exciting rewards!</p>
-        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 8px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
             <p style="font-size: 12px; color: #fbbf24; margin: 0;">Available Points: <strong id="gift-screen-pts">0</strong> pts</p>
         </div>
-        <div id="teacher-gift-gallery-container" style="max-height: 280px; overflow-y: auto; text-align: left; margin-bottom: 15px;"></div>
+        <div id="teacher-gift-gallery-container" style="max-height: 250px; overflow-y: auto; text-align: left; margin-bottom: 15px;"></div>
         <button onclick="showScreen('screen-teacher-dash')" class="btn-secondary">Back to Dashboard</button>
     </div>
 
     <!-- 17. MANAGE QUESTIONS -->
     <div id="screen-manage-questions" class="screen">
         <h2>✏️ Edit & Delete Questions</h2>
-        <div id="manage-questions-list" style="max-height: 280px; overflow-y: auto; margin-bottom: 15px; text-align: left;"></div>
+        <div id="manage-questions-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; text-align: left;"></div>
         <button onclick="goBackToDashboard()" class="btn-secondary">Back</button>
     </div>
 
-    <!-- 18. ADMIN TRASH BIN (PIN Protected) -->
+    <!-- 18. ADMIN TRASH BIN -->
     <div id="screen-admin-trash" class="screen">
         <h2>🗑️ Admin Trash Bin</h2>
         <div id="trash-pin-box" class="form-group">
             <label>Verify Admin PIN</label>
             <input type="password" id="trash-auth-pin" placeholder="Enter PIN">
-            <button onclick="verifyTrashPin()" style="background: #7c3aed; margin-top: 8px;">Unlock Trash</button>
+            <button onclick="verifyTrashPin()" class="btn-purple" style="margin-top: 8px;">Unlock Trash</button>
         </div>
         <div id="trash-content-box" style="display: none;">
             <h3 style="font-size: 14px; color: var(--danger); text-align: left; margin-bottom: 6px;">Trashed Questions</h3>
-            <div id="trash-questions-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 10px; text-align: left; font-size: 12px;"></div>
+            <div id="trash-questions-list" style="max-height: 130px; overflow-y: auto; margin-bottom: 10px; text-align: left; font-size: 12px;"></div>
             
             <h3 style="font-size: 14px; color: var(--warning); text-align: left; margin-bottom: 6px; margin-top: 10px;">Trashed Classes / Subjects</h3>
-            <div id="trash-classes-subjects-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
+            <div id="trash-classes-subjects-list" style="max-height: 130px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
 
             <h3 style="font-size: 14px; color: #e879f9; text-align: left; margin-bottom: 6px; margin-top: 10px;">Trashed Chapters</h3>
-            <div id="trash-chapters-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
+            <div id="trash-chapters-list" style="max-height: 130px; overflow-y: auto; margin-bottom: 15px; text-align: left; font-size: 12px;"></div>
         </div>
         <button onclick="showScreen('screen-admin-dash')" class="btn-secondary" style="margin-top: 10px;">Back</button>
     </div>
@@ -687,12 +787,12 @@
     <div id="screen-add-ebook" class="screen">
         <h2>📖 Add E-Book</h2>
         <div class="form-group"><label>Book Title</label><input type="text" id="ebook-title" placeholder="Book title"></div>
-        <div class="form-group" style="background: #334155; padding: 10px; border-radius: 8px;">
-            <label style="color: #38bdf8;">Option 1: Upload PDF from Phone</label>
+        <div class="form-group" style="background: rgba(51, 65, 85, 0.6); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <label style="color: var(--primary);">Option 1: Upload PDF from Phone</label>
             <input type="file" id="ebook-file-input" accept="application/pdf" style="margin-top: 5px;">
         </div>
         <p style="margin: 5px 0; font-size: 12px; text-align: center;">OR</p>
-        <div class="form-group"><label>Option 2: Paste PDF Link (Google Drive)</label><input type="text" id="ebook-link" placeholder="Paste PDF URL here"></div>
+        <div class="form-group"><label>Option 2: Paste PDF Link</label><input type="text" id="ebook-link" placeholder="Paste PDF URL"></div>
         <button onclick="submitEBook()" class="btn-success">Save E-Book</button>
         <button onclick="goBackToDashboard()" class="btn-secondary" style="margin-top: 10px;">Back</button>
     </div>
@@ -700,12 +800,12 @@
     <div id="screen-add-video" class="screen">
         <h2>🎥 Add Video Class</h2>
         <div class="form-group"><label>Video Title</label><input type="text" id="video-title" placeholder="Video title"></div>
-        <div class="form-group" style="background: #334155; padding: 10px; border-radius: 8px;">
-            <label style="color: #38bdf8;">Option 1: Upload Video from Phone (MP4)</label>
+        <div class="form-group" style="background: rgba(51, 65, 85, 0.6); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <label style="color: var(--primary);">Option 1: Upload Video (MP4)</label>
             <input type="file" id="video-file-input" accept="video/mp4" style="margin-top: 5px;">
         </div>
         <p style="margin: 5px 0; font-size: 12px; text-align: center;">OR</p>
-        <div class="form-group"><label>Option 2: Paste Video Link (YouTube / Google Drive)</label><input type="text" id="video-link" placeholder="YouTube or Drive link"></div>
+        <div class="form-group"><label>Option 2: Paste Video Link</label><input type="text" id="video-link" placeholder="YouTube or Drive link"></div>
         <button onclick="submitVideo()" class="btn-success">Save Video</button>
         <button onclick="goBackToDashboard()" class="btn-secondary" style="margin-top: 10px;">Back</button>
     </div>
@@ -724,9 +824,9 @@
             <div class="form-group"><label>Option C</label><input type="text" id="opt-c"></div>
             <div class="form-group"><label>Option D</label><input type="text" id="opt-d"></div>
             <div class="form-group"><label>Correct Answer</label><select id="correct-opt"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div>
-            <div class="form-group" style="margin-top: 10px; background: #334155; padding: 8px; border-radius: 6px; border: 1px dashed #475569;">
+            <div class="form-group" style="margin-top: 10px; background: rgba(51, 65, 85, 0.6); padding: 8px; border-radius: 8px; border: 1px dashed var(--border);">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; margin-bottom: 0;">
-                    <input type="checkbox" id="q-special-tag" style="width: auto;"> Mark for Manual Special Exam Set
+                    <input type="checkbox" id="q-special-tag" style="width: auto;"> Mark for Special Exam Set
                 </label>
             </div>
         </div>
@@ -742,7 +842,6 @@
 </div>
 
 <script>
-    // Custom Alert Function (Replaces browser default alert)
     function showCustomAlert(message) {
         document.getElementById('custom-alert-message').innerText = message;
         document.getElementById('custom-alert-modal').style.display = 'flex';
@@ -752,7 +851,6 @@
         document.getElementById('custom-alert-modal').style.display = 'none';
     }
 
-    // Firebase Initialization
     const firebaseConfig = {
         apiKey: "AIzaSyDa2wT9DTX0qNqLUa",
         authDomain: "darwin-academy-3ce9a.firebaseapp.com",
@@ -779,7 +877,7 @@
     let registeredStudentsDatabase = {};
     let approvedNamesDatabase = {}; 
     
-    let specialExamFee = 10;
+    let specialExamFee = 50; 
     let specialExamMode = "auto";
     
     let classesAndSubjectsData = {
@@ -799,7 +897,7 @@
     let timerInterval = null;
     let timeLeftSeconds = 0;
 
-    let teachersDatabase = [{ name: "Default Teacher", pin: "1122", points: 120, wallet: 0, mobile: "9876543210", upi: "default@upi", status: "active", claimedGifts: [] }];
+    let teachersDatabase = [{ name: "Default Teacher", pin: "1122", points: 120, wallet: 0, mobile: "9876543210", upi: "default@upi", status: "active", claimedGifts: [], addedStudents: [] }];
     let teacherGiftRewards = [
         { id: 1, title: "Premium Pen Set", points: 200, imgUrl: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300" },
         { id: 2, title: "Academy Reference Book", points: 400, imgUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
@@ -930,7 +1028,7 @@
         document.getElementById('cert-academy-sig').innerText = academyBranding.name;
         const logoBox = document.getElementById('home-logo-container');
         if(academyBranding.logoUrl) {
-            logoBox.innerHTML = `<img src="${academyBranding.logoUrl}" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">`;
+            logoBox.innerHTML = `<img src="${academyBranding.logoUrl}" alt="Logo" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);">`;
         } else {
             logoBox.innerHTML = '';
         }
@@ -949,16 +1047,16 @@
         }
 
         if(!featuredContributors || featuredContributors.length === 0) {
-            listContainer.innerHTML = '<p style="font-size:11px; color:#78350f;">No contributors added yet.</p>';
+            listContainer.innerHTML = '<p style="font-size:11px; color:#fbbf24;">No contributors added yet.</p>';
             countContainer.innerText = '';
             return;
         }
 
         listContainer.innerHTML = featuredContributors.map(c => `
-            <div style="min-width: 85px; text-align: center; background: #fff; padding: 6px 4px; border-radius: 8px; border: 1px solid #fde68a;">
-                <img src="${c.imgUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #d97706; margin-bottom: 3px;">
-                <div style="font-size: 10px; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.name}</div>
-                <div style="font-size: 8px; color: #78350f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.role}</div>
+            <div style="min-width: 85px; text-align: center; background: rgba(30, 41, 59, 0.9); padding: 8px 4px; border-radius: 10px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                <img src="${c.imgUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #d97706; margin-bottom: 4px;">
+                <div style="font-size: 10px; font-weight: bold; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.name}</div>
+                <div style="font-size: 8px; color: #fbbf24; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">${c.role}</div>
             </div>
         `).join('');
 
@@ -1067,7 +1165,7 @@
 
         if(foundId) {
             let st = registeredStudentsDatabase[foundId];
-            resBox.innerHTML = `<div style="background:#0f172a; border:1px solid #16a34a; padding:10px; border-radius:6px; color:#4ade80;">Found! Name: <strong>${st.name}</strong><br>Student ID: <strong style="font-size:16px; color:#38bdf8;">${foundId}</strong></div>`;
+            resBox.innerHTML = `<div style="background:rgba(15, 23, 42, 0.9); border:1px solid #16a34a; padding:10px; border-radius:8px; color:#4ade80;">Found! Name: <strong>${st.name}</strong><br>Student ID: <strong style="font-size:16px; color:var(--primary);">${foundId}</strong></div>`;
         } else {
             resBox.innerHTML = `<p style="color:#ef4444;">No student found matching this Mobile Number and Date of Birth.</p>`;
         }
@@ -1142,7 +1240,7 @@
         const container = document.getElementById('admin-contributors-list-box');
         if(!container) return;
         container.innerHTML = featuredContributors.map((c) => `
-            <div style="border-bottom: 1px solid #475569; padding-bottom: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; gap: 6px; align-items: center;">
                     <img src="${c.imgUrl}" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover;">
                     <span><strong>${c.name}</strong> (${c.role})</span>
@@ -1231,6 +1329,8 @@
             populateSpecialExamClasses();
         } else if(screenId === 'screen-admin-dash') {
             renderPendingRequests();
+            populateAdminLedgerTeacherDropdown();
+            renderAdminTeacherLedger();
             renderAdminTeacherManageList();
             renderAdminGiftsList();
             renderAdminContributorsList();
@@ -1241,7 +1341,10 @@
             renderAdminChapterList();
             renderAdminFreeSubjectsCheckboxes();
             populateAdminFreeStudentsDropdownFilter();
-            document.getElementById('admin-alert-badge').innerText = `${pendingRequests.length} Alerts`;
+            
+            let realPending = pendingRequests.filter(req => req.type === "student_pay" || req.type === "teacher_fund_request");
+            document.getElementById('admin-alert-badge').innerText = `${realPending.length} Alerts`;
+            
             document.getElementById('admin-fee-input').value = specialExamFee;
             document.getElementById('admin-special-mode-select').value = specialExamMode;
             document.getElementById('admin-master-unlock-free').checked = freeControlSettings.masterUnlock;
@@ -1264,6 +1367,8 @@
             document.getElementById('teacher-special-mode-select').value = specialExamMode;
             document.getElementById('teacher-setting-q-count').value = testSettings.questionCount;
             document.getElementById('teacher-setting-timer').value = testSettings.timerMinutes;
+            calculateTeacherStudentFeePreview();
+            renderTeacherAddedStudents();
         } else if(screenId === 'screen-teacher-gifts') {
             renderTeacherGiftGallery();
         } else if(screenId === 'screen-manage-questions') {
@@ -1273,6 +1378,22 @@
             document.getElementById('trash-content-box').style.display = 'none';
             document.getElementById('trash-auth-pin').value = '';
         }
+    }
+
+    function calculateTeacherStudentFeePreview() {
+        const months = parseInt(document.getElementById('teacher-student-months').value) || 3;
+        let baseTotal = specialExamFee * months;
+        let finalFee = baseTotal;
+
+        if(months >= 3) {
+            let discount = baseTotal * 0.20;
+            finalFee = baseTotal - discount;
+        }
+
+        let teacherShare = finalFee * 0.50;
+
+        document.getElementById('preview-total-fee').innerText = `₹${finalFee}`;
+        document.getElementById('preview-wallet-deduct').innerText = `₹${teacherShare}`;
     }
 
     function populateAdminFreeStudentsDropdownFilter() {
@@ -1297,19 +1418,19 @@
         let filteredList = freeLeaderboardDatabase;
         
         let html = `<table style="width:100%; border-collapse: collapse; font-size:11px;">
-            <tr style="background:#334155; color:#38bdf8;">
-                <th style="padding:4px; border:1px solid #475569;">Name</th>
-                <th style="padding:4px; border:1px solid #475569;">Mobile</th>
-                <th style="padding:4px; border:1px solid #475569;">Student ID</th>
-                <th style="padding:4px; border:1px solid #475569;">Score</th>
+            <tr style="background:rgba(51, 65, 85, 0.8); color:var(--primary);">
+                <th style="padding:4px; border:1px solid var(--border);">Name</th>
+                <th style="padding:4px; border:1px solid var(--border);">Mobile</th>
+                <th style="padding:4px; border:1px solid var(--border);">Student ID</th>
+                <th style="padding:4px; border:1px solid var(--border);">Score</th>
             </tr>`;
         
         filteredList.forEach((item) => {
             html += `<tr>
-                <td style="padding:4px; border:1px solid #475569;">${item.name}</td>
-                <td style="padding:4px; border:1px solid #475569;">${item.mobile || '-'}</td>
-                <td style="padding:4px; border:1px solid #475569;">${item.studentId || '-'}</td>
-                <td style="padding:4px; border:1px solid #475569; color:#4ade80; font-weight:bold;">${item.score}</td>
+                <td style="padding:4px; border:1px solid var(--border);">${item.name}</td>
+                <td style="padding:4px; border:1px solid var(--border);">${item.mobile || '-'}</td>
+                <td style="padding:4px; border:1px solid var(--border);">${item.studentId || '-'}</td>
+                <td style="padding:4px; border:1px solid var(--border); color:#4ade80; font-weight:bold;">${item.score}</td>
             </tr>`;
         });
         html += `</table>`;
@@ -1330,7 +1451,7 @@
         const utr = document.getElementById('teacher-req-fund-utr').value.trim();
 
         if(isNaN(amt) || amt <= 0 || !utr) {
-            showCustomAlert('সঠিক ফাণ্ডৰ এমাউণ্ট আৰু UTR / Transaction ID বহুৱাওক!');
+            showCustomAlert('Please enter valid fund amount and UTR / Transaction ID!');
             return;
         }
 
@@ -1350,26 +1471,33 @@
 
         document.getElementById('teacher-req-fund-amt').value = '';
         document.getElementById('teacher-req-fund-utr').value = '';
-        showCustomAlert('ফাণ্ডৰ অনুৰোধ সফলভাৱে এডমিনলৈ পঠিওৱਾ হ’ল! এডমিনে অনুমোদন কৰাৰ পিছত আপোনাৰ ৱালেটলৈ টকা যোগ হৈ যাব।');
+        showCustomAlert('Fund request successfully sent to admin!');
     }
 
     function teacherInstantAddPaidStudent() {
         const name = document.getElementById('teacher-student-name').value.trim();
         const mobile = document.getElementById('teacher-student-mobile').value.trim();
-        const totalFee = parseFloat(document.getElementById('teacher-student-fee').value);
+        const months = parseInt(document.getElementById('teacher-student-months').value) || 3;
 
-        if(!name || !mobile || mobile.length < 10 || isNaN(totalFee) || totalFee <= 0) {
-            showCustomAlert('সোপিকেইটা সঠিকভাৱে পূৰণ কৰক (নাম, ম’বাইল আৰু ৩ মাহৰ ফিচ এমাউণ্ট)!');
+        if(!name || !mobile || mobile.length < 10) {
+            showCustomAlert('Please enter student full name and 10-digit mobile number!');
             return;
+        }
+
+        let baseTotal = specialExamFee * months;
+        let totalFee = baseTotal;
+        if(months >= 3) {
+            totalFee = baseTotal - (baseTotal * 0.20);
         }
 
         let t = teachersDatabase[currentTeacherIndex];
         if(t.wallet === undefined) t.wallet = 0;
+        if(!t.addedStudents) t.addedStudents = [];
 
         let adminOrDeductionShare = totalFee * 0.50;
 
         if(t.wallet < adminOrDeductionShare) {
-            showCustomAlert(`আপোনাৰ ৱালেটত পৰ্যাপ্ত টকা নাই!\nপ্ৰয়োজনীয় ৫০% অংশ: ₹${adminOrDeductionShare}\nআপোনাৰ ৱালেট বেলেঞ্চ: ₹${t.wallet}\nঅনুগ্ৰহ কৰি প্ৰথমে এডমিনলৈ ফাণ্ড অনুৰোধ (Fund Request) পঠিয়াই ৱালেট টকা এড কৰি লওক।`);
+            showCustomAlert(`Insufficient wallet balance!\nRequired 50% share: ₹${adminOrDeductionShare}\nYour wallet balance: ₹${t.wallet}\nPlease request funds from admin first.`);
             return;
         }
 
@@ -1380,22 +1508,112 @@
         }
         approvedNamesDatabase[mobile] = name.trim().toLowerCase();
 
+        t.addedStudents.push({
+            id: Date.now(),
+            name: name,
+            mobile: mobile,
+            fee: totalFee,
+            months: months,
+            date: new Date().toLocaleDateString()
+        });
+
         pendingRequests.push({
             id: Date.now(),
-            type: "student_added",
-            name: `${name} (Instant Added by Teacher: ${t.name})`,
+            type: "teacher_direct_added_record",
+            teacherName: t.name,
+            name: name,
             mobile: mobile,
-            tx: `Total Fee: ₹${totalFee} | Wallet Deducted 50%: ₹${adminOrDeductionShare}`
+            tx: `Teacher: ${t.name} | Package: ${months} Months | Fee: ₹${totalFee} | Wallet Deducted (50%): ₹${adminOrDeductionShare}`,
+            date: new Date().toLocaleDateString()
         });
 
         syncToFirebase();
 
         document.getElementById('teacher-student-name').value = '';
         document.getElementById('teacher-student-mobile').value = '';
-        document.getElementById('teacher-student-fee').value = '';
         document.getElementById('teacher-wallet-balance').innerText = `₹${t.wallet}`;
+        
+        renderTeacherAddedStudents();
+        calculateTeacherStudentFeePreview();
+        showCustomAlert(`Student registered successfully for ${months} Months!\nTotal Fee: ₹${totalFee}`);
+    }
 
-        showCustomAlert(`সফলভাৱে ছাত্ৰজন পঞ্জীয়ন হ’ল!\nমুঠ ফিচ: ₹${totalFee}\nৱালেটৰ পৰা ৫০% (₹${adminOrDeductionShare}) মাইনাস হ’ল।\nবাকী বেলেঞ্চ: ₹${t.wallet}`);
+    function renderTeacherAddedStudents() {
+        let t = teachersDatabase[currentTeacherIndex];
+        if(!t.addedStudents) t.addedStudents = [];
+        const container = document.getElementById('teacher-added-students-container');
+        if(!container) return;
+        
+        if(t.addedStudents.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray);">No students added by you yet.</p>';
+            return;
+        }
+
+        container.innerHTML = t.addedStudents.map((s, idx) => `
+            <div style="border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong style="color:var(--primary);">${s.name} (${s.mobile})</strong><br>
+                    <span style="color:#4ade80;">Package: ${s.months || 3} Mos | Fee: ₹${s.fee} | Date: ${s.date}</span>
+                </div>
+                <button onclick="teacherDeleteAddedStudent(${idx})" class="btn-danger" style="padding:2px 6px; font-size:10px; width:auto;">Delete</button>
+            </div>
+        `).join('');
+    }
+
+    function teacherDeleteAddedStudent(idx) {
+        if(!confirm('Do you want to delete this student record?')) return;
+        let t = teachersDatabase[currentTeacherIndex];
+        if(!t.addedStudents) return;
+
+        let student = t.addedStudents[idx];
+        t.addedStudents.splice(idx, 1);
+        
+        let mobileIndex = approvedMobileNumbers.indexOf(student.mobile);
+        if(mobileIndex !== -1) {
+            approvedMobileNumbers.splice(mobileIndex, 1);
+            delete approvedNamesDatabase[student.mobile];
+        }
+
+        syncToFirebase();
+        renderTeacherAddedStudents();
+        showCustomAlert('Student record deleted successfully!');
+    }
+
+    function populateAdminLedgerTeacherDropdown() {
+        const select = document.getElementById('admin-ledger-teacher-select');
+        if(!select) return;
+        let currentVal = select.value;
+        let html = '<option value="ALL">All Teachers (Complete Ledger)</option>';
+        teachersDatabase.forEach(t => {
+            html += `<option value="${t.name}">${t.name}</option>`;
+        });
+        select.innerHTML = html;
+        select.value = currentVal || "ALL";
+    }
+
+    function renderAdminTeacherLedger() {
+        const container = document.getElementById('admin-teacher-collected-ledger');
+        const select = document.getElementById('admin-ledger-teacher-select');
+        if(!container) return;
+
+        let selectedTeacher = select ? select.value : "ALL";
+        let teacherLogs = pendingRequests.filter(r => r.type === "teacher_direct_added_record");
+
+        if(selectedTeacher !== "ALL") {
+            teacherLogs = teacherLogs.filter(log => log.teacherName === selectedTeacher);
+        }
+
+        if(teacherLogs.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray);">No teacher direct addition records found.</p>';
+            return;
+        }
+
+        container.innerHTML = teacherLogs.map(log => `
+            <div style="border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:6px;">
+                <strong style="color:var(--primary);">Student: ${log.name} (${log.mobile})</strong><br>
+                <span style="color:#4ade80;">${log.tx}</span>
+            </div>
+        `).join('');
     }
 
     function populateAdminTeacherDropdown() {
@@ -1448,7 +1666,7 @@
             renderAdminGiftsList();
             showCustomAlert('Gift added successfully!');
         } else {
-            showCustomAlert('Please select an image file from gallery or paste image URL!');
+            showCustomAlert('Please select an image file or paste image URL!');
         }
     }
 
@@ -1463,7 +1681,7 @@
         const container = document.getElementById('admin-gifts-list-box');
         if(!container) return;
         container.innerHTML = teacherGiftRewards.map((g, idx) => `
-            <div style="border-bottom:1px solid #bbf7d0; padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="border-bottom:1px solid rgba(34, 197, 94, 0.2); padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:6px; align-items:center;">
                     <img src="${g.imgUrl}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
                     <span><strong>${g.title}</strong> (${g.points} Pts)</span>
@@ -1504,12 +1722,12 @@
             }
 
             return `
-                <div style="background:#0f172a; border:1px solid #475569; padding:10px; border-radius:8px; margin-bottom:10px; display:flex; gap:10px; align-items:center;">
-                    <img src="${g.imgUrl}" style="width:60px; height:60px; border-radius:6px; object-fit:cover;">
+                <div style="background:rgba(30, 41, 59, 0.8); border:1px solid var(--border); padding:12px; border-radius:12px; margin-bottom:10px; display:flex; gap:12px; align-items:center;">
+                    <img src="${g.imgUrl}" style="width:60px; height:60px; border-radius:8px; object-fit:cover;">
                     <div style="flex:1;">
                         <strong style="font-size:14px; color:var(--text);">${g.title}</strong><br>
                         <span style="font-size:12px; color:var(--warning); font-weight:bold;">Cost: ${g.points} Points</span><br>
-                        <button onclick="claimTeacherGift(${g.id})" ${canClaim ? '' : 'disabled'} class="${btnClass}" style="padding:4px 10px; font-size:12px; width:auto; margin-top:4px;">${btnLabel}</button>
+                        <button onclick="claimTeacherGift(${g.id})" ${canClaim ? '' : 'disabled'} class="${btnClass}" style="padding:6px 12px; font-size:12px; width:auto; margin-top:6px;">${btnLabel}</button>
                     </div>
                 </div>
             `;
@@ -1524,22 +1742,22 @@
         if(!teacher.claimedGifts) teacher.claimedGifts = [];
 
         if(teacher.claimedGifts.includes(giftId)) {
-            showCustomAlert('You have already claimed this gift! You cannot claim the same gift twice.');
+            showCustomAlert('You have already claimed this gift!');
             return;
         }
 
         if(!teacher.upi) {
-            showCustomAlert('Please update your UPI ID in Profile & UPI Settings before claiming gifts!');
+            showCustomAlert('Please update your UPI ID in Profile Settings before claiming gifts!');
             showScreen('screen-teacher-dash');
             return;
         }
 
         if(teacher.points < gift.points) {
-            showCustomAlert('Insufficient points! You do not have enough points for this gift.');
+            showCustomAlert('Insufficient points!');
             return;
         }
 
-        if(confirm(`Claim "${gift.title}" for ${gift.points} points? Your remaining points will stay safe in your account.`)) {
+        if(confirm(`Claim "${gift.title}" for ${gift.points} points?`)) {
             teacher.points -= gift.points;
             teacher.claimedGifts.push(giftId);
             
@@ -1547,12 +1765,12 @@
                 id: Date.now(), 
                 name: `${teacher.name} (Gift Claim)`, 
                 mobile: teacher.mobile || 'No Mobile', 
-                tx: `Claimed: ${gift.title} (${gift.points} pts). Remaining Pts: ${teacher.points}. UPI: ${teacher.upi}` 
+                tx: `Claimed: ${gift.title} (${gift.points} pts). UPI: ${teacher.upi}` 
             });
             
             syncToFirebase();
             renderTeacherGiftGallery();
-            showCustomAlert(`Congratulations! Gift claimed successfully.\nRemaining Points: ${teacher.points} pts`);
+            showCustomAlert(`Gift claimed successfully!\nRemaining Points: ${teacher.points} pts`);
         }
     }
 
@@ -1573,14 +1791,14 @@
         const subName = document.getElementById('admin-new-subject-input').value.trim();
         if(!cls || !subName) { showCustomAlert('Select class and enter subject name!'); return; }
         if(!classesAndSubjectsData[cls]) classesAndSubjectsData[cls] = { hidden: false, subjects: {} };
-        if(classesAndSubjectsData[cls].subjects[subName]) { showCustomAlert('Subject already exists in this class!'); return; }
+        if(classesAndSubjectsData[cls].subjects[subName]) { showCustomAlert('Subject already exists!'); return; }
         classesAndSubjectsData[cls].subjects[subName] = { hidden: false };
         syncToFirebase();
         document.getElementById('admin-new-subject-input').value = '';
         populateAdminMasterDropdowns();
         renderAdminClassesAndSubjectsList();
         renderAdminFreeSubjectsCheckboxes();
-        showCustomAlert(`Subject ${subName} added to Class ${cls}!`);
+        showCustomAlert(`Subject ${subName} added!`);
     }
 
     function populateAdminMasterDropdowns() {
@@ -1601,12 +1819,12 @@
         if(!cls || !classesAndSubjectsData[cls]) { container.innerHTML = '<p style="color:var(--gray);">No subjects found.</p>'; return; }
 
         let clsHidden = classesAndSubjectsData[cls].hidden;
-        let html = `<div style="margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid #475569; display:flex; justify-content:space-between; align-items:center;">
+        let html = `<div style="margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
             <span><strong>Class ${cls}</strong> ${clsHidden ? '<span style="color:red;">[Hidden]</span>' : ''}</span>
             <div>
-                <button onclick="editClassName('${cls}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
-                <button onclick="toggleClassHide('${cls}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--warning);">${clsHidden ? 'Unhide' : 'Hide'}</button>
-                <button onclick="trashClass('${cls}')" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto;">Del</button>
+                <button onclick="editClassName('${cls}')" style="padding:2px 6px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
+                <button onclick="toggleClassHide('${cls}')" style="padding:2px 6px; font-size:10px; width:auto; background:var(--warning);">${clsHidden ? 'Unhide' : 'Hide'}</button>
+                <button onclick="trashClass('${cls}')" class="btn-danger" style="padding:2px 6px; font-size:10px; width:auto;">Del</button>
             </div>
         </div>`;
 
@@ -1616,9 +1834,9 @@
             html += `<div style="margin-left:12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
                 <span>↳ ${sub} ${subHidden ? '<span style="color:red;">[Hidden]</span>' : ''}</span>
                 <div>
-                    <button onclick="editSubjectName('${cls}', '${sub}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
-                    <button onclick="toggleSubjectHide('${cls}', '${sub}')" style="padding:2px 4px; font-size:10px; width:auto; background:var(--warning);">${subHidden ? 'Unhide' : 'Hide'}</button>
-                    <button onclick="trashSubject('${cls}', '${sub}')" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto;">Del</button>
+                    <button onclick="editSubjectName('${cls}', '${sub}')" style="padding:2px 6px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
+                    <button onclick="toggleSubjectHide('${cls}', '${sub}')" style="padding:2px 6px; font-size:10px; width:auto; background:var(--warning);">${subHidden ? 'Unhide' : 'Hide'}</button>
+                    <button onclick="trashSubject('${cls}', '${sub}')" class="btn-danger" style="padding:2px 6px; font-size:10px; width:auto;">Del</button>
                 </div>
             </div>`;
         });
@@ -1721,7 +1939,7 @@
         freeControlSettings.allowedSubjects = checkedSubs;
 
         syncToFirebase();
-        showCustomAlert('Free Subject & Chapter Access Settings saved successfully!');
+        showCustomAlert('Free rules saved successfully!');
     }
 
     function saveAdminChapter() {
@@ -1730,7 +1948,7 @@
         const name = document.getElementById('adm-ch-name').value.trim();
         const editId = document.getElementById('adm-ch-edit-id').value;
 
-        if(!name) { showCustomAlert('Chapter name diok!'); return; }
+        if(!name) { showCustomAlert('Enter chapter name!'); return; }
 
         if(editId) {
             let ch = chaptersDatabase.find(c => c.id == editId);
@@ -1757,7 +1975,7 @@
             return;
         }
         container.innerHTML = filtered.map(ch => `
-            <div style="background:#0f172a; border:1px solid #475569; padding:6px; border-radius:4px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="background:rgba(15, 23, 42, 0.8); border:1px solid var(--border); padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
                 <span><strong>${ch.name}</strong> ${ch.hidden ? '<span style="color:#ef4444;">[Hidden]</span>' : ''}</span>
                 <div style="display:flex; gap:4px;">
                     <button onclick="editAdminChapter(${ch.id})" style="padding:2px 4px; font-size:10px; width:auto; background:var(--primary);">Edit</button>
@@ -1907,11 +2125,11 @@
 
         let filtered = chaptersDatabase.filter(c => c.class === cls && c.subject === sub && !c.hidden);
         if(filtered.length === 0) {
-            container.innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found for this class/subject.</p>';
+            container.innerHTML = '<p style="color:var(--gray); font-size:12px;">No chapters found.</p>';
             return;
         }
 
-        let html = `<label style="margin-bottom:6px;"><input type="checkbox" id="chk-all-special" onchange="toggleAllSpecialChapters(this)" checked style="width:auto;"> <strong>Select All Chapters</strong></label><hr style="margin:4px 0; border:0; border-top:1px solid #475569;">`;
+        let html = `<label style="margin-bottom:6px;"><input type="checkbox" id="chk-all-special" onchange="toggleAllSpecialChapters(this)" checked style="width:auto;"> <strong>Select All Chapters</strong></label><hr style="margin:4px 0; border:0; border-top:1px solid var(--border);">`;
         filtered.forEach((ch) => {
             html += `<label style="margin-bottom:4px; font-weight:normal;"><input type="checkbox" class="special-ch-chk" value="${ch.name}" checked style="width:auto;"> ${ch.name}</label>`;
         });
@@ -1963,9 +2181,9 @@
     function renderTrashBinsContent() {
         const qContainer = document.getElementById('trash-questions-list');
         qContainer.innerHTML = trashDatabase.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:6px; margin-bottom:6px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:6px;">
                 <strong>[${item.type}]</strong> ${item.q || item.name}<br>
-                <span style="font-size:11px; color:#38bdf8;">Class: ${item.class} | Subject: ${item.subject} | Chapter: ${item.chapter}</span><br>
+                <span style="font-size:11px; color:var(--primary);">Class: ${item.class} | Subject: ${item.subject}</span><br>
                 <button onclick="adminRestoreQuestion(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteQuestion(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
             </div>
@@ -1973,7 +2191,7 @@
 
         const csContainer = document.getElementById('trash-classes-subjects-list');
         csContainer.innerHTML = trashClassesSubjects.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:6px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:4px; margin-bottom:6px;">
                 ${item.type === 'class' ? `Class: <strong>${item.key}</strong>` : `Subject: <strong>${item.subjectKey}</strong> (Class ${item.classKey})`}<br>
                 <button onclick="adminRestoreCS(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteCS(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
@@ -1982,7 +2200,7 @@
 
         const chContainer = document.getElementById('trash-chapters-list');
         chContainer.innerHTML = trashChapters.map((item, idx) => `
-            <div style="border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:6px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:4px; margin-bottom:6px;">
                 Chapter: <strong>${item.name}</strong> (Class ${item.class} - ${item.subject})<br>
                 <button onclick="adminRestoreChapter(${idx})" class="btn-success" style="padding:2px 4px; font-size:10px; width:auto;">Restore</button>
                 <button onclick="adminPermanentDeleteChapter(${idx})" class="btn-danger" style="padding:2px 4px; font-size:10px; width:auto; margin-left:4px;">Delete Forever</button>
@@ -2041,7 +2259,7 @@
 
     function saveSpecialExamFee() {
         const val = parseInt(document.getElementById('admin-fee-input').value);
-        if(isNaN(val) || val < 0) { showCustomAlert('Valid amount diok!'); return; }
+        if(isNaN(val) || val < 0) { showCustomAlert('Please enter a valid amount!'); return; }
         specialExamFee = val;
         syncToFirebase();
         showCustomAlert(`Special Exam fee successfully updated to ₹${specialExamFee}!`);
@@ -2121,7 +2339,7 @@
         let html = `<h3 style="font-size: 14px; color: var(--primary); text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
         dataToRender.forEach((item, idx) => {
             let certBtn = ((type === 'monthly' || type === 'lastmonthly') && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
-            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong> (${item.studentId || '-'})</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+            html += `<div style="background: rgba(51, 65, 85, 0.6); border: 1px solid var(--border); padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong> (${item.studentId || '-'})</span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -2157,14 +2375,14 @@
         }
 
         if(!dataToRender || dataToRender.length === 0) { 
-            container.innerHTML = `<h3 style="font-size: 14px; color: #7c3aed; text-align: left; margin-bottom: 8px;">${titleTxt}</h3><p style="color: var(--gray);">No records found.</p>`; 
+            container.innerHTML = `<h3 style="font-size: 14px; color: #c4b5fd; text-align: left; margin-bottom: 8px;">${titleTxt}</h3><p style="color: var(--gray);">No records found.</p>`; 
             return; 
         }
 
-        let html = `<h3 style="font-size: 14px; color: #7c3aed; text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
+        let html = `<h3 style="font-size: 14px; color: #c4b5fd; text-align: left; margin-bottom: 8px;">${titleTxt}</h3>`;
         dataToRender.forEach((item, idx) => {
             let certBtn = ((type === 'monthly' || type === 'lastmonthly') && idx < 10) ? ` <button onclick="viewCertificate('${item.name}', '${idx + 1}', '${item.score}')" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--warning); margin-top: 0;">📜 Certificate</button>` : '';
-            html += `<div style="background: #334155; border: 1px solid #475569; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong></span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
+            html += `<div style="background: rgba(51, 65, 85, 0.6); border: 1px solid var(--border); padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span><strong>#${idx + 1} ${item.name}</strong></span><div style="display: flex; align-items: center; gap: 6px;"><span style="color: var(--success); font-weight: bold;">${item.score}</span>${certBtn}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -2208,7 +2426,7 @@
 
     function deleteTeacher(index) {
         let t = teachersDatabase[index];
-        if(!confirm(`Are you sure you want to completely delete teacher: ${t.name}?`)) return;
+        if(!confirm(`Are you sure you want to delete teacher: ${t.name}?`)) return;
         teachersDatabase.splice(index, 1);
         syncToFirebase();
         renderAdminTeacherManageList();
@@ -2218,14 +2436,15 @@
     function addNewTeacher() {
         const name = document.getElementById('new-teacher-name').value.trim();
         const pin = document.getElementById('new-teacher-pin').value.trim();
-        if(!name || !pin) { showCustomAlert('Fill all fields!'); return; }
-        teachersDatabase.push({ name, pin, points: 50, wallet: 0, mobile: "", upi: "", status: "active", claimedGifts: [] });
+        if(!name || !pin) { showCustomAlert('Please fill all fields!'); return; }
+        teachersDatabase.push({ name, pin, points: 50, wallet: 0, mobile: "", upi: "", status: "active", claimedGifts: [], addedStudents: [] });
         syncToFirebase();
         showCustomAlert(`Teacher ${name} registered successfully!`);
         document.getElementById('new-teacher-name').value = '';
         document.getElementById('new-teacher-pin').value = '';
         renderAdminTeacherManageList();
         populateAdminTeacherDropdown();
+        populateAdminLedgerTeacherDropdown();
     }
 
     function renderAdminTeacherManageList() {
@@ -2239,7 +2458,7 @@
             let isBlocked = t.status === "blocked";
             if(t.wallet === undefined) t.wallet = 0;
             html += `
-                <div style="border-bottom: 1px solid #475569; padding-bottom: 8px; margin-bottom: 8px; background:#0f172a; padding:8px; border-radius:6px;">
+                <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; background:rgba(15, 23, 42, 0.8); padding:8px; border-radius:8px;">
                     <strong>${t.name}</strong> (PIN: <code>${t.pin}</code>)<br>
                     Points: <strong style="color:var(--success);">${t.points} pts</strong> | Wallet: <strong style="color:#4ade80;">₹${t.wallet}</strong><br>
                     Status: <span style="color:${isBlocked ? '#ef4444' : '#4ade80'}; font-weight:bold;">${isBlocked ? 'BLOCKED ❌' : 'ACTIVE ✅'}</span><br>
@@ -2298,7 +2517,7 @@
         document.getElementById('pay-link-fee').innerText = `₹${specialExamFee}`;
         document.getElementById('student-view-upi').innerText = paymentSettings.upi;
         document.getElementById('upi-pay-link').href = `upi://pay?pa=${paymentSettings.upi}&pn=${encodeURIComponent(academyBranding.name)}&am=${specialExamFee}.00&cu=INR`;
-        document.getElementById('student-view-qr-container').innerHTML = paymentSettings.qrUrl ? `<img src="${paymentSettings.qrUrl}" style="width: 130px; height: 130px; border-radius: 8px;">` : '<span>[No QR]</span>';
+        document.getElementById('student-view-qr-container').innerHTML = paymentSettings.qrUrl ? `<img src="${paymentSettings.qrUrl}" style="width: 120px; height: 120px; border-radius: 10px;">` : '<span>[No QR]</span>';
     }
 
     function submitOnlinePaymentRequest() {
@@ -2307,7 +2526,7 @@
         const tx = document.getElementById('pay-tx').value.trim();
         
         if(!name || !mobile || !tx || mobile.length < 10) {
-            showCustomAlert('Please enter valid Name, 10-digit Mobile Number and UTR number!');
+            showCustomAlert('Please enter valid Name, Mobile Number and UTR number!');
             return;
         }
 
@@ -2326,14 +2545,21 @@
 
     function renderPendingRequests() {
         const container = document.getElementById('pending-request-container');
-        document.getElementById('admin-alert-badge').innerText = `${pendingRequests.length} Alerts`;
-        if(!pendingRequests || pendingRequests.length === 0) { container.innerHTML = `<p style="font-size: 12px;">No pending requests.</p>`; return; }
+        
+        let realPendingRequests = pendingRequests.filter(req => req.type === "student_pay" || req.type === "teacher_fund_request");
+        document.getElementById('admin-alert-badge').innerText = `${realPendingRequests.length} Alerts`;
+        
+        if(!realPendingRequests || realPendingRequests.length === 0) { 
+            container.innerHTML = `<p style="font-size: 12px;">No pending requests.</p>`; 
+            return; 
+        }
+        
         let html = '';
         pendingRequests.forEach((req, index) => {
             if(req.type === "teacher_fund_request") {
-                html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong><br>${req.tx}<br><button onclick="handleTeacherFundApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve Fund</button><button onclick="handleTeacherFundApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
-            } else {
-                html += `<div style="border-bottom: 1px solid #475569; padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong> (${req.mobile})<br>${req.tx}<br><button onclick="handleApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+                html += `<div style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong><br>${req.tx}<br><button onclick="handleTeacherFundApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleTeacherFundApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
+            } else if(req.type === "student_pay") {
+                html += `<div style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 6px;"><strong>${req.name}</strong> (${req.mobile})<br>${req.tx}<br><button onclick="handleApproval(${index}, true)" class="btn-success" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px;">Approve</button><button onclick="handleApproval(${index}, false)" class="btn-danger" style="padding: 2px 6px; font-size: 11px; width: auto; margin-top: 2px; margin-left: 4px;">Dismiss</button></div>`;
             }
         });
         container.innerHTML = html;
@@ -2351,7 +2577,7 @@
         pendingRequests.splice(index, 1);
         syncToFirebase();
         renderPendingRequests();
-        showCustomAlert(isApproved ? 'Fund approved and added to teacher wallet!' : 'Fund request dismissed!');
+        showCustomAlert(isApproved ? 'Fund approved!' : 'Fund request dismissed!');
     }
 
     function handleApproval(index, isApproved) {
@@ -2365,54 +2591,56 @@
         pendingRequests.splice(index, 1);
         syncToFirebase();
         renderPendingRequests();
-        showCustomAlert(isApproved ? 'Approval successful! Student can now login using the exact name and mobile number provided during payment.' : 'Approval dismissed!');
+        showCustomAlert(isApproved ? 'Approval successful!' : 'Approval dismissed!');
     }
 
-    // --- STRICT VERIFICATION: MATCH PAYMENT NAME & MOBILE ---
     function verifyStudentPaidAccess() {
         const nameInput = document.getElementById('login-student-name').value.trim().toLowerCase();
         const mobileInput = document.getElementById('login-student-mobile').value.trim();
         
         if(!nameInput || !mobileInput || mobileInput.length < 10) {
-            showCustomAlert('Please enter the exact Name and 10-digit Mobile Number used during payment!');
+            showCustomAlert('Please enter both Student Name and Mobile Number!');
             return;
         }
 
         currentStudentName = document.getElementById('login-student-name').value.trim();
         currentStudentMobile = mobileInput;
 
-        let isPaidApproved = approvedMobileNumbers.includes(mobileInput);
-        let registeredExactName = approvedNamesDatabase[mobileInput];
-        let isNameMatch = registeredExactName && registeredExactName === nameInput;
+        let isMobileApproved = approvedMobileNumbers.includes(mobileInput);
+        let registeredName = approvedNamesDatabase[mobileInput] || "";
+        
+        let isNameStrictlyMatched = (registeredName !== "" && registeredName === nameInput);
 
         let sortedFree = [...freeLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobileInput);
+        let isFreeMonthlyFirst = (sortedFree.length > 0 && sortedFree[0].mobile === mobileInput && sortedFree[0].name.toLowerCase() === nameInput);
         
         let sortedSpecial = [...specialLeaderboardDatabase].sort((a, b) => b.score - a.score);
-        let isSpecialTopperFree = ((sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobileInput) || (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobileInput));
+        let isSpecialTopperFree = (
+            (sortedSpecial.length > 0 && sortedSpecial[0].mobile === mobileInput && sortedSpecial[0].name.toLowerCase() === nameInput) || 
+            (sortedSpecial.length > 1 && sortedSpecial[1].mobile === mobileInput && sortedSpecial[1].name.toLowerCase() === nameInput)
+        );
 
-        if((isPaidApproved && isNameMatch) || isFreeMonthlyFirst || isSpecialTopperFree || mobileInput === "9876543210") {
-            showCustomAlert(`Welcome ${currentStudentName}! You have successfully accessed the Special Exam Hub.`);
+        if((isMobileApproved && isNameStrictlyMatched) || isFreeMonthlyFirst || isSpecialTopperFree || (mobileInput === "9876543210" && nameInput === "default teacher")) {
+            showCustomAlert(`Welcome ${currentStudentName}!`);
             showScreen('screen-paid-student-hub');
         } else {
-            showCustomAlert('Access Denied! The Name or Mobile Number you entered does not match the payment request records. Please enter the exact name you used while making the payment.');
+            showCustomAlert('Access Denied! Name and Mobile Number must match approved records exactly.');
         }
     }
-    // --------------------------------------------------------
 
     function renderStudentShortQA() {
         const container = document.getElementById('student-short-qa-list');
         const chFilter = document.getElementById('student-short-chapter-select').value;
         let shortQ = questionDatabase.filter(q => q.type === 'SHORT');
         if(chFilter !== 'ALL') { shortQ = shortQ.filter(q => q.chapter === chFilter); }
-        container.innerHTML = shortQ.length ? shortQ.map((item, idx) => `<div style="background:#0f172a; padding:8px; border-radius:6px; margin-bottom:6px; border:1px solid #475569;"><strong>Q${idx+1} [${item.chapter}]:</strong> ${item.q}<br><span style="color:var(--success)">Ans:</span> ${item.answer}</div>`).join('') : '<p style="color:var(--gray);">No Short Q/A in this chapter.</p>';
+        container.innerHTML = shortQ.length ? shortQ.map((item, idx) => `<div style="background:rgba(15, 23, 42, 0.8); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border);"><strong>Q${idx+1} [${item.chapter}]:</strong> ${item.q}<br><span style="color:var(--success)">Ans:</span> ${item.answer}</div>`).join('') : '<p style="color:var(--gray);">No Short Q/A found.</p>';
     }
 
     function renderManageQuestionsList() {
         const container = document.getElementById('manage-questions-list');
         container.innerHTML = questionDatabase.map(item => `
-            <div style="background: #0f172a; border: 1px solid #475569; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
-                [Class ${item.class}-${item.subject} | ${item.chapter}] ${item.q} ${item.specialTag ? '<span style="color:#7c3aed; font-weight:bold;">[Special Set]</span>' : ''}<br>
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); padding: 8px; border-radius: 8px; margin-bottom: 6px; font-size: 12px;">
+                [Class ${item.class}-${item.subject} | ${item.chapter}] ${item.q} ${item.specialTag ? '<span style="color:#a855f7; font-weight:bold;">[Special Set]</span>' : ''}<br>
                 <button onclick="editQuestion(${item.id})" style="padding: 2px 6px; font-size: 10px; width: auto; background: var(--primary);">Edit</button>
                 <button onclick="teacherDeleteQuestion(${item.id})" class="btn-danger" style="padding: 2px 6px; font-size: 10px; width: auto; margin-left: 4px;">Delete</button>
             </div>
@@ -2449,13 +2677,13 @@
 
             syncToFirebase();
             renderManageQuestionsList();
-            showCustomAlert('Question moved to Trash Bin and points deducted successfully!');
+            showCustomAlert('Question moved to Trash Bin!');
         }
     }
 
     function renderStudentResources() {
-        document.getElementById('student-ebook-list').innerHTML = ebookDatabase.map(b => `<div>📚 ${b.title} (<a href="${b.link}" target="_blank">Open PDF</a>)</div>`).join('') || '<p>No E-Books.</p>';
-        document.getElementById('student-video-list').innerHTML = videoDatabase.map(v => `<div>🎥 ${v.title} (<a href="${v.link}" target="_blank">Watch Video</a>)</div>`).join('') || '<p>No Videos.</p>';
+        document.getElementById('student-ebook-list').innerHTML = ebookDatabase.map(b => `<div>📚 ${b.title} (<a href="${b.link}" target="_blank" style="color:var(--primary);">Open PDF</a>)</div>`).join('') || '<p>No E-Books.</p>';
+        document.getElementById('student-video-list').innerHTML = videoDatabase.map(v => `<div>🎥 ${v.title} (<a href="${v.link}" target="_blank" style="color:var(--primary);">Watch Video</a>)</div>`).join('') || '<p>No Videos.</p>';
     }
 
     function submitEBook() {
@@ -2563,11 +2791,11 @@
             filtered = questionDatabase.filter(item => item.type === "MCQ" && item.class === cls && item.subject === sub && selectedChapters.includes(item.chapter));
         }
 
-        if(filtered.length === 0) { showCustomAlert('No MCQ questions available for the selected chapters!'); return; }
+        if(filtered.length === 0) { showCustomAlert('No questions available!'); return; }
 
         activeQuizQuestions = shuffleArray([...filtered]).slice(0, testSettings.questionCount);
         currentQuizIndex = 0; scoreCount = 0;
-        document.getElementById('quiz-heading').innerText = `⭐ Monthly Special Exam (${sub})`;
+        document.getElementById('quiz-heading').innerText = `⭐ Special Exam (${sub})`;
         showScreen('screen-quiz-play');
         startTimer();
         loadQuizQuestion();
@@ -2649,7 +2877,7 @@
     function submitQuestion() {
         const qText = document.getElementById('q-text').value.trim();
         const editId = document.getElementById('edit-question-id').value;
-        if(!qText) { showCustomAlert('Question text diok!'); return; }
+        if(!qText) { showCustomAlert('Enter question text!'); return; }
 
         const qObj = {
             id: editId ? parseInt(editId) : Date.now(),
